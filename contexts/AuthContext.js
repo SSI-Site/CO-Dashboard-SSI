@@ -11,13 +11,13 @@ export function AuthProvider({ children }) {
     const [key, setKey] = useState("");
 
     const signIn = (username, password) => {
-        console.log("sining in")
-
         if(username === USER_KEY && password === PASS_KEY) {
-            console.log("valid credentials")
             setKey(process.env.NEXT_PUBLIC_AUTH_TOKEN);
             setSession(true);
+            return true;
         }
+
+        return false;
     }
 
     const signOut = () => {
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
                 expires: 1,
             });
         } else {
-            cookie.remove('ssi-co-auth');
+            cookie.remove('co-auth');
         }
     }
 
