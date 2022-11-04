@@ -47,7 +47,7 @@ const Giveaway = () => {
                 `
                 }} />
 
-            <Meta title='SSI 2022 | Sorteio' />
+            <Meta title='CO SSI 2022 | Sorteio' />
             <NavBar />
             <GiveawayWrapper>
                 <h1>Sorteio</h1>

@@ -9,7 +9,7 @@ const Meta = ({ title, keywords, description }) => {
       <meta name='keywords' content={keywords} />
       <meta name='description' content={description} />
 
-      <meta property="og:url" content="https://www.semanadesi.com.br/" />
+      <meta property="og:url" content="https://co-dashboard.netlify.app" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -17,8 +17,8 @@ const Meta = ({ title, keywords, description }) => {
 
 
       <meta name="twitter:card" content="summary_large_image" />
-      <meta property="twitter:domain" content="semanadesi.com.br" />
-      <meta property="twitter:url" content="https://www.semanadesi.com.br/" />
+      <meta property="twitter:domain" content="co-dashboard.netlify.app" />
+      <meta property="twitter:url" content="https://co-dashboard.netlify.app" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={img_src}></meta>
@@ -32,9 +32,9 @@ const Meta = ({ title, keywords, description }) => {
 }
 
 Meta.defaultProps = {
-  title: 'SSI 2022',
+  title: 'CO Dashboard 2022',
   keywords: 'Semana, semana, Sistemas, sistemas, Informação, informação, informacao, USP, usp, EACH, each, SI, si, Evento, evento, palestras, tecnologia, universidade, universitário, universitario',
-  description: 'A Semana de Sistemas de Informação 2022 ocorrerá nos dias 07-11 de Novembro! Acesse para saber mais sobre o evento e sua programação!',
+  description: 'Destinado a comissão organizadora da SSI 2022',
 }
 
 export default Meta;

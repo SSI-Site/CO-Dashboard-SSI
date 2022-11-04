@@ -39,7 +39,7 @@ const Login = () => {
 
     return (
         <>
-            <Meta title='SSI 2022 | Login' />
+            <Meta title='CO SSI 2022 | Login' />
             <LoginWrapper>
                 <h1>Login</h1>
 

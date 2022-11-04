@@ -13,29 +13,39 @@ import Button from '../src/components/Button';
 const Presence = () => {
     const router = useRouter();
     const { key } = useAuth();
-    const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
+    const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isListingPresences, setIsListingPresences] = useState(false);
+    const [userPresences, setUserPresences] = useState([]);
+    const [userEmail, setUserEmail] = useState("");
 
     const onSubmit = data => {
         setIsLoading(true);
 
-        console.log(Swal);
+        if(isListingPresences) {
+            listPresences(data.email);
+            setIsListingPresences(false);
 
-        setTimeout(() => {
-            reset();
-            setIsLoading(false);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 3000);
+        } else {
+            setTimeout(() => {
+                reset();
+                setIsLoading(false);
 
-            Swal.fire({
-                icon: 'info',
-                title: 'Presença Registrada para:',
-                text: data.email,
-                showConfirmButton: true,
-                confirmButtonText: "Ok!",
-                confirmButtonColor: "#151023"
-            })
-        }, 2000);
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Presença Registrada para:',
+                    text: data.email,
+                    showConfirmButton: true,
+                    confirmButtonText: "Ok!",
+                    confirmButtonColor: "#151023"
+                })
+            }, 2000);
+        }
     };
 
     const checkKey = () => {
@@ -45,6 +55,22 @@ const Presence = () => {
             setIsKeyPresent(false);
             router.push("/");
         }
+    }
+
+    const listPresences = (email) => {
+        setIsLoading(true);
+        setUserEmail(email);
+
+        setTimeout(() => {
+            reset();
+            setIsLoading(false);
+
+            return setUserPresences(["palestra 1 aaaaaaaaa aaaaaaaaaa aaaaaa aaaaaaaa", "palestra 2", "palestra 3 ddddddddddddddddd"]);
+        }, 2000);
+    }
+
+    const clearPresences = () => {
+        setUserPresences([]);
     }
 
     useEffect(() => {
@@ -62,7 +88,7 @@ const Presence = () => {
                 `
                 }} />
 
-            <Meta title='SSI 2022 | Presença' />
+            <Meta title='CO SSI 2022 | Presença' />
             <NavBar />
             <PresenceWrapper>
                 <h1>Presença</h1>
@@ -70,8 +96,6 @@ const Presence = () => {
                 {isKeyPresent &&
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <h3> Registrar presença de participante: </h3>
-
                             {!isLoading &&
                                 <>
                                     <InputBox>
@@ -87,7 +111,22 @@ const Presence = () => {
                                         {errors.email && <ErrorMessage> {errors.email?.message} </ErrorMessage>}
                                     </InputBox>
 
-                                    <Button> Enviar </Button>
+                                    <Button> Registrar </Button>
+
+                                    {userPresences.length === 0 ?
+                                        <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
+                                        :
+
+                                        <PresencesList>
+                                            <h3>Email: {userEmail}</h3>
+                                            <h3>Presenças: {userPresences.length}</h3>
+                                            <ul>
+                                                { userPresences.map((lecture) => <li key={lecture}> - {lecture}</li>)}
+                                            </ul>
+
+                                            <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
+                                        </PresencesList>
+                                    }
                                 </>
                             }
 
@@ -212,4 +251,28 @@ const InputBox = styled.div`
     input[type=number] {
     -moz-appearance: textfield;
     }
+`
+
+const PresencesList = styled.div`
+    text-align: center;
+
+    margin-top: 5rem;
+    color: var(--color-text);
+
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+
+        width: 100%;
+        padding: 0 5%;
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.6rem;
+        }
+    }
+
 `
