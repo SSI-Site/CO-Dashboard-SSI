@@ -22,7 +22,6 @@ const Giveaway = () => {
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-
     const checkKey = () => {
         if (key) {
             setIsKeyPresent(true);
