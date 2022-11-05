@@ -24,7 +24,7 @@ const Presence = () => {
     const onSubmit = data => {
         setIsLoading(true);
 
-        if(isListingPresences) {
+        if (isListingPresences) {
             listPresences(data.email);
             setIsListingPresences(false);
 
@@ -121,7 +121,7 @@ const Presence = () => {
                                             <h3>Email: {userEmail}</h3>
                                             <h3>Presenças: {userPresences.length}</h3>
                                             <ul>
-                                                { userPresences.map((lecture) => <li key={lecture}> - {lecture}</li>)}
+                                                {userPresences.map((lecture) => <li key={lecture}> - {lecture}</li>)}
                                             </ul>
 
                                             <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
@@ -138,7 +138,6 @@ const Presence = () => {
                         </form>
                     </FormWrapper>
                 }
-
 
             </PresenceWrapper>
         </>
