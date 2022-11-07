@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2'
 
+import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
@@ -24,28 +25,28 @@ const Presence = () => {
     const onSubmit = data => {
         setIsLoading(true);
 
-        if (isListingPresences) {
+        // if (isListingPresences) {
             listPresences(data.email);
             setIsListingPresences(false);
 
             setTimeout(() => {
                 setIsLoading(false);
             }, 3000);
-        } else {
-            setTimeout(() => {
-                reset();
-                setIsLoading(false);
+        // } else {
+        //     setTimeout(() => {
+        //         reset();
+        //         setIsLoading(false);
 
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Presença Registrada para:',
-                    text: data.email,
-                    showConfirmButton: true,
-                    confirmButtonText: "Ok!",
-                    confirmButtonColor: "#151023"
-                })
-            }, 2000);
-        }
+        //         Swal.fire({
+        //             icon: 'info',
+        //             title: 'Presença Registrada para:',
+        //             text: data.email,
+        //             showConfirmButton: true,
+        //             confirmButtonText: "Ok!",
+        //             confirmButtonColor: "#151023"
+        //         })
+        //     }, 2000);
+        // }
     };
 
     const checkKey = () => {
@@ -61,13 +62,40 @@ const Presence = () => {
         setIsLoading(true);
         setUserEmail(email);
 
-        setTimeout(() => {
-            reset();
-            setIsLoading(false);
-
-            return setUserPresences(["palestra 1 aaaaaaaaa aaaaaaaaaa aaaaaa aaaaaaaa", "palestra 2", "palestra 3 ddddddddddddddddd"]);
-        }, 2000);
+        saphira.listPresences(email)
+            .then((res) => {
+                setUserPresences([...res.data]);
+                setIsLoading(true);
+            })
+            .catch(() => {
+                setUserPresences([]);
+                setIsLoading(true);
+            })
     }
+
+    const countOnlinePresences = () => {
+        if(!userPresences) return;
+        let count = 0;
+
+        userPresences.forEach((lecture) => {
+            if(lecture.online) count++;
+        });
+
+        console.log(count)
+        return count;
+    }
+
+    const countPresencialPresences = () => {
+        if(!userPresences) return;
+        let count = 0;
+
+        userPresences.forEach((lecture) => {
+            if(!lecture.online) count++;
+        });
+
+        return count;
+    }
+
 
     const clearPresences = () => {
         setUserPresences([]);
@@ -111,7 +139,7 @@ const Presence = () => {
                                         {errors.email && <ErrorMessage> {errors.email?.message} </ErrorMessage>}
                                     </InputBox>
 
-                                    <Button> Registrar </Button>
+                                    {/* <Button> Registrar </Button> */}
 
                                     {userPresences.length === 0 ?
                                         <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
@@ -119,9 +147,10 @@ const Presence = () => {
 
                                         <PresencesList>
                                             <h3>Email: {userEmail}</h3>
-                                            <h3>Presenças: {userPresences.length}</h3>
+                                            <h3>Presenças online: {countOnlinePresences()}</h3>
+                                            <h3>Presenças presenciais: {countPresencialPresences()}</h3>
                                             <ul>
-                                                {userPresences.map((lecture) => <li key={lecture}> - {lecture}</li>)}
+                                                {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - {lecture.online ? "Online" : "Presencial"}</li>)}
                                             </ul>
 
                                             <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
@@ -213,6 +242,7 @@ const InputBox = styled.div`
     width: 100%;
     max-width: 450px;
     padding: 1.5rem 20px;
+
     input {
         width: 90%;
         border-radius: 5px;
@@ -248,14 +278,14 @@ const InputBox = styled.div`
     }
     /* Firefox */
     input[type=number] {
-    -moz-appearance: textfield;
+        -moz-appearance: textfield;
     }
 `
 
 const PresencesList = styled.div`
     text-align: center;
 
-    margin-top: 5rem;
+    margin-top: 1rem;
     color: var(--color-text);
 
     ul {
@@ -270,7 +300,7 @@ const PresencesList = styled.div`
 
         li {
             margin-bottom: 10px;
-            font-size: 1.6rem;
+            font-size: 16px;
         }
     }
 

@@ -10,7 +10,13 @@ const saphira = {
 
   getLectures: async () => {
     return axios.get(`${BASE_URL}/talks`);
-  }
+  },
+
+  listPresences: async (email) => {
+    const requestUrl = `${BASE_URL}/user/${email}/presences`
+
+    return axios.get(requestUrl);
+  },
 
 }
 
