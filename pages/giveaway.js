@@ -17,7 +17,7 @@ const Giveaway = () => {
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [lectures, setLectures] = useState([{ id: 2, title: "dois" }, { id: 3, title: "tres" }]);
+    const [lectures, setLectures] = useState([]);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
     const [showList, setShowList] = useState(placeholderMessage);
 
