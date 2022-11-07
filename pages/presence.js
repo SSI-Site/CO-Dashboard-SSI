@@ -132,11 +132,11 @@ const Presence = () => {
                                             {...register("email", {
                                                 required: true,
                                                 minLength: 2,
-                                                maxLength: 30,
+                                                maxLength: 60,
                                                 pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Formato de email inválido" }
                                             })
                                             } />
-                                        {errors.email && <ErrorMessage> {errors.email?.message} </ErrorMessage>}
+                                        {errors.email && <ErrorMessage> Email inválido </ErrorMessage>}
                                     </InputBox>
 
                                     {/* <Button> Registrar </Button> */}
