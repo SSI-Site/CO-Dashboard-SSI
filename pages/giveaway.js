@@ -19,6 +19,7 @@ const Giveaway = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [lectures, setLectures] = useState([{ id: 2, title: "dois" }, { id: 3, title: "tres" }]);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
+    const [showList, setShowList] = useState(placeholderMessage);
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
@@ -104,10 +105,15 @@ const Giveaway = () => {
                                             {giveawayResultName === placeholderMessage &&
                                                 <Button > Sortear </Button>
                                             }
+
+                                            {giveawayResultName !== placeholderMessage &&
+                                                <Button type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
+                                            }
                                         </form>
-                                        {giveawayResultName !== placeholderMessage &&
-                                            <Button type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar </Button>
-                                        }
+
+                                        <Button className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
+                                            {showList ? "Esconder palestras" : "Mostrar palestras"} </Button>
+
                                     </FormWrapper>
                                 </>
                             }
@@ -119,14 +125,17 @@ const Giveaway = () => {
                             }
                         </ResultSection>
 
-                        <LecturesList>
-                            <ul>
-                                {lectures.map((lecture, key) =>
-                                    <li key={key}>
-                                        id: {lecture.id} | Título: {lecture.title}
-                                    </li>)}
-                            </ul>
-                        </LecturesList>
+                        {showList &&
+                            <LecturesList>
+                                <ul>
+                                    {lectures.map((lecture, key) =>
+                                        <li key={key}>
+                                            id: {lecture.id} | Título: {lecture.title}
+                                        </li>)}
+                                </ul>
+                            </LecturesList>
+                        }
+
                     </>
                 }
             </GiveawayWrapper>
@@ -177,6 +186,7 @@ const InputBox = styled.div`
     width: 100%;
     max-width: 450px;
     padding: 1.5rem 20px;
+
     input {
         width: 90%;
         border-radius: 5px;
@@ -225,13 +235,18 @@ const InputBox = styled.div`
 `
 
 const ResultSection = styled.section`
-    height: 30vh;
+    height: 45vh;
     margin: 100px auto;
 
     text-align: center;
 
     h2 {
         margin-bottom: 50px;
+    }
+
+    .show-list-btn {
+        margin-top: 30px;
+        font-size: 20px;
     }
 `
 
@@ -241,6 +256,10 @@ const LecturesList = styled.section`
     justify-content: center;
 
     ul {
-        color: var(--color-text)
+        color: var(--color-text);
+
+        li {
+            font-size: 16px;
+        }
     }
 `
