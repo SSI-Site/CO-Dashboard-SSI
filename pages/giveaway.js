@@ -113,7 +113,7 @@ const Giveaway = () => {
                         <ResultSection>
                             {!isLoading &&
                                 <>
-                                    <h2>{giveawayResultName}</h2>
+                                    <h2 className={giveawayResultName !== placeholderMessage ? 'neon' : ''}> {giveawayResultName} </h2>
 
                                     <FormWrapper>
                                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -299,6 +299,16 @@ const ResultSection = styled.section`
     .show-list-btn {
         margin-top: 30px;
         font-size: 20px;
+    }
+
+    .neon {
+        color: #fff;
+        text-shadow:
+        0 0 1px #fff,
+        0 0 20px var(--color-secondary),
+        0 0 60px var(--color-secondary),
+        0 0 70px var(--color-secondary),
+        0 0 80px var(--color-secondary);
     }
 `
 
