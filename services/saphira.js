@@ -8,6 +8,11 @@ const saphira = {
     return axios.get(requestUrl);
   },
 
+  getPresencialOnlyGivawayResult: async (lectureId) => {
+    const requestUrl = `${BASE_URL}/talk/${lectureId}/draw_auditorium`
+    return axios.get(requestUrl);
+  },
+
   getLectures: async () => {
     return axios.get(`${BASE_URL}/talks`);
   },

@@ -33,14 +33,36 @@ const Giveaway = () => {
     }
 
     const onSubmit = data => {
-        getGivawayResult(data.lectureId);
-    };
+        if(data.isPresencialOnly) {
+            getPresencialOnlyGivawayResult(data.lectureId);
+        } else {
+            getGivawayResult(data.lectureId);
+        }
+    }
 
     const getGivawayResult = (lectureId) => {
         setIsLoading(true);
 
         setTimeout(() => {
             saphira.getGivawayResult(lectureId)
+                .then((res) => {
+                    setGiveawayResultName(res.data.nome)
+                    setIsLoading(false);
+                    reset();
+                })
+                .catch(err => {
+                    console.log(err);
+                    setIsLoading(false);
+                    setError("lectureId", { type: "focus" }, { shouldFocus: true })
+                })
+        }, 2000);
+    }
+
+    const getPresencialOnlyGivawayResult = (lectureId) => {
+        setIsLoading(true);
+
+        setTimeout(() => {
+            saphira.getPresencialOnlyGivawayResult(lectureId)
                 .then((res) => {
                     setGiveawayResultName(res.data.nome)
                     setIsLoading(false);
@@ -101,6 +123,12 @@ const Giveaway = () => {
                                                     {...register("lectureId", { required: true, minLength: 1, })} />
                                                 {errors.lectureId && <ErrorMessage> Id inválido. </ErrorMessage>}
                                             </InputBox>
+
+                                            <CheckboxBox>
+                                                <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
+                                                    {...register('isPresencialOnly')} />
+                                                <label htmlFor='isPresencialOnly'> Apenas Presencial? </label>
+                                            </CheckboxBox>
 
                                             {giveawayResultName === placeholderMessage &&
                                                 <Button > Sortear </Button>
@@ -184,7 +212,7 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     padding: 1.5rem 20px;
 
     input {
@@ -234,14 +262,38 @@ const InputBox = styled.div`
     }
 `
 
+const CheckboxBox = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    margin-bottom: 3rem;
+
+    label {
+        margin-left: 15px;
+        color: var(--color-text);
+        font-size: 1.2rem;
+
+        cursor: pointer;
+    }
+
+    input[type=checkbox]{
+        transform: scale(1.5);
+        padding: 20px;
+        cursor: pointer;
+    }
+`
+
 const ResultSection = styled.section`
-    height: 45vh;
+    height: 50vh;
     margin: 100px auto;
 
     text-align: center;
 
     h2 {
-        margin-bottom: 50px;
+        margin-bottom: 60px;
     }
 
     .show-list-btn {
