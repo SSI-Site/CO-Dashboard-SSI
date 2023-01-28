@@ -7,7 +7,8 @@ import useAuth from '../../../hooks/useAuth';
 
 const pages = {
     "/presence": 1,
-    "/giveaway": 2,
+    "/token": 2,
+    "/giveaway": 3,
 }
 
 const Nav = () => {
@@ -35,6 +36,11 @@ const Nav = () => {
                         </li>
 
                         <li>
+                            <Link href="/token"><a>Token</a></Link>
+                            <div></div>
+                        </li>
+
+                        <li>
                             <Link href="/giveaway" ><a>Sorteio</a></Link>
                             <div></div>
                         </li>
@@ -48,6 +54,11 @@ const Nav = () => {
                         <ul>
                             <li onClick={() => setIsOpen(false)}>
                                 <Link href="/presence"><a>Presença</a></Link>
+                                <div></div>
+                            </li>
+
+                            <li onClick={() => setIsOpen(false)}>
+                                <Link href="/token"><a>Token</a></Link>
                                 <div></div>
                             </li>
 

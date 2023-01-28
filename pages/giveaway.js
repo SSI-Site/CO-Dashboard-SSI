@@ -15,7 +15,7 @@ const Giveaway = () => {
     const router = useRouter();
     const { key } = useAuth();
 
-    const placeholderMessage = "Seu nome aparecerá aqui !!";
+    const placeholderMessage = "Seu nome aparecerá aqui!";
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -203,7 +203,7 @@ const Giveaway = () => {
                 `
                 }} />
 
-            <Meta title='CO SSI 2022 | Sorteio' />
+            <Meta title='CO SSI 2023 | Sorteio' />
             <NavBar />
             <GiveawayWrapper>
                 <h1>Sorteio</h1>
@@ -270,7 +270,7 @@ const Giveaway = () => {
 
                             {isLoading &&
                                 <Loading>
-                                    <img src='./loading.svg' alt='SSI 2022 - Loading' />
+                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
                                 </Loading>
                             }
                         </ResultSection>
