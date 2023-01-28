@@ -56,6 +56,8 @@ const Token = () => {
             <TokenWrapper>
                 <h1>Token</h1>
 
+                <h3 className='page-description'> Geração de tokens do online :)</h3>
+
                 {isKeyPresent &&
                     <>
                         <ResultSection>
@@ -93,7 +95,6 @@ const Token = () => {
                     </>
                 }
             </TokenWrapper>
-
         </>
     )
 }
@@ -118,6 +119,12 @@ const TokenWrapper = styled.div`
     flex-direction: column;
 
     padding: 100px 30px;
+
+    .page-description {
+        text-align: center;
+        margin-top: 90px;
+        max-width: 1200px;
+    }
 `
 
 const ErrorMessage = styled.span`
@@ -173,11 +180,13 @@ const InputBox = styled.div`
         background-color: #241D3C;
         filter: brightness(130%);
 
-        width: 90%;
+        width: 100px;
         border-radius: 5px;
         padding: 8px 15px;
+
         color: var(--color-text);
         font-size: 1.6rem;
+        text-align: center;
     }
 
     input:-webkit-autofill,
@@ -198,6 +207,7 @@ const InputBox = styled.div`
         -moz-appearance: textfield;
     }
 `
+
 const ResultSection = styled.section`
     height: 50vh;
     margin: 100px auto;

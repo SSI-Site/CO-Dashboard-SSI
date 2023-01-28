@@ -343,13 +343,6 @@ const InputBox = styled.div`
     max-width: 500px;
     padding: 1.5rem 20px;
 
-    input {
-        width: 90%;
-        border-radius: 5px;
-        padding: 8px 15px;
-        color: var(--color-text);
-        font-size: 1.6rem;
-    }
 
     input {
         border: unset;

@@ -11,7 +11,7 @@ import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
-const Presence = () => {
+const Presencial = () => {
     const router = useRouter();
     const { key } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
@@ -25,28 +25,19 @@ const Presence = () => {
     const onSubmit = data => {
         setIsLoading(true);
 
-        // if (isListingPresences) {
-            listPresences(data.email);
-            setIsListingPresences(false);
+        // setTimeout(() => {
+        //     reset();
+        //     setIsLoading(false);
 
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 3000);
-        // } else {
-        //     setTimeout(() => {
-        //         reset();
-        //         setIsLoading(false);
-
-        //         Swal.fire({
-        //             icon: 'info',
-        //             title: 'Presença Registrada para:',
-        //             text: data.email,
-        //             showConfirmButton: true,
-        //             confirmButtonText: "Ok!",
-        //             confirmButtonColor: "#151023"
-        //         })
-        //     }, 2000);
-        // }
+        //     Swal.fire({
+        //         icon: 'info',
+        //         title: 'Presença Registrada para:',
+        //         text: data.email,
+        //         showConfirmButton: true,
+        //         confirmButtonText: "Ok!",
+        //         confirmButtonColor: "#151023"
+        //     })
+        // }, 2000);
     };
 
     const checkKey = () => {
@@ -56,49 +47,6 @@ const Presence = () => {
             setIsKeyPresent(false);
             router.push("/");
         }
-    }
-
-    const listPresences = (email) => {
-        setIsLoading(true);
-        setUserEmail(email);
-
-        saphira.listPresences(email)
-            .then((res) => {
-                setUserPresences([...res.data]);
-                setIsLoading(true);
-            })
-            .catch(() => {
-                setUserPresences([]);
-                setIsLoading(true);
-            })
-    }
-
-    const countOnlinePresences = () => {
-        if(!userPresences) return;
-        let count = 0;
-
-        userPresences.forEach((lecture) => {
-            if(lecture.online) count++;
-        });
-
-        console.log(count)
-        return count;
-    }
-
-    const countPresencialPresences = () => {
-        if(!userPresences) return;
-        let count = 0;
-
-        userPresences.forEach((lecture) => {
-            if(!lecture.online) count++;
-        });
-
-        return count;
-    }
-
-
-    const clearPresences = () => {
-        setUserPresences([]);
     }
 
     useEffect(() => {
@@ -116,46 +64,38 @@ const Presence = () => {
                 `
                 }} />
 
-            <Meta title='CO SSI 2023 | Presença' />
+            <Meta title='CO SSI 2023 | Presencial' />
             <NavBar />
             <PresenceWrapper>
-                <h1>Presença</h1>
+                <h1>Presencial</h1>
+
+                <h3 className='page-description'> Registro de presenças presenciais :)</h3>
 
                 {isKeyPresent &&
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {!isLoading &&
                                 <>
-                                    <InputBox>
-                                        <label htmlFor='email'> Email </label>
+                                    <InputBox1>
+                                        <label htmlFor='lectureId'> ID da palestra: </label>
+                                        <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
+                                            {...register("lectureId", { required: true, minLength: 1, })} />
+                                        {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                    </InputBox1>
+
+                                    <InputBox2>
+                                        <label htmlFor='email'> Documento do inscrito <br/>(NUSP ou CPF): </label>
                                         <input id='email' type='text' className={errors.email && 'error-border'}
                                             {...register("email", {
                                                 required: true,
                                                 minLength: 2,
                                                 maxLength: 60,
-                                                pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Formato de email inválido" }
                                             })
                                             } />
-                                        {errors.email && <ErrorMessage> Email inválido </ErrorMessage>}
-                                    </InputBox>
+                                        {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
+                                    </InputBox2>
 
-                                    {/* <Button> Registrar </Button> */}
-
-                                    {userPresences.length === 0 ?
-                                        <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
-                                        :
-
-                                        <PresencesList>
-                                            <h3>Email: {userEmail}</h3>
-                                            <h3>Presenças online: {countOnlinePresences()}</h3>
-                                            <h3>Presenças presenciais: {countPresencialPresences()}</h3>
-                                            <ul>
-                                                {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - {lecture.online ? "Online" : "Presencial"}</li>)}
-                                            </ul>
-
-                                            <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
-                                        </PresencesList>
-                                    }
+                                    <Button> Registrar </Button>
                                 </>
                             }
 
@@ -173,7 +113,7 @@ const Presence = () => {
     )
 }
 
-export default Presence;
+export default Presencial;
 
 const Loading = styled.figure`
     display: flex;
@@ -193,6 +133,12 @@ const PresenceWrapper = styled.div`
     flex-direction: column;
 
     padding: 100px 30px;
+
+    .page-description {
+        text-align: center;
+        margin: 90px 0 30px 0;
+        max-width: 1200px;
+    }
 `
 
 const ErrorMessage = styled.span`
@@ -233,7 +179,50 @@ const FormWrapper = styled.section`
     }
 `
 
-const InputBox = styled.div`
+const InputBox1 = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    padding: 1.5rem 20px;
+
+    input {
+        border: unset;
+        background-color: #241D3C;
+        filter: brightness(130%);
+
+        width: 100px;
+        border-radius: 5px;
+        padding: 8px 15px;
+
+        color: var(--color-text);
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #241D3C inset;
+        -webkit-text-fill-color: var(--color-text);
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+`
+
+const InputBox2 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -253,6 +242,7 @@ const InputBox = styled.div`
         padding: 8px 15px;
         color: var(--color-text);
         font-size: 1.6rem;
+        text-align: center;
     }
 
     input:-webkit-autofill,

@@ -6,9 +6,10 @@ import useAuth from '../../../hooks/useAuth';
 
 
 const pages = {
-    "/presence": 1,
+    "/presencial": 1,
     "/token": 2,
     "/giveaway": 3,
+    "/query": 4,
 }
 
 const Nav = () => {
@@ -31,7 +32,7 @@ const Nav = () => {
                 <NavDesktop currentPage={router.pathname}>
                     <ul>
                         <li>
-                            <Link href="/presence"><a>Presença</a></Link>
+                            <Link href="/presencial"><a>Presencial</a></Link>
                             <div></div>
                         </li>
 
@@ -44,6 +45,12 @@ const Nav = () => {
                             <Link href="/giveaway" ><a>Sorteio</a></Link>
                             <div></div>
                         </li>
+
+                        <li>
+                            <Link href="/query"><a>Consulta</a></Link>
+                            <div></div>
+                        </li>
+
                     </ul>
                 </NavDesktop >
 
@@ -53,7 +60,7 @@ const Nav = () => {
 
                         <ul>
                             <li onClick={() => setIsOpen(false)}>
-                                <Link href="/presence"><a>Presença</a></Link>
+                                <Link href="/presencial"><a>Presencial</a></Link>
                                 <div></div>
                             </li>
 
@@ -66,6 +73,12 @@ const Nav = () => {
                                 <Link href="/giveaway"><a>Sorteio</a></Link>
                                 <div></div>
                             </li>
+
+                            <li onClick={() => setIsOpen(false)}>
+                                <Link href="/query"><a>Consulta</a></Link>
+                                <div></div>
+                            </li>
+
                         </ul>
 
 
