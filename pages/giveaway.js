@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
@@ -10,6 +10,7 @@ import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
 const Giveaway = () => {
+    const Ref = useRef(null);
     const router = useRouter();
     const { key } = useAuth();
 
@@ -17,6 +18,8 @@ const Giveaway = () => {
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [gotResult, setGotResult] = useState(false);
+    const [timer, setTimer] = useState('00:00');
     const [lectures, setLectures] = useState([]);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
     const [showList, setShowList] = useState(placeholderMessage);
@@ -48,6 +51,8 @@ const Giveaway = () => {
                 .then((res) => {
                     setGiveawayResultName(res.data.nome)
                     setIsLoading(false);
+                    setGotResult(true);
+                    onClickReset();
                     reset();
                 })
                 .catch(err => {
@@ -66,6 +71,8 @@ const Giveaway = () => {
                 .then((res) => {
                     setGiveawayResultName(res.data.nome)
                     setIsLoading(false);
+                    setGotResult(true);
+                    onClickReset();
                     reset();
                 })
                 .catch(err => {
@@ -87,9 +94,60 @@ const Giveaway = () => {
             })
     }
 
+    // Timer 1
+    const getTimeRemaining = (e) => {
+        const total = Date.parse(e) - Date.parse(new Date());
+        const seconds = Math.floor((total / 1000) % 60);
+        const minutes = Math.floor((total / 1000 / 60) % 60);
+        const hours = Math.floor((total / 1000 / 60 / 60) % 24);
+        return {
+            total, hours, minutes, seconds
+        };
+    }
+  
+    const startTimer = (e) => {
+        // setTimeout(3);
+        let { total, hours, minutes, seconds } 
+                    = getTimeRemaining(e);
+        if (total >= 0) {
+  
+            setTimer(
+                // (hours > 9 ? hours : '0' + hours) + ':' +
+                (minutes > 9 ? minutes : '0' + minutes) + ':'
+                + (seconds > 9 ? seconds : '0' + seconds)
+            )
+        }
+    }
+  
+    const clearTimer = (e) => {
+  
+        // Se alterar o tempo, deve-se alterar esse placeholder também 
+        setTimer('00:40');
+  
+        if (Ref.current) clearInterval(Ref.current);
+        const id = setInterval(() => {
+            startTimer(e);
+        }, 1000)
+        Ref.current = id;
+    }
+  
+    const getDeadTime = () => {
+        let deadline = new Date();
+  
+        // Ajustar aqui para adicionar mais tempo
+        deadline.setSeconds(deadline.getSeconds() + 40);
+        return deadline;
+    }
+  
+    const onClickReset = () => {
+        clearTimer(getDeadTime());
+    }
+
     useEffect(() => {
         checkKey();
         listLectures();
+        
+        setTimer('00:40'); // Timer 1: Se alterar o tempo, deve-se alterar esse placeholder também 
     }, []);
 
     return (
@@ -116,6 +174,12 @@ const Giveaway = () => {
                                     <h2 className={giveawayResultName !== placeholderMessage ? 'neon' : ''}> {giveawayResultName} </h2>
 
                                     <FormWrapper>
+
+                                        {/* Timer 1 */}
+                                        {!isLoading && gotResult &&
+                                            <h1 className='timer'>{timer}</h1>                 
+                                        }
+
                                         <form onSubmit={handleSubmit(onSubmit)}>
                                             <InputBox>
                                                 <label htmlFor='lectureId'> Id da palestra: </label>
@@ -198,6 +262,12 @@ const GiveawayWrapper = styled.div`
 const FormWrapper = styled.div`
     .error-border {
         border: .5px solid white;
+    }
+
+    // Timer 1:
+    .timer { 
+        margin-top: 3rem;
+        margin-bottom: 3rem;
     }
 `
 const ErrorMessage = styled.span`
