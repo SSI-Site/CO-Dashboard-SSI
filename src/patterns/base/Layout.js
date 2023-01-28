@@ -33,6 +33,7 @@ const Layout = ({ children }) => {
           }
         `}
       </style>
+      {/* <NavBar/> */}
       <GlobalStyle />
       <SiteWrapper>
         <main>

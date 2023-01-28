@@ -314,7 +314,7 @@ const GiveawayWrapper = styled.div`
     justify-content: center;
     flex-direction: column;
 
-    padding: 70px 0;
+    padding: 70px 30px;
 `
 
 const FormWrapper = styled.div`

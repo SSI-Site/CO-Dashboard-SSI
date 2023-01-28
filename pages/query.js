@@ -178,7 +178,7 @@ const PresenceWrapper = styled.div`
     justify-content: center;
     flex-direction: column;
 
-    padding: 100px 30px;
+    padding: 70px 30px;
 
     .page-description {
         text-align: center;
