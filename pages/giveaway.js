@@ -1,4 +1,5 @@
 import { React, useState, useRef, useEffect } from 'react';
+import { useCountdown, CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components';
 import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
@@ -143,6 +144,47 @@ const Giveaway = () => {
         clearTimer(getDeadTime());
     }
 
+    // Timer 2
+    const renderTime = ({ remainingTime }) => {
+        const currentTime = useRef(remainingTime);
+        const prevTime = useRef(null);
+        const isNewTimeFirstTick = useRef(false);
+        const [, setOneLastRerender] = useState(0);
+        
+        if (currentTime.current !== remainingTime) {
+            isNewTimeFirstTick.current = true;
+            prevTime.current = currentTime.current;
+            currentTime.current = remainingTime;
+        } else {
+            isNewTimeFirstTick.current = false;
+        }
+        
+        // force one last re-render when the time is over to trigger the last animation
+        if (remainingTime === 0) {
+            setTimeout(() => {
+                setOneLastRerender((val) => val + 1);
+            }, 20);
+        }
+        
+        const isTimeUp = isNewTimeFirstTick.current;
+        
+        return (
+            <div className="time-wrapper">
+                <div key={remainingTime} className={`time ${isTimeUp ? "up" : ""}`}>
+                    {remainingTime}
+                </div>
+                {prevTime.current !== null && (
+                    <div
+                        key={prevTime.current}
+                        className={`time ${!isTimeUp ? "down" : ""}`}
+                    >
+                        {prevTime.current}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     useEffect(() => {
         checkKey();
         listLectures();
@@ -178,6 +220,22 @@ const Giveaway = () => {
                                         {/* Timer 1 */}
                                         {!isLoading && gotResult &&
                                             <h1 className='timer'>{timer}</h1>                 
+                                        }
+
+                                        {/* Timer 2 */}
+                                        {!isLoading && gotResult &&
+                                            <TimerWrapper>
+                                                <div className="timer-wrapper">
+                                                    <CountdownCircleTimer
+                                                        isPlaying
+                                                        duration={40}
+                                                        colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                                                        colorsTime={[40, 30, 20, 10]}
+                                                        >
+                                                        {renderTime}
+                                                    </CountdownCircleTimer>
+                                                </div>
+                                            </TimerWrapper>                                           
                                         }
 
                                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -393,5 +451,56 @@ const LecturesList = styled.section`
         li {
             font-size: 16px;
         }
+    }
+`
+
+// Timer 2:
+const TimerWrapper = styled.section`
+    margin-bottom: 3rem;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .timer-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .time-wrapper {
+        position: relative;
+        width: 80px;
+        height: 60px;
+        font-size: 48px;
+    }
+
+    .time-wrapper .time {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(0);
+        opacity: 1;
+        transition: all 0.2s;
+        color: var(--color-text);
+        font-size: 3.6rem;
+        font-weight: 700;
+        font-family: 'Plaza';
+    }
+
+    .time-wrapper .time.up {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    .time-wrapper .time.down {
+        opacity: 0;
+        transform: translateY(100%);
     }
 `
