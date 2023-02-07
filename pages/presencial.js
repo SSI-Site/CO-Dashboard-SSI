@@ -1,11 +1,10 @@
 import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
-
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2'
 
+import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
@@ -62,9 +61,11 @@ const Presencial = () => {
                         window.location.href = "/"
                     }
                 `
-                }} />
+                }} 
+            />
 
             <Meta title='CO SSI 2023 | Presencial' />
+
             <NavBar />
             <PresenceWrapper>
                 <h1>Presencial</h1>
@@ -115,6 +116,7 @@ const Presencial = () => {
 
 export default Presencial;
 
+
 const Loading = styled.figure`
     display: flex;
     align-items: center;
@@ -128,10 +130,9 @@ const Loading = styled.figure`
 
 const PresenceWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
     padding: 70px 30px;
 
     .page-description {
@@ -154,9 +155,9 @@ const FormWrapper = styled.section`
 
     form {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
         text-align: center;
     }
 
@@ -285,5 +286,4 @@ const PresencesList = styled.div`
             font-size: 16px;
         }
     }
-
 `

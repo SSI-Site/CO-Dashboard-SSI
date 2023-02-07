@@ -1,16 +1,17 @@
 import { React, useState, useRef, useEffect } from 'react';
-import { useCountdown, CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components';
-import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
-import saphira from '../services/saphira';
 import { useForm } from "react-hook-form";
+import { useCountdown, CountdownCircleTimer } from 'react-countdown-circle-timer';
 
+import useAuth from '../hooks/useAuth';
+import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
 const Giveaway = () => {
+
     const Ref = useRef(null);
     const router = useRouter();
     const { key } = useAuth();
@@ -37,7 +38,7 @@ const Giveaway = () => {
     }
 
     const onSubmit = data => {
-        if(data.isPresencialOnly) {
+        if (data.isPresencialOnly) {
             getPresencialOnlyGivawayResult(data.lectureId);
         } else {
             getGivawayResult(data.lectureId);
@@ -79,7 +80,7 @@ const Giveaway = () => {
                 .catch(err => {
                     console.log(err);
                     setIsLoading(false);
-                    setError("lectureId", { type: "focus" }, { shouldFocus: true })
+                    setError("lectureId", { type: "focus" }, { shouldFocus: true });
                 })
         }, 2000);
     }
@@ -87,11 +88,11 @@ const Giveaway = () => {
     const listLectures = () => {
         saphira.getLectures()
             .then((res) => {
-                console.log(res)
-                setLectures(lectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1))
+                console.log(res);
+                setLectures(lectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1));
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err);
             })
     }
 
@@ -108,27 +109,25 @@ const Giveaway = () => {
   
     const startTimer = (e) => {
         // setTimeout(3);
-        let { total, hours, minutes, seconds } 
-                    = getTimeRemaining(e);
+        let { total, hours, minutes, seconds } = getTimeRemaining(e);
         if (total >= 0) {
   
             setTimer(
                 // (hours > 9 ? hours : '0' + hours) + ':' +
                 (minutes > 9 ? minutes : '0' + minutes) + ':'
                 + (seconds > 9 ? seconds : '0' + seconds)
-            )
+            );
         }
     }
   
     const clearTimer = (e) => {
-  
         // Se alterar o tempo, deve-se alterar esse placeholder também 
         setTimer('00:40');
   
         if (Ref.current) clearInterval(Ref.current);
         const id = setInterval(() => {
             startTimer(e);
-        }, 1000)
+        }, 1000);
         Ref.current = id;
     }
   
@@ -201,9 +200,11 @@ const Giveaway = () => {
                         window.location.href = "/"
                     }
                 `
-                }} />
+                }}
+            />
 
             <Meta title='CO SSI 2023 | Sorteio' />
+
             <NavBar />
             <GiveawayWrapper>
                 <h1>Sorteio</h1>
@@ -285,11 +286,9 @@ const Giveaway = () => {
                                 </ul>
                             </LecturesList>
                         }
-
                     </>
                 }
             </GiveawayWrapper>
-
         </>
     )
 }
@@ -310,14 +309,14 @@ const Loading = styled.figure`
 
 const GiveawayWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
     padding: 70px 30px;
 `
 
 const FormWrapper = styled.div`
+
     .error-border {
         border: .5px solid white;
     }
@@ -328,6 +327,7 @@ const FormWrapper = styled.div`
         margin-bottom: 3rem;
     }
 `
+
 const ErrorMessage = styled.span`
     color: white;
     text-decoration: underline 0.5px;
@@ -342,7 +342,6 @@ const InputBox = styled.div`
     width: 100%;
     max-width: 500px;
     padding: 1.5rem 20px;
-
 
     input {
         border: unset;
@@ -387,9 +386,7 @@ const CheckboxBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 100%;
-
     margin-bottom: 3rem;
 
     label {
@@ -400,7 +397,7 @@ const CheckboxBox = styled.div`
         cursor: pointer;
     }
 
-    input[type=checkbox]{
+    input[type=checkbox] {
         transform: scale(1.5);
         padding: 20px;
         cursor: pointer;
@@ -410,7 +407,6 @@ const CheckboxBox = styled.div`
 const ResultSection = styled.section`
     height: 50vh;
     margin: 100px auto;
-
     text-align: center;
 
     h2 {
@@ -425,11 +421,11 @@ const ResultSection = styled.section`
     .neon {
         color: #fff;
         text-shadow:
-        0 0 1px #fff,
-        0 0 20px var(--color-secondary),
-        0 0 60px var(--color-secondary),
-        0 0 70px var(--color-secondary),
-        0 0 80px var(--color-secondary);
+            0 0 1px #fff,
+            0 0 20px var(--color-secondary),
+            0 0 60px var(--color-secondary),
+            0 0 70px var(--color-secondary),
+            0 0 80px var(--color-secondary);
     }
 `
 

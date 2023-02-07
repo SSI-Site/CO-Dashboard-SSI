@@ -1,16 +1,16 @@
 import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
-
 import { useForm } from "react-hook-form";
 
+import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
 const Token = () => {
+
     const router = useRouter();
     const { key } = useAuth();
 
@@ -39,7 +39,6 @@ const Token = () => {
         checkKey();
     }, []);
 
-
     return (
         <>
             <script
@@ -49,9 +48,11 @@ const Token = () => {
                         window.location.href = "/"
                     }
                 `
-                }} />
+                }} 
+            />
 
             <Meta title='CO SSI 2023 | Token' />
+
             <NavBar />
             <TokenWrapper>
                 <h1>Token</h1>
@@ -101,6 +102,7 @@ const Token = () => {
 
 export default Token;
 
+
 const Loading = styled.figure`
     display: flex;
     align-items: center;
@@ -114,10 +116,9 @@ const Loading = styled.figure`
 
 const TokenWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
     padding: 70px 30px;
 
     .page-description {
@@ -211,7 +212,6 @@ const InputBox = styled.div`
 const ResultSection = styled.section`
     height: 50vh;
     margin: 100px auto;
-
     text-align: center;
 
     h2 {
@@ -226,10 +226,10 @@ const ResultSection = styled.section`
     .neon {
         color: #fff;
         text-shadow:
-        0 0 1px #fff,
-        0 0 20px var(--color-secondary),
-        0 0 60px var(--color-secondary),
-        0 0 70px var(--color-secondary),
-        0 0 80px var(--color-secondary);
+            0 0 1px #fff,
+            0 0 20px var(--color-secondary),
+            0 0 60px var(--color-secondary),
+            0 0 70px var(--color-secondary),
+            0 0 80px var(--color-secondary);
     }
 `

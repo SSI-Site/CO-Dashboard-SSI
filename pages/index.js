@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
 
-import styled from 'styled-components';
 import useAuth from '../hooks/useAuth';
 import Meta from '../src/infra/Meta';
 import Button from '../src/components/Button';
 
 const Login = () => {
+
     const router = useRouter();
     const { key, signIn } = useAuth();
     const { register, setError, clearErrors, formState: { errors }, handleSubmit } = useForm();
@@ -18,7 +19,7 @@ const Login = () => {
         setIsLoading(true);
         const isSignInValid = signIn(data.user, data.password);
 
-        if(isSignInValid) {
+        if (isSignInValid) {
             router.push("/presence");
         } else {
             setError("credentials" , { type: "focus" }, { shouldFocus: true });
@@ -40,9 +41,9 @@ const Login = () => {
     return (
         <>
             <Meta title='CO SSI 2022 | Login' />
+
             <LoginWrapper>
                 <h1>Login</h1>
-
                 <FormWrapper>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <h3> Entrada exclusiva para a Comissão Organizadora da SSI 2022</h3>
@@ -76,13 +77,13 @@ const Login = () => {
                         }
                     </form>
                 </FormWrapper>
-
             </LoginWrapper>
         </>
     )
 }
 
 export default Login;
+
 
 const Loading = styled.figure`
     display: flex;
@@ -97,10 +98,9 @@ const Loading = styled.figure`
 
 const LoginWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
     padding: 100px 30px;
 `
 
@@ -117,9 +117,9 @@ const FormWrapper = styled.section`
 
     form {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
         text-align: center;
     }
 
@@ -156,6 +156,7 @@ const InputBox = styled.div`
     width: 100%;
     max-width: 450px;
     padding: 1.5rem 20px;
+
     input {
         width: 90%;
         border-radius: 5px;
@@ -191,7 +192,6 @@ const InputBox = styled.div`
     }
     /* Firefox */
     input[type=number] {
-    -moz-appearance: textfield;
+        -moz-appearance: textfield;
     }
 `
-

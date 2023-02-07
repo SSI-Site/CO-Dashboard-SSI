@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import working from '../../public/images/working.gif'
+
+// assets
+import working from '../../public/images/working.gif';
 
 const WorkingWrapper = styled.section`
     display: flex;
@@ -11,13 +13,14 @@ const WorkingWrapper = styled.section`
     width: 80%;
     padding-top: 100px;
 
-    img{
+    img {
         width: 100%;
     }
 `
 
-const Working = () =>{
-    return(
+const Working = () => {
+
+    return (
         <>
             <WorkingWrapper>
                 <h1>We r still working on it!! ¯\_(ツ)_/¯</h1>

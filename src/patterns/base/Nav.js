@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+
 import useAuth from '../../../hooks/useAuth';
 
 
@@ -81,7 +82,6 @@ const Nav = () => {
 
                         </ul>
 
-
                         <NavFooter>
                             <div className="logo-container">
                                 <img src="./images/logos/logo_sem_estrela.svg" alt="SSI logo" />
@@ -90,7 +90,6 @@ const Nav = () => {
                                 </p>
                             </div>
                         </NavFooter>
-
                     </div>
 
                     <button type="button" onClick={() => setIsOpen(!isOpen)}>
@@ -101,11 +100,11 @@ const Nav = () => {
                 </NavMobile >
             </NavWrapper >
         </>
-    );
-
+    )
 }
 
 export default Nav;
+
 
 const NavWrapper = styled.div`
     display: flex;
@@ -117,10 +116,9 @@ const NavWrapper = styled.div`
     padding-right: 15px;
     z-index: 10;
     background-color: var(--color-primary);
-    box-shadow: 0px 5px 24px 14px rgba(16,3,26,0.38);
+    box-shadow: 0px 5px 24px 14px rgba(16, 3, 26, 0.38);
 
-
-    @media(min-width: 800px) {
+    @media (min-width:800px) {
         background-color: unset;
         position: unset;
         z-index: unset;
@@ -145,7 +143,6 @@ const NavMobile = styled.nav`
             background: #FFF;
             margin-top: 3px;
             border-radius: 1px;
-
             transition: all 0.3s ease;
         }
     }
@@ -154,14 +151,17 @@ const NavMobile = styled.nav`
         span {
             margin: 0;
         }
-        span:nth-child(1){
+
+        span:nth-child(1) {
             transform: rotate(45deg) translateY(8px);
         }
-        span:nth-child(2){
+
+        span:nth-child(2) {
             transform: translateX(50px);
             opacity: 0;
         }
-        span:nth-child(3){
+
+        span:nth-child(3) {
             transform: rotate(-45deg) translateY(-8px);
         }
     `}
@@ -201,7 +201,6 @@ const NavMobile = styled.nav`
                     font-size: 2.2rem;
                     color: gray;
                     margin: 0 12px;
-
                     cursor: default;
                 }
 
@@ -223,7 +222,8 @@ const NavMobile = styled.nav`
             }
 
             ${props => props.currentPage && css`
-                li:nth-child(${pages[props.currentPage]}){
+                li:nth-child(${pages[props.currentPage]}) {
+
                     a {
                         padding: .2rem -5rem;
                         pointer-events: none;
@@ -239,7 +239,7 @@ const NavMobile = styled.nav`
             `}
         }
 
-        @media(max-height: 590px) {
+        @media (max-height:590px) {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -253,21 +253,19 @@ const NavMobile = styled.nav`
                 margin-right: 10px;
             }
         }
-
     }
 
     .sidepanel-hidden {
         right: -450px;
 
-        @media(max-height: 590px) {
+        @media (max-height:590px) {
             right: -100%;
         }
     }
 
-    @media (min-width: 800px) {
+    @media (min-width:800px) {
         display: none;
     }
-
 `
 
 const NavFooter = styled.div`
@@ -294,7 +292,7 @@ const NavFooter = styled.div`
         }
     }
 
-    @media(max-height: 590px) {
+    @media (max-height:590px) {
         position: unset;
         bottom: unset;
         width: 45%;
@@ -315,12 +313,11 @@ const NavDesktop = styled.nav`
             top: 22px;
             right: 22px;
 
-            @media(min-width: 1020px) {
+            @media (min-width:1020px) {
                 top: 26px;
                 right: 26px;
             }
         }
-
 
         .userPicContainer {
             position: absolute;
@@ -356,7 +353,7 @@ const NavDesktop = styled.nav`
             }
 
             button {
-                background: rgba(0,0,0,0);
+                background: rgba(0, 0, 0, 0);
                 border: none;
             }
         }
@@ -383,7 +380,6 @@ const NavDesktop = styled.nav`
             font-size: 1.5rem;
             color: gray;
             margin: 0 12px;
-
             cursor: default;
         }
 
@@ -409,7 +405,7 @@ const NavDesktop = styled.nav`
         `}
     }
 
-    @media (min-width: 800px) {
+    @media (min-width:800px) {
         display: block;
     }
 `

@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+// assets
 import LogoSemEstrela from '../../../public/images/logos/logo_sem_estrela.svg';
 
 const Footer = () => {
+
     const router = useRouter();
 
     return (
@@ -27,16 +30,13 @@ export default Footer;
 
 const FooterWrapper = styled.footer`
     display: flex;
-
-    position: absolute;
-    bottom: 0;
-
     width: 100%;
     padding-bottom: 1rem;
+    position: absolute;
+    bottom: 0;
     background: #151023;
-    opacity: 0.8;
-
     text-align: center;
+    opacity: 0.8;
 
     p {
         color: white;
@@ -44,7 +44,7 @@ const FooterWrapper = styled.footer`
         font-weight: 700;
     }
 
-    .ssi{
+    .ssi {
         width: 100%;
         margin-top: 2rem;
         font-size: 1.95rem;
@@ -59,15 +59,18 @@ const FooterWrapper = styled.footer`
         display: flex;
         flex-direction: column;
     }
+
     .logo-box:hover {
         cursor: pointer;
     }
+
     .ssi a {
         display: flex;
         flex-direction: column;
         text-decoration: none;
         color: white;
     }
+
     .ssi .footer-blur {
         width: 100%;
         height: 50%;
@@ -79,7 +82,7 @@ const FooterWrapper = styled.footer`
         z-index: -1;
     }
 
-    .ssi img{
+    .ssi img {
         width: 8.2rem;
         align-self: center;
         margin-bottom: 0.3rem;
@@ -92,17 +95,17 @@ const FooterWrapper = styled.footer`
         justify-content: space-between;
         padding: 0 4rem;
         height: 13rem;
-        .ssi{
+
+        .ssi {
             font-size: 1.3rem;
             height: 50%;
             margin-top: 0;
         }
 
-        .ssi img{
+        .ssi img {
             width: 5.5rem;
         }
     }
-
 
     @media (min-width:1600px) {
         width: calc(100vw - 10px);

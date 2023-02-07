@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
     const [key, setKey] = useState("");
 
     const signIn = (username, password) => {
-        if(username === USER_KEY && password === PASS_KEY) {
+        if (username === USER_KEY && password === PASS_KEY) {
             setKey(process.env.NEXT_PUBLIC_AUTH_TOKEN);
             setSession(true);
             return true;

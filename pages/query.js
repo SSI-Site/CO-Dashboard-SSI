@@ -1,17 +1,17 @@
 import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import useAuth from '../hooks/useAuth';
 import { useRouter } from 'next/router';
-
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
 
+import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
 const Query = () => {
+
     const router = useRouter();
     const { key } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
@@ -58,23 +58,23 @@ const Query = () => {
     }
 
     const countOnlinePresences = () => {
-        if(!userPresences) return;
+        if (!userPresences) return;
         let count = 0;
 
         userPresences.forEach((lecture) => {
-            if(lecture.online) count++;
+            if (lecture.online) count++;
         });
 
-        console.log(count)
+        console.log(count);
         return count;
     }
 
     const countPresencialPresences = () => {
-        if(!userPresences) return;
+        if (!userPresences) return;
         let count = 0;
 
         userPresences.forEach((lecture) => {
-            if(!lecture.online) count++;
+            if (!lecture.online) count++;
         });
 
         return count;
@@ -98,9 +98,11 @@ const Query = () => {
                         window.location.href = "/"
                     }
                 `
-                }} />
+                }} 
+            />
 
             <Meta title='CO SSI 2023 | Consulta' />
+
             <NavBar />
             <PresenceWrapper>
                 <h1>Consulta</h1>
@@ -161,6 +163,7 @@ const Query = () => {
 
 export default Query;
 
+
 const Loading = styled.figure`
     display: flex;
     align-items: center;
@@ -174,10 +177,9 @@ const Loading = styled.figure`
 
 const PresenceWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
     padding: 70px 30px;
 
     .page-description {
@@ -200,9 +202,9 @@ const FormWrapper = styled.section`
 
     form {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
         text-align: center;
     }
 
@@ -269,7 +271,6 @@ const InputBox = styled.div`
 
 const PresencesList = styled.div`
     text-align: center;
-
     margin-top: 1rem;
     color: var(--color-text);
 
@@ -288,5 +289,4 @@ const PresencesList = styled.div`
             font-size: 16px;
         }
     }
-
 `
