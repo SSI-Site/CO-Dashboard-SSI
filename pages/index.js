@@ -20,7 +20,7 @@ const Login = () => {
         const isSignInValid = signIn(data.user, data.password);
 
         if (isSignInValid) {
-            router.push("/presence");
+            router.push("/presencial");
         } else {
             setError("credentials" , { type: "focus" }, { shouldFocus: true });
         }
@@ -30,7 +30,7 @@ const Login = () => {
 
     const checkKey = () => {
         if (key) {
-            router.push("/presence");
+            router.push("/presencial");
         }
     }
 
@@ -40,13 +40,13 @@ const Login = () => {
 
     return (
         <>
-            <Meta title='CO SSI 2022 | Login' />
+            <Meta title='CO SSI 2023 | Login' />
 
             <LoginWrapper>
                 <h1>Login</h1>
                 <FormWrapper>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <h3> Entrada exclusiva para a Comissão Organizadora da SSI 2022</h3>
+                        <h3> Entrada exclusiva para a Comissão Organizadora da SSI de 2023</h3>
 
                         {!isLoading &&
                             <>
@@ -72,7 +72,7 @@ const Login = () => {
 
                         {isLoading &&
                             <Loading>
-                                <img src='./loading.svg' alt='SSI 2022 - Loading' />
+                                <img src='./loading.svg' alt='SSI 2023 - Loading' />
                             </Loading>
                         }
                     </form>

@@ -51,7 +51,7 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getGivawayResult(lectureId)
                 .then((res) => {
-                    setGiveawayResultName(res.data.nome)
+                    setGiveawayResultName(res.data.nome);
                     setIsLoading(false);
                     setGotResult(true);
                     onClickReset();
@@ -71,7 +71,7 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getPresencialOnlyGivawayResult(lectureId)
                 .then((res) => {
-                    setGiveawayResultName(res.data.nome)
+                    setGiveawayResultName(res.data.nome);
                     setIsLoading(false);
                     setGotResult(true);
                     onClickReset();
