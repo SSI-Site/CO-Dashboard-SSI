@@ -2,23 +2,23 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 // assets
-import LogoSemEstrela from '../../../public/images/logos/logo_sem_estrela.svg';
+import LogoPrincipal from '../../../public/images/logos/logo_principal.svg';
+import  Link  from 'next/link';
 
 const Footer = () => {
-
+    
     const router = useRouter();
 
     return (
         <>
             <FooterWrapper>
                 <div className='ssi'>
-                    <div onClick={() => router.push('/')} className="logo-box">
-                        <img src={LogoSemEstrela} alt="logo" />
-                        <p>
-                            Semana de Sistemas de <br />Informação 2022
-                        </p>
+                    <div className="logo-box">
+                        <img src={LogoPrincipal} alt="logo" />
+                        <h6>
+                            Semana de Sistemas de <br />Informação 2023
+                        </h6>
                     </div>
-                    <div className='footer-blur'></div>
                 </div>
             </FooterWrapper >
         </>
@@ -29,86 +29,72 @@ export default Footer;
 
 
 const FooterWrapper = styled.footer`
-    display: flex;
-    width: 100%;
-    padding-bottom: 1rem;
     position: absolute;
     bottom: 0;
-    background: #151023;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 21rem;
     text-align: center;
-    opacity: 0.8;
+    padding-block: 3.5rem;
 
-    p {
-        color: white;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 700;
+    background: var(--color-neutral-900);
+    border-top: 8px solid var(--color-primary-800);
+
+    h6 {
+        margin-top: 2rem;
     }
 
     .ssi {
-        width: 100%;
-        margin-top: 2rem;
-        font-size: 1.95rem;
-        height: 17rem;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
     }
+
     .logo-box {
         display: flex;
         flex-direction: column;
-    }
-
-    .logo-box:hover {
-        cursor: pointer;
-    }
-
-    .ssi a {
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: white;
-    }
-
-    .ssi .footer-blur {
-        width: 100%;
-        height: 50%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: rgba(138, 69, 198, 0.1);
-        filter: blur(15px);
-        z-index: -1;
+        white-space: nowrap;
     }
 
     .ssi img {
-        width: 8.2rem;
+        width: 7.325rem;
         align-self: center;
-        margin-bottom: 0.3rem;
     }
 
+    @media (min-width:480px) {}
 
-    @media (min-width:600px) {
+    @media (min-width:600px) {}
+
+    @media (min-width:960px) { /** mudar para horizontal */
+        /* height:26.75rem; */
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
-        padding: 0 4rem;
-        height: 13rem;
 
         .ssi {
-            font-size: 1.3rem;
             height: 50%;
-            margin-top: 0;
         }
 
         .ssi img {
-            width: 5.5rem;
+            width: 7.3rem;
+            height:8.25rem;
         }
     }
 
+    @media (min-width:1400px) {
+
+    }
+
     @media (min-width:1600px) {
-        width: calc(100vw - 10px);
-        margin-left: calc( (1500px - 100vw - 10px) / 2 );
+        /* width: calc(100vw - 10px);
+        margin-left: calc( (1500px - 100vw - 10px) / 2 ); */
+    }
+
+    @media (min-width:2200px) {
+        /* padding: 0 20rem; */
+        /* 4k */
     }
 `

@@ -4,18 +4,38 @@ export default createGlobalStyle`
 
     :root {
         /* paleta de cores */
-        --color-primary: #151023;
-        --color-secondary: #8744C2;
-        --color-tertiary: #8A45C6;
-        --color-text: #ffffff;
+        --color-primary: #3A006E;
+        --color-secondary: #FF82FF;
+        --color-tertiary: #8A45C6; // excluir posteriormente
+        --color-neutral: #0A0A0A;
 
-        /*10 pixels (100% = 16 pixels)*/
-        font-size: 62.5%;
+        /* variações da paleta */
+        --color-primary-900: #4C286C;
+        --color-primary-800: #63358D;
+        --color-primary-700: #7B44AB;
+        --color-primary-600: #9256C5;
+        --color-primary-500: #A86BDA;
+        --color-neutral-900: #121212;
+        --color-neutral-800: #272727;
+        --color-neutral-700: #3C3C3C;
+        --color-neutral-600: #545454;
+        --color-neutral-500: #6C6C6C;
+        --color-neutral-400: #858585;
+        --color-neutral-300: #A0A0A0;
+        --color-neutral-100: #D7D7D7;
+        --color-neutral-50: #F3F3F3;
+
+
+        --color-invalid: #F24822;
+        --color-valid: #14AE5C;
+
+        /* 16 pixels (100% = 16 pixels) */
+        font-size: 100%;
     }
 
     #nprogress .bar {
-        background: var(--color-tertiary);
-        filter: brightness(110%);
+        background: var(--color-primary-700);
+        filter: brightness(110%)
     }
 
     html {
@@ -30,62 +50,63 @@ export default createGlobalStyle`
     }
 
     body {
-        background: var(--color-primary);
+        background: var(--color-neutral);
+        -webkit-tap-highlight-color:  transparent; // evita highlight ao toque para mobile
     }
 
-    body, input {
-        font-family: 'Roboto', sans-serif;
-        font-size: 1.8rem;
+    section {
+        width: 100%;
+        height: fit-content;
+        padding-inline: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        > div {
+            width: 100%;
+            max-width: 1224px;
+            margin: 0;
+            padding: 0;
+        }
     }
 
     button {
-        color: var(--color-text);
-        font-family: 'Bebas Neue', cursive;
-        font-size: 2rem;
-        font-weight: 400;
-        letter-spacing: 1px;
+        font: 400 1rem/1.25rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
+        cursor: pointer;
     }
 
     h1 {
-        font-family: 'Plaza';
-        font-size: 3.6rem;
-        color: var(--color-text);
+        font: 400 3.5rem/4.25rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
+        text-align: center;
     }
 
     h2 {
-        color: var(--color-text);
-        font-family: 'Bebas Neue', cursive;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 3.2rem;
-    }
-
-    h3, h4, h5, p, span {
-        color: var(--color-text);
-        font-family: 'Roboto', sans-serif;
-        font-style: normal;
+        font: 400 3rem/3.5rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
     }
 
     h3 {
-        font-weight: 500;
-        font-size: 2.2rem;
-        line-height: 140%;
+        font: 400 2.5rem/3rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
+        text-align: center;
     }
 
-    p {
-        font-weight: normal;
-        font-size: 1.5rem;
-        line-height: 121%;
+    h4 {
+        font: 400 2rem/2.5rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
     }
 
-    span {
-        font-style: normal;
-        font-weight: 300;
-        font-size: 1.2rem;
+    h5 {
+        font: 400 1.5rem/1.75rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
     }
 
-    button {
-        cursor: pointer;
+    h6 {
+        font: 400 1.25rem/1.5rem 'Space_Mono_Bold';
+        color: var(--color-neutral-100);
     }
 
     ul {
@@ -94,54 +115,84 @@ export default createGlobalStyle`
         margin: 0;
     }
 
+    body, p, span, a {
+        font: 700 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-50);
+    }
+
     a {
         text-decoration: none;
     }
 
-    .section-title {
-        padding: .5rem 1rem;
-        margin-bottom: 5rem;
-        border-bottom: 3px solid #FFFFFF;
+    label {
+        font: 700 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-50);
+    }
+
+    input[type=text] { 
+        text-transform: uppercase;
+        font: 700 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-400);
+        background-color: var(--color-neutral-50);
+        border: 0;
+    }
+
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        text-transform: none;
+    }
+
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        text-transform: none;
+    }
+    
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        text-transform: none;
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+        text-transform: none;
+    }
+
+    ::placeholder { /* Recent browsers */
+        text-transform: none;
+        font: 400 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-400);
     }
 
     @media (min-width:480px) {
-         :root {
-             font-size: 70%;
-         }
+
+    }
+
+    @media (min-width:560px) {
+
+        input[type=text] { 
+            font: 700 1.125rem/1.75rem 'Space_Mono';
+            
+            ::placeholder {
+                font: 400 1.125rem/1.75rem 'Space_Mono';
+            }
+        }
+
+        button {
+            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
+        }
     }
 
     @media (min-width:600px) {
-        :root {
-             font-size: 80%;
-         }
 
-         button{
-            font-size: 1.8rem;
-         }
     }
 
     @media (min-width:801px) {
-        :root {
-             font-size: 90%;
-        }
+
     }
 
     @media (min-width:1021px) {
-        :root {
-             font-size: 100%;
-         }
-
-        p {
-            font-weight: normal;
-            font-size: 1.2rem;
-            line-height: 141%;
-        }
+       
     }
 
     @media (min-width:1365px) {
 
     }
-
 
     @media (min-width:2200px) {
 

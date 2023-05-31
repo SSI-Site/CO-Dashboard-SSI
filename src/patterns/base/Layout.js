@@ -6,18 +6,6 @@ import GlobalStyle from '../../../styles/global';
 import NavBar from './Nav';
 import Footer from './Footer';
 
-const SiteWrapper = styled.div`
-    min-height:100vh;
-    max-width: 1500px;
-    margin: auto;
-    position:relative;
-    padding-bottom: 33.8rem; /* match footer height */
-
-    @media (min-width:600px) {
-        padding-bottom: 13rem; /* match footer height */
-    }
-`
-
 const Layout = ({ children }) => {
 
     return (
@@ -25,13 +13,17 @@ const Layout = ({ children }) => {
             <Meta />
             <style jsx>
                 {`
-                    @font-face {
-                        font-family: 'Plaza';
-                        src: url('/fonts/plazaitc-normal.ttf');
-                    }
+                  @font-face {
+                    font-family: 'Space_Mono';
+                    src: url('/fonts/space_mono-regular.ttf');
+                  }
+                  @font-face {
+                    font-family: 'Space_Mono_Bold';
+                    src: url('/fonts/space_mono-bold.ttf');
+                  }
                 `}
             </style>
-            {/* <NavBar/> */}
+            <NavBar/> {/** isso aqui deve estar comentado ao fim do desenvolvimento e teste da plataforma */}
             <GlobalStyle />
             <SiteWrapper>
                 <main>
@@ -44,3 +36,27 @@ const Layout = ({ children }) => {
 }
 
 export default Layout;
+
+
+const SiteWrapper = styled.div`
+    min-height: 100vh;
+    margin: auto;
+    position: relative;
+    padding-bottom: 21rem; /* match footer height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    main {
+        width: 100%;
+    }
+
+    @media (min-width:960px) {
+        padding-bottom: 21rem; /* match footer height */
+    }
+
+    @media (min-width:1365px) {
+        padding-inline: 0;
+    }
+`

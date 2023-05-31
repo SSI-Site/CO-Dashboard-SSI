@@ -86,7 +86,7 @@ const Query = () => {
     }
 
     useEffect(() => {
-        checkKey();
+        // checkKey();
     }, []);
 
     return (
@@ -104,59 +104,61 @@ const Query = () => {
             <Meta title='CO SSI 2023 | Consulta' />
 
             <NavBar />
-            <PresenceWrapper>
-                <h1>Consulta</h1>
+            <QueryWrapper>
+                <div className='section-container'>
 
-                <h3 className='page-description'> Número de presenças nas palestras :)</h3>
+                    <h3>Consulta</h3>
 
-                {isKeyPresent &&
-                    <FormWrapper>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            {!isLoading &&
-                                <>
-                                    <InputBox>
-                                        <label htmlFor='email'> E-mail do inscrito: </label>
-                                        <input id='email' type='text' className={errors.email && 'error-border'}
-                                            {...register("email", {
-                                                required: true,
-                                                minLength: 2,
-                                                maxLength: 60,
-                                                pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Formato de email inválido" }
-                                            })
-                                            } />
-                                        {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
-                                    </InputBox>
+                    <h5 className='page-description'> Número de presenças nas palestras :)</h5>
 
-                                    {/* <Button> Registrar </Button> */}
+                    {/* {isKeyPresent && */}
+                        <FormWrapper>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                {!isLoading &&
+                                    <>
+                                        <InputBox>
+                                            <label htmlFor='email'> E-mail do inscrito: </label>
+                                            <input id='email' type='text' className={errors.email && 'error-border'}
+                                                {...register("email", {
+                                                    required: true,
+                                                    minLength: 2,
+                                                    maxLength: 60,
+                                                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Formato de email inválido" }
+                                                })
+                                                } />
+                                            {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
+                                        </InputBox>
 
-                                    {userPresences.length === 0 ?
-                                        <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
-                                        :
+                                        {/* <Button> Registrar </Button> */}
 
-                                        <PresencesList>
-                                            <h3>E-mail: {userEmail}</h3>
-                                            <h3>Presenças online: {countOnlinePresences()}</h3>
-                                            <h3>Presenças presenciais: {countPresencialPresences()}</h3>
-                                            <ul>
-                                                {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - {lecture.online ? "Online" : "Presencial"}</li>)}
-                                            </ul>
+                                        {userPresences.length === 0 ?
+                                            <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
+                                            :
 
-                                            <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
-                                        </PresencesList>
-                                    }
-                                </>
-                            }
+                                            <PresencesList>
+                                                <h3>E-mail: {userEmail}</h3>
+                                                <h3>Presenças online: {countOnlinePresences()}</h3>
+                                                <h3>Presenças presenciais: {countPresencialPresences()}</h3>
+                                                <ul>
+                                                    {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - {lecture.online ? "Online" : "Presencial"}</li>)}
+                                                </ul>
 
-                            {isLoading &&
-                                <Loading>
-                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
-                                </Loading>
-                            }
-                        </form>
-                    </FormWrapper>
-                }
+                                                <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
+                                            </PresencesList>
+                                        }
+                                    </>
+                                }
 
-            </PresenceWrapper>
+                                {isLoading &&
+                                    <Loading>
+                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                    </Loading>
+                                }
+                            </form>
+                        </FormWrapper>
+                    {/* } */}
+                </div>
+            </QueryWrapper>
         </>
     )
 }
@@ -175,30 +177,38 @@ const Loading = styled.figure`
     }
 `
 
-const PresenceWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 70px 30px;
+const QueryWrapper = styled.section`
+    background: url('./images/background_imgs/background5_mobile.svg') no-repeat;
+    background-size: cover;
 
     .page-description {
         text-align: center;
-        margin: 90px 0 30px 0;
-        max-width: 1200px;
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 3.5rem;
+        margin-block: 3.75rem; /* match navbar height */
+        gap: 3rem;
+    }
+
+    @media (min-width:1000px) {
+        background-image: url('./images/background_imgs/background5_desktop.svg');
     }
 `
 
 const ErrorMessage = styled.span`
-    color: white;
-    text-decoration: underline 0.5px;
+    color: var(--color-invalid);
+    text-decoration: underline;
     position: absolute;
     bottom: 0;
 `
 
 const FormWrapper = styled.section`
     width: 100%;
-    margin-top: 2rem;
 
     form {
         display: flex;
@@ -208,13 +218,13 @@ const FormWrapper = styled.section`
         text-align: center;
     }
 
-    h3 {
-        margin: 2rem 0;
+    input {
+        border: 4px solid transparent;
     }
+
 
     label {
         color: var(--color-text);
-        font-size: 1.6rem;
         margin-bottom: 10px;
     }
 
@@ -223,7 +233,7 @@ const FormWrapper = styled.section`
     }
 
     .error-border {
-        border: .5px solid white;
+        border: 4px solid var(--color-invalid);
     }
 `
 
@@ -234,7 +244,6 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
     padding: 1.5rem 20px;
 
     input {
@@ -246,7 +255,6 @@ const InputBox = styled.div`
         border-radius: 5px;
         padding: 8px 15px;
         color: var(--color-text);
-        font-size: 1.6rem;
         text-align: center;
     }
 
@@ -286,7 +294,6 @@ const PresencesList = styled.div`
 
         li {
             margin-bottom: 10px;
-            font-size: 16px;
         }
     }
 `

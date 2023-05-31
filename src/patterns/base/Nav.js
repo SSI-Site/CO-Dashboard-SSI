@@ -5,9 +5,12 @@ import Link from 'next/link';
 
 import useAuth from '../../../hooks/useAuth';
 
+// assets
+import LogoPrincipal from '../../../public/images/logos/logo_principal.svg';
+import CloseBtn from '../../../public/images/icons/close.svg';
 
 const pages = {
-    "/presencial": 1,
+    "/presential": 1,
     "/token": 2,
     "/giveaway": 3,
     "/query": 4,
@@ -17,6 +20,7 @@ const Nav = () => {
 
     const { user } = useAuth();
     const router = useRouter();
+    
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -28,78 +32,87 @@ const Nav = () => {
     }, [isOpen]);
 
     return (
-        <>
-            <NavWrapper>
-                <NavDesktop currentPage={router.pathname}>
+        <NavWrapper>
+            <div>
+                
+            {/* Logo que redireciona para a home */}
+            <div>
+                <a className="logo-container">
+                    <img src={LogoPrincipal} alt="SSI logo" />
+                    <p className='text-small'>
+                        Semana de Sistemas de Informação 2023
+                    </p>
+                </a>
+            </div>
+            
+            {/* Navbar para Desktop */}
+            <NavDesktop currentPage={router.pathname}>
+                <ul>
+                    <li>
+                        <Link href="/presential"><a>Presencial</a></Link>
+                        <div></div>
+                    </li>
+
+                    <li>
+                        <Link href="/token"><a>Token</a></Link>
+                        <div></div>
+                    </li>
+
+                    <li>
+                        <Link href="/giveaway" ><a>Sorteio</a></Link>
+                        <div></div>
+                    </li>
+
+                    <li>
+                        <Link href="/query"><a>Consulta</a></Link>
+                        <div></div>
+                    </li>
+                </ul>
+            </NavDesktop>
+
+            {/* Navbar para Mobile */}
+            <NavMobile isOpen={isOpen} currentPage={router.pathname}>
+                <div className={isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
+
                     <ul>
-                        <li>
-                            <Link href="/presencial"><a>Presencial</a></Link>
+                        <li onClick={() => setIsOpen(false)}>
+                            <Link href="/presential"><a>Presencial</a></Link>
                             <div></div>
                         </li>
 
-                        <li>
+                        <li onClick={() => setIsOpen(false)}>
                             <Link href="/token"><a>Token</a></Link>
                             <div></div>
                         </li>
 
-                        <li>
-                            <Link href="/giveaway" ><a>Sorteio</a></Link>
+                        <li onClick={() => setIsOpen(false)}>
+                            <Link href="/giveaway"><a>Sorteio</a></Link>
                             <div></div>
                         </li>
 
-                        <li>
+                        <li onClick={() => setIsOpen(false)}>
                             <Link href="/query"><a>Consulta</a></Link>
                             <div></div>
                         </li>
-
                     </ul>
-                </NavDesktop >
 
-
-                <NavMobile isOpen={isOpen} currentPage={router.pathname}>
-                    <div className={isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
-
-                        <ul>
-                            <li onClick={() => setIsOpen(false)}>
-                                <Link href="/presencial"><a>Presencial</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)}>
-                                <Link href="/token"><a>Token</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)}>
-                                <Link href="/giveaway"><a>Sorteio</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)}>
-                                <Link href="/query"><a>Consulta</a></Link>
-                                <div></div>
-                            </li>
-
-                        </ul>
-
-                        <NavFooter>
-                            <div className="logo-container">
-                                <img src="./images/logos/logo_sem_estrela.svg" alt="SSI logo" />
-                                <p>
-                                    Semana de Sistemas de <br />Informação 2022
-                                </p>
-                            </div>
-                        </NavFooter>
+                    <div className='close-btn' onClick={() => setIsOpen(!isOpen)}>
+                        <div className='close'>
+                            <img src={CloseBtn} alt='Botão de fechar'></img>
+                        </div>
+                        <p className='text-small'>Fechar</p>
                     </div>
+                </div>
 
-                    <button type="button" onClick={() => setIsOpen(!isOpen)}>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </NavMobile >
-            </NavWrapper >
-        </>
+                <button className='hamburguer-menu' type="button" onClick={() => setIsOpen(!isOpen)}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </NavMobile>
+
+            </div>
+        </NavWrapper>
     )
 }
 
@@ -109,131 +122,164 @@ export default Nav;
 const NavWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: space-between;
+    padding-inline: 1rem;
     position: fixed;
     width: 100%;
-    height: 4.5rem;
-    padding-right: 15px;
+    height: 3.75rem;
     z-index: 10;
-    background-color: var(--color-primary);
-    box-shadow: 0px 5px 24px 14px rgba(16, 3, 26, 0.38);
+    background-color: var(--color-neutral-900);
+    box-shadow: 0px 5px 24px 14px rgba(16,3,26,0.38);
 
-    @media (min-width:800px) {
-        background-color: unset;
+    > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1440px;
+        height: 100%;
+    }
+
+    .logo-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 14rem;
+        gap: 1rem;
+
+        img {
+            height: 2.75rem;
+        }
+    }
+
+    .text-small {
+        font: 400 0.875rem/1.125rem 'Space_Mono_Bold';
+        color: var(--color-neutral-50);
+    }
+
+    @media (min-width:1300px) {
         position: unset;
+        height: 3.75rem;
         z-index: unset;
-        padding-top: 20px;
         justify-content: center;
         box-shadow: unset;
+        padding-inline: 6.75rem;
     }
 `
 
 const NavMobile = styled.nav`
-    padding: 10px;
     overflow: hidden;
 
-    button {
+    .hamburguer-menu {
         background-color: unset;
         border: unset;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 1.375rem;
+        width: 2rem;
 
         span {
             display: block;
             height: 3px;
-            width: 25px;
+            width: 100%;
             background: #FFF;
-            margin-top: 3px;
-            border-radius: 1px;
+            border-radius: 12px;
             transition: all 0.3s ease;
         }
     }
 
-    ${props => props.isOpen && css`
-        span {
-            margin: 0;
-        }
-
-        span:nth-child(1) {
-            transform: rotate(45deg) translateY(8px);
-        }
-
-        span:nth-child(2) {
-            transform: translateX(50px);
-            opacity: 0;
-        }
-
-        span:nth-child(3) {
-            transform: rotate(-45deg) translateY(-8px);
-        }
-    `}
-
     .sidepanel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
         height: 100%;
-        width: 75%;
-        max-width: 450px;
+        width: fit-content;
         position: fixed;
         top: 0;
         right: 0;
-        background-color: #151023;
-        border-left: 2px solid #ffffff;
-        padding-top: 20px;
+        background-color: var(--color-neutral-900);
         transition: all linear .15s;
+        border-radius: 12px;
+        padding: 1.5rem;
+        
+        .close-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 5rem;
+            cursor: pointer;
+            
+            .close {
+                img {
+                    width: 17.58px;
+                    margin-top: 0.3rem;
+                }
+            }
+        }
 
         ul {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 30%;
+
+            .login-button {
+                margin-bottom: 2rem;
+                
+                button {
+                    padding-block: 0.65rem;
+                }
+            }
 
             li {
-                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+                position: relative;
 
                 a {
-                    font-family: 'Bebas Neue';
-                    font-size: 2.2rem;
-                    color: var(--color-text);
+                    color: var(--color-neutral-50);
                     margin: 0 12px;
                     transition: all .2s;
                 }
 
                 span {
-                    font-family: 'Bebas Neue';
-                    font-size: 2.2rem;
                     color: gray;
                     margin: 0 12px;
+
                     cursor: default;
                 }
 
                 img {
-                    width: 6rem;
+                    width: 2.75rem;
                     border-radius: 100%;
-
-                    ${props => props.currentPage == '/user' && css`
-                        border: 2px solid white;
-                    `}
+                    margin-right: 1rem;
                 }
 
                 a:active {
                     cursor: pointer;
-                    font-size: 2.4rem;
                     color: var(--color-secondary);
                     filter: brightness(1.1);
                 }
             }
 
             ${props => props.currentPage && css`
-                li:nth-child(${pages[props.currentPage]}) {
-
+                li:nth-child(${pages[props.currentPage]+1}){
                     a {
+                        font-family: 'Space_Mono_Bold';
+                        font-weight: 400;
                         padding: .2rem -5rem;
                         pointer-events: none;
                     }
 
                     div {
-                        width: 70%;
-                        margin-left: 15%;
-                        height: 1px;
-                        background-color: var(--color-text);
+                        width: calc(100% - 24px);
+                        margin-left: 12px;
+                        height: 4px;
+                        background-color: var(--color-primary-500);
+                        border-radius: 12px;
                     }
                 }
             `}
@@ -263,149 +309,93 @@ const NavMobile = styled.nav`
         }
     }
 
-    @media (min-width:800px) {
+    @media (min-width:1300px) {
         display: none;
     }
 `
 
-const NavFooter = styled.div`
-    position: absolute;
-    bottom: 0;
-    padding: 30px 0;
-    width: 100%;
-
-    p {
-        font-weight: bold;
-    }
-
-    .logo-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        width: 100%;
-        margin-bottom: 3rem;
-
-        img {
-            width: 30%;
-            max-width: 100px;
-        }
-    }
-
-    @media (max-height:590px) {
-        position: unset;
-        bottom: unset;
-        width: 45%;
-        margin-left: 10px;
-    }
-`
-
 const NavDesktop = styled.nav`
-
     display: none;
+    margin-left: auto;
 
     ul {
         display: flex;
+        flex-direction: row;
+        align-items: center;
         height: 40px;
 
-        .logInBtnContainer {
-            position: absolute;
-            top: 22px;
-            right: 22px;
-
-            @media (min-width:1020px) {
-                top: 26px;
-                right: 26px;
-            }
-        }
-
-        .userPicContainer {
-            position: absolute;
-            top: 15px;
-            right: 10px;
-
-            img {
-                width: 50px;
-                border-radius: 100%;
-                transition: 0.1s;
-            }
-
-            img:hover {
-                width: 60px;
-                border: 2px solid white;
-            }
-
-            ${props => props.currentPage == '/user' && css`
-                img {
-                    width: 52px;
-                    border: 2px solid white;
-                }
-            `}
-        }
-
         li {
+            position: relative;
+            max-height: 44px;
+
             div {
+                position: absolute;
+                margin-top: 2px;
                 width: 0%;
                 margin-left: 50%;
-                height: 1px;
-                background-color: var(--color-text);
+                height: 4px;
+                background-color: var(--color-neutral-50);
                 transition: all .2s;
+                border-radius: 12px;
             }
 
-            button {
-                background: rgba(0, 0, 0, 0);
-                border: none;
+            a {
+                max-height: 44px;
             }
         }
 
-        li:hover {
-            div {
-                width: 70%;
-                margin-left: 15%;
-                height: 1px;
-                background-color: var(--color-text);
-            }
+        button {
+            padding-block: 0.65rem;
+            height: 44px;
+            width: 108px;
         }
 
         a {
-            font-family: 'Bebas Neue';
-            font-size: 1.5rem;
-            color: var(--color-text);
+            font: 700 1rem/1.25rem 'Space_Mono';
             margin: 0 12px;
             transition: all .2s;
+
+            :hover {
+                cursor: pointer;
+            }
         }
 
         span {
-            font-family: 'Bebas Neue';
-            font-size: 1.5rem;
             color: gray;
             margin: 0 12px;
             cursor: default;
         }
 
-        a:hover {
-            cursor: pointer;
-            font-size: 1.7rem;
-        }
-
         ${props => props.currentPage && css`
             li:nth-child(${pages[props.currentPage]}) {
                 a {
+                    font-family: 'Space_Mono_Bold';
+                    font-weight: 400;
                     padding: .2rem -5rem;
                     pointer-events: none;
                 }
 
                 div {
-                    width: 70%;
-                    margin-left: 15%;
-                    height: 1px;
-                    background-color: var(--color-text);
+                    width: calc(100% - 24px);
+                    margin-left: 12px;
+                    height: 4px;
+                    background-color: var(--color-primary-500);
+                }
+            }
+
+            li:not(:nth-child(${pages[props.currentPage]})):hover {
+                div {
+                    width: calc(100% - 24px);
+                    margin-left: 12px;
+                    height: 4px;
+                    background-color: var(--color-neutral-50);
                 }
             }
         `}
+
     }
 
-    @media (min-width:800px) {
+    @media (min-width:1300px) {
         display: block;
     }
 `

@@ -20,7 +20,7 @@ const Login = () => {
         const isSignInValid = signIn(data.user, data.password);
 
         if (isSignInValid) {
-            router.push("/presencial");
+            router.push("/presential");
         } else {
             setError("credentials" , { type: "focus" }, { shouldFocus: true });
         }
@@ -30,12 +30,12 @@ const Login = () => {
 
     const checkKey = () => {
         if (key) {
-            router.push("/presencial");
+            router.push("/presential");
         }
     }
 
     useEffect(() => {
-        checkKey();
+        // checkKey();
     }, []);
 
     return (
@@ -128,13 +128,11 @@ const FormWrapper = styled.section`
     }
 
     p {
-        font-size: 1.6rem;
         margin-top: 1rem;
     }
 
     label {
         color: var(--color-text);
-        font-size: 1.6rem;
         margin-bottom: 10px;
     }
 
@@ -162,7 +160,6 @@ const InputBox = styled.div`
         border-radius: 5px;
         padding: 8px 15px;
         color: var(--color-text);
-        font-size: 1.6rem;
     }
 
     input {
@@ -174,7 +171,6 @@ const InputBox = styled.div`
         border-radius: 5px;
         padding: 8px 15px;
         color: var(--color-text);
-        font-size: 1.6rem;
     }
 
     input:-webkit-autofill,

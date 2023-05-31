@@ -10,7 +10,7 @@ import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 
-const Presencial = () => {
+const Presential = () => {
     const router = useRouter();
     const { key } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
@@ -49,7 +49,7 @@ const Presencial = () => {
     }
 
     useEffect(() => {
-        checkKey();
+        // checkKey();
     }, []);
 
     return (
@@ -68,53 +68,56 @@ const Presencial = () => {
 
             <NavBar />
             <PresenceWrapper>
-                <h1>Presencial</h1>
+                <div className='section-container'>
+                    
+                    <h3>Presencial</h3>
 
-                <h3 className='page-description'> Registro de presenças presenciais :)</h3>
+                    <h5 className='page-description'> Registro de presenças presenciais :)</h5>
 
-                {isKeyPresent &&
-                    <FormWrapper>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            {!isLoading &&
-                                <>
-                                    <InputBox1>
-                                        <label htmlFor='lectureId'> ID da palestra: </label>
-                                        <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
-                                            {...register("lectureId", { required: true, minLength: 1, })} />
-                                        {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
-                                    </InputBox1>
+                    {/* {isKeyPresent && */}
+                        <FormWrapper>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                {!isLoading &&
+                                    <>
+                                        <InputBox1>
+                                            <label htmlFor='lectureId'> ID da palestra: </label>
+                                            <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
+                                                {...register("lectureId", { required: true, minLength: 1, })} />
+                                            {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                        </InputBox1>
 
-                                    <InputBox2>
-                                        <label htmlFor='email'> Documento do inscrito <br/>(NUSP ou CPF): </label>
-                                        <input id='email' type='text' className={errors.email && 'error-border'}
-                                            {...register("email", {
-                                                required: true,
-                                                minLength: 2,
-                                                maxLength: 60,
-                                            })
-                                            } />
-                                        {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
-                                    </InputBox2>
+                                        <InputBox2>
+                                            <label htmlFor='email'> E-mail do inscrito: </label>
+                                            <input id='email' type='text' className={errors.email && 'error-border'}
+                                                {...register("email", {
+                                                    required: true,
+                                                    minLength: 2,
+                                                    maxLength: 60,
+                                                })
+                                                } />
+                                            {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
+                                        </InputBox2>
 
-                                    <Button> Registrar </Button>
-                                </>
-                            }
+                                        <Button> Registrar </Button>
+                                    </>
+                                }
 
-                            {isLoading &&
-                                <Loading>
-                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
-                                </Loading>
-                            }
-                        </form>
-                    </FormWrapper>
-                }
+                                {isLoading &&
+                                    <Loading>
+                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                    </Loading>
+                                }
+                            </form>
+                        </FormWrapper>
+                    {/* } */}
 
+                </div>
             </PresenceWrapper>
         </>
     )
 }
 
-export default Presencial;
+export default Presential;
 
 
 const Loading = styled.figure`
@@ -128,30 +131,38 @@ const Loading = styled.figure`
     }
 `
 
-const PresenceWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 70px 30px;
+const PresenceWrapper = styled.section`
+    background: url('./images/background_imgs/background2_mobile.svg') no-repeat;
+    background-size: cover;
 
     .page-description {
         text-align: center;
-        margin: 90px 0 30px 0;
-        max-width: 1200px;
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 3.5rem;
+        margin-block: 3.75rem; /* match navbar height */
+        gap: 3rem;
+    }
+
+    @media (min-width:1000px) {
+        background-image: url('./images/background_imgs/background2_desktop.svg');
     }
 `
 
 const ErrorMessage = styled.span`
-    color: white;
-    text-decoration: underline 0.5px;
+    color: var(--color-invalid);
+    text-decoration: underline;
     position: absolute;
     bottom: 0;
 `
 
 const FormWrapper = styled.section`
     width: 100%;
-    margin-top: 2rem;
 
     form {
         display: flex;
@@ -161,14 +172,13 @@ const FormWrapper = styled.section`
         text-align: center;
     }
 
-    h3 {
-        margin: 2rem 0;
+    input {
+        border: 4px solid transparent;
     }
 
     label {
         color: var(--color-text);
-        font-size: 1.6rem;
-        margin-bottom: 10px;
+        margin-bottom: .5rem;
     }
 
     button {
@@ -176,7 +186,7 @@ const FormWrapper = styled.section`
     }
 
     .error-border {
-        border: .5px solid white;
+        border: 4px solid var(--color-invalid);
     }
 `
 
@@ -200,7 +210,6 @@ const InputBox1 = styled.div`
         padding: 8px 15px;
 
         color: var(--color-text);
-        font-size: 1.6rem;
         text-align: center;
     }
 
@@ -242,7 +251,6 @@ const InputBox2 = styled.div`
         border-radius: 5px;
         padding: 8px 15px;
         color: var(--color-text);
-        font-size: 1.6rem;
         text-align: center;
     }
 
@@ -283,7 +291,6 @@ const PresencesList = styled.div`
 
         li {
             margin-bottom: 10px;
-            font-size: 16px;
         }
     }
 `

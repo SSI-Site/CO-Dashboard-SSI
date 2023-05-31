@@ -185,8 +185,8 @@ const Giveaway = () => {
     };
 
     useEffect(() => {
-        checkKey();
-        listLectures();
+        // checkKey();
+        // listLectures();
         
         setTimer('00:40'); // Timer 1: Se alterar o tempo, deve-se alterar esse placeholder também 
     }, []);
@@ -207,87 +207,89 @@ const Giveaway = () => {
 
             <NavBar />
             <GiveawayWrapper>
-                <h1>Sorteio</h1>
+                <div className='section-container'>
+                    <h3>Sorteio</h3>
 
-                {isKeyPresent &&
-                    <>
-                        <ResultSection>
-                            {!isLoading &&
-                                <>
-                                    <h2 className={giveawayResultName !== placeholderMessage ? 'neon' : ''}> {giveawayResultName} </h2>
+                    {/* {isKeyPresent && */}
+                        <>
+                            <ResultSection>
+                                {!isLoading &&
+                                    <>
+                                        <h3 className={giveawayResultName !== placeholderMessage ? 'neon' : ''}> {giveawayResultName} </h3>
 
-                                    <FormWrapper>
+                                        <FormWrapper>
 
-                                        {/* Timer 1 */}
-                                        {!isLoading && gotResult &&
-                                            <h1 className='timer'>{timer}</h1>                 
-                                        }
-
-                                        {/* Timer 2 */}
-                                        {!isLoading && gotResult &&
-                                            <TimerWrapper>
-                                                <div className="timer-wrapper">
-                                                    <CountdownCircleTimer
-                                                        isPlaying
-                                                        duration={40}
-                                                        colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                                                        colorsTime={[40, 30, 20, 10]}
-                                                        >
-                                                        {renderTime}
-                                                    </CountdownCircleTimer>
-                                                </div>
-                                            </TimerWrapper>                                           
-                                        }
-
-                                        <form onSubmit={handleSubmit(onSubmit)}>
-                                            <InputBox>
-                                                <label htmlFor='lectureId'> Id da palestra: </label>
-                                                <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
-                                                    {...register("lectureId", { required: true, minLength: 1, })} />
-                                                {errors.lectureId && <ErrorMessage> Id inválido. </ErrorMessage>}
-                                            </InputBox>
-
-                                            <CheckboxBox>
-                                                <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
-                                                    {...register('isPresencialOnly')} />
-                                                <label htmlFor='isPresencialOnly'> Apenas Presencial? </label>
-                                            </CheckboxBox>
-
-                                            {giveawayResultName === placeholderMessage &&
-                                                <Button > Sortear </Button>
+                                            {/* Timer 1 */}
+                                            {!isLoading && gotResult &&
+                                                <h1 className='timer'>{timer}</h1>                 
                                             }
 
-                                            {giveawayResultName !== placeholderMessage &&
-                                                <Button type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
+                                            {/* Timer 2 */}
+                                            {!isLoading /*&& gotResult */ &&
+                                                <TimerWrapper>
+                                                    <div className="timer-wrapper">
+                                                        <CountdownCircleTimer
+                                                            isPlaying
+                                                            duration={40}
+                                                            colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                                                            colorsTime={[40, 30, 20, 10]}
+                                                            >
+                                                            {renderTime}
+                                                        </CountdownCircleTimer>
+                                                    </div>
+                                                </TimerWrapper>                                           
                                             }
-                                        </form>
 
-                                        <Button className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
-                                            {showList ? "Esconder palestras" : "Mostrar palestras"} </Button>
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <InputBox>
+                                                    <label htmlFor='lectureId'> ID da palestra: </label>
+                                                    <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
+                                                        {...register("lectureId", { required: true, minLength: 1, })} />
+                                                    {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                                </InputBox>
 
-                                    </FormWrapper>
-                                </>
+                                                <CheckboxBox>
+                                                    <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
+                                                        {...register('isPresencialOnly')} />
+                                                    <label htmlFor='isPresencialOnly'> Apenas Presencial? </label>
+                                                </CheckboxBox>
+
+                                                {giveawayResultName === placeholderMessage &&
+                                                    <Button > Sortear </Button>
+                                                }
+
+                                                {giveawayResultName !== placeholderMessage &&
+                                                    <Button type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
+                                                }
+                                            </form>
+
+                                            <Button className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
+                                                {showList ? "Esconder palestras" : "Mostrar palestras"} </Button>
+
+                                        </FormWrapper>
+                                    </>
+                                }
+
+                                {isLoading &&
+                                    <Loading>
+                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                    </Loading>
+                                }
+                            </ResultSection>
+
+                            {showList &&
+                                <LecturesList>
+                                    <ul>
+                                        {lectures.map((lecture, key) =>
+                                            <li key={key}>
+                                                id: {lecture.id} | Título: {lecture.title}
+                                            </li>)}
+                                    </ul>
+                                </LecturesList>
                             }
-
-                            {isLoading &&
-                                <Loading>
-                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
-                                </Loading>
-                            }
-                        </ResultSection>
-
-                        {showList &&
-                            <LecturesList>
-                                <ul>
-                                    {lectures.map((lecture, key) =>
-                                        <li key={key}>
-                                            id: {lecture.id} | Título: {lecture.title}
-                                        </li>)}
-                                </ul>
-                            </LecturesList>
-                        }
-                    </>
-                }
+                        </>
+                    {/* } */}
+                </div>
             </GiveawayWrapper>
         </>
     )
@@ -307,18 +309,58 @@ const Loading = styled.figure`
     }
 `
 
-const GiveawayWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 70px 30px;
+const GiveawayWrapper = styled.section`
+    background: url('./images/background_imgs/background4_mobile.svg') no-repeat;
+    background-size: cover;
+
+    .page-description {
+        text-align: center;
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 3.5rem;
+        margin-block: 3.75rem; /* match navbar height */
+        gap: 3rem;
+    }
+
+    @media (min-width:1000px) {
+        background-image: url('./images/background_imgs/background4_desktop.svg');
+    }
+`
+
+const ErrorMessage = styled.span`
+    color: var(--color-invalid);
+    text-decoration: underline;
+    position: absolute;
+    bottom: 0;
 `
 
 const FormWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    input {
+        border: 4px solid transparent;
+    }
 
     .error-border {
-        border: .5px solid white;
+        border: 4px solid var(--color-invalid);
     }
 
     // Timer 1:
@@ -326,11 +368,6 @@ const FormWrapper = styled.div`
         margin-top: 3rem;
         margin-bottom: 3rem;
     }
-`
-
-const ErrorMessage = styled.span`
-    color: white;
-    text-decoration: underline 0.5px;
 `
 
 const InputBox = styled.div`
@@ -353,7 +390,6 @@ const InputBox = styled.div`
         padding: 8px 15px;
 
         color: var(--color-text);
-        font-size: 1.6rem;
         text-align: center;
     }
 
@@ -377,7 +413,6 @@ const InputBox = styled.div`
 
     label {
         color: var(--color-text);
-        font-size: 1.6rem;
         margin-bottom: 10px;
     }
 `
@@ -387,12 +422,11 @@ const CheckboxBox = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 
     label {
         margin-left: 15px;
         color: var(--color-text);
-        font-size: 1.2rem;
 
         cursor: pointer;
     }
@@ -404,18 +438,23 @@ const CheckboxBox = styled.div`
     }
 `
 
-const ResultSection = styled.section`
-    height: 50vh;
-    margin: 100px auto;
-    text-align: center;
+const ResultSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
 
-    h2 {
-        margin-bottom: 60px;
+    button {
+        width: fit-content;
     }
 
     .show-list-btn {
-        margin-top: 30px;
-        font-size: 20px;
+        margin-top: 2rem;
+    }
+
+    h3 {
+        color: var(--color-primary-500);
     }
 
     .neon {
@@ -436,16 +475,12 @@ const LecturesList = styled.section`
 
     ul {
         color: var(--color-text);
-
-        li {
-            font-size: 16px;
-        }
     }
 `
 
 // Timer 2:
 const TimerWrapper = styled.section`
-    margin-bottom: 3rem;
+    margin-block: 2rem 3rem;
 
     h1 {
         text-align: center;
@@ -462,7 +497,7 @@ const TimerWrapper = styled.section`
         position: relative;
         width: 80px;
         height: 60px;
-        font-size: 48px;
+        font: 400 3.5rem/4.25rem 'Space_Mono_Bold';
     }
 
     .time-wrapper .time {
@@ -478,9 +513,6 @@ const TimerWrapper = styled.section`
         opacity: 1;
         transition: all 0.2s;
         color: var(--color-text);
-        font-size: 3.6rem;
-        font-weight: 700;
-        font-family: 'Plaza';
     }
 
     .time-wrapper .time.up {

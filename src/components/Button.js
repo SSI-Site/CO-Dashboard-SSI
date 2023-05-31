@@ -1,46 +1,36 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Button = styled.button`
-    --border: 1px solid var(--color-tertiary);
-    --background: rgba(138, 69, 198, 0.25);
-    --padding: 0.6em 1.5em;
-    --out-space: 0.3em;
+    --padding: 0.75rem 1.5rem;
     --transition-duration: 500ms;
+    --background: var(--color-primary);
 
-    border: var(--border);
-    border-radius: 0;
-    background-color: var(--background);
+    width: 100%;
+    height: 2.75rem;
     padding: var(--padding);
-    font-weight: bold;
-    position: relative;
-    transition: background-color var(--transition-duration);
+    border-radius: 9px;
+    border: var(--color-primary);
+    background-color: var(--background);
+    transition: var(--transition-duration);
+    white-space: nowrap;
 
     :disabled {
-        --background: RGBA(98, 97, 80, 0.16);
-        --border: 1px solid gray;
+        --background: var(--color-neutral-800);
+        color: var(--color-neutral-600);
         cursor: unset;
-    }
-
-    &::before {
-        content: "";
-        position: absolute;
-        top: var(--out-space);
-        bottom: var(--out-space);
-        left: calc(var(--out-space) * -1);
-        right: calc(var(--out-space) * -1);
-
-        border: var(--border);
-        background-color: var(--background);
-        transition:
-            top var(--transition-duration),
-            bottom var(--transition-duration),
-            left var(--transition-duration),
-            right var(--transition-duration);
+        pointer-events: none;
     }
 
     &:hover {
-        --out-space: 0em;
-        --background: transparent;
+        --background: var(--color-primary-900);
+    }
+
+    &:active {
+        --background: var(--color-primary-800);
+    }
+
+    @media (min-width:560px) {
+        height: 3rem;
     }
 `
 

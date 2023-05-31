@@ -36,7 +36,7 @@ const Token = () => {
     }
 
     useEffect(() => {
-        checkKey();
+        // checkKey();
     }, []);
 
     return (
@@ -55,46 +55,49 @@ const Token = () => {
 
             <NavBar />
             <TokenWrapper>
-                <h1>Token</h1>
+                <div className='section-container'>
 
-                <h3 className='page-description'> Geração de tokens do online :)</h3>
+                    <h3>Token</h3>
 
-                {isKeyPresent &&
-                    <>
-                        <ResultSection>
-                            {!isLoading &&
-                                <>
-                                    <h2 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}> {tokenGenerated} </h2>
+                    <h5 className='page-description'> Geração de tokens do online :)</h5>
 
-                                    <FormWrapper>
-                                        <form onSubmit={handleSubmit(onSubmit)}>
-                                            <InputBox>
-                                                <label htmlFor='lectureId'> Id da palestra: </label>
-                                                <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
-                                                    {...register("lectureId", { required: true, minLength: 1, })} />
-                                                {errors.lectureId && <ErrorMessage> Id inválido. </ErrorMessage>}
-                                            </InputBox>
+                    {/* {isKeyPresent && */}
+                        <>
+                            <ResultSection>
+                                {!isLoading &&
+                                    <>
+                                        <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}> {tokenGenerated} </h3>
 
-                                            {tokenGenerated === placeholderMessage &&
-                                                <Button type="button" /* onClick={() => gerarToken()*/> Gerar Token </Button>
-                                            }
+                                        <FormWrapper>
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <InputBox>
+                                                    <label htmlFor='lectureId'> ID da palestra: </label>
+                                                    <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
+                                                        {...register("lectureId", { required: true, minLength: 1, })} />
+                                                    {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                                </InputBox>
 
-                                            {tokenGenerated !== placeholderMessage &&
-                                                <Button type="button" /*onClick={() => setTokenGenerated(placeholderMessage)}*/> Limpar Token </Button>
-                                            }
-                                        </form>
-                                    </FormWrapper>
-                                </>
-                            }
+                                                {tokenGenerated === placeholderMessage &&
+                                                    <Button type="button" /* onClick={() => gerarToken()*/> Gerar Token </Button>
+                                                }
 
-                            {isLoading &&
-                                <Loading>
-                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
-                                </Loading>
-                            }
-                        </ResultSection>
-                    </>
-                }
+                                                {tokenGenerated !== placeholderMessage &&
+                                                    <Button type="button" /*onClick={() => setTokenGenerated(placeholderMessage)}*/> Limpar Token </Button>
+                                                }
+                                            </form>
+                                        </FormWrapper>
+                                    </>
+                                }
+
+                                {isLoading &&
+                                    <Loading>
+                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                    </Loading>
+                                }
+                            </ResultSection>
+                        </>
+                    {/* } */}
+                </div>
             </TokenWrapper>
         </>
     )
@@ -114,55 +117,63 @@ const Loading = styled.figure`
     }
 `
 
-const TokenWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 70px 30px;
+const TokenWrapper = styled.section`
+    background: url('./images/background_imgs/background3_mobile.svg') no-repeat;
+    background-size: cover;
 
     .page-description {
         text-align: center;
-        margin-top: 90px;
-        max-width: 1200px;
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 3.5rem;
+        margin-block: 3.75rem; /* match navbar height */
+        gap: 3rem;
+
+        h5 {
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media (min-width:1000px) {
+        background-image: url('./images/background_imgs/background3_desktop.svg');
     }
 `
 
 const ErrorMessage = styled.span`
-    color: white;
-    text-decoration: underline 0.5px;
+    color: var(--color-invalid);
+    text-decoration: underline;
     position: absolute;
     bottom: 0;
 `
 
 const FormWrapper = styled.section`
     width: 100%;
-    margin-top: 2rem;
 
     form {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        gap: 1rem;
         text-align: center;
     }
 
-    h3 {
-        margin: 2rem 0;
+    input {
+        border: 4px solid transparent;
     }
 
     label {
         color: var(--color-text);
-        font-size: 1.6rem;
         margin-bottom: 10px;
     }
 
-    button {
-        margin-top: 2rem;
-    }
-
     .error-border {
-        border: .5px solid white;
+        border: 4px solid var(--color-invalid);
     }
 `
 
@@ -186,7 +197,6 @@ const InputBox = styled.div`
         padding: 8px 15px;
 
         color: var(--color-text);
-        font-size: 1.6rem;
         text-align: center;
     }
 
@@ -209,27 +219,28 @@ const InputBox = styled.div`
     }
 `
 
-const ResultSection = styled.section`
-    height: 50vh;
-    margin: 100px auto;
-    text-align: center;
-
-    h2 {
-        margin-bottom: 60px;
-    }
+const ResultSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
 
     .show-list-btn {
-        margin-top: 30px;
-        font-size: 20px;
+        margin-top: 2rem;
+    }
+
+    h3 {
+        color: var(--color-primary-500);
     }
 
     .neon {
         color: #fff;
         text-shadow:
             0 0 1px #fff,
-            0 0 20px var(--color-secondary),
-            0 0 60px var(--color-secondary),
-            0 0 70px var(--color-secondary),
-            0 0 80px var(--color-secondary);
+            0 0 20px var(--color-primary-500),
+            0 0 60px var(--color-primary-500),
+            0 0 70px var(--color-primary-500),
+            0 0 80px var(--color-primary-500);
     }
 `
