@@ -43,40 +43,42 @@ const Login = () => {
             <Meta title='CO SSI 2023 | Login' />
 
             <LoginWrapper>
-                <h1>Login</h1>
-                <FormWrapper>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <h3> Entrada exclusiva para a Comissão Organizadora da SSI de 2023</h3>
+                <div className='section-container'>
+                    <h3>Login</h3>
+                    <FormWrapper>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <h5> Entrada exclusiva para a Comissão Organizadora da SSI de 2023</h5>
 
-                        {!isLoading &&
-                            <>
-                                <InputBox>
-                                    <label htmlFor='user'> Usuário </label>
-                                    <input id='user' type='text' className={errors.user && 'error-border'}
-                                        {...register("user", {required: true, minLength: 1 })} />
-                                    {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
-                                </InputBox>
+                            {!isLoading &&
+                                <>
+                                    <InputBox>
+                                        <label htmlFor='user'> Usuário </label>
+                                        <input id='user' type='text' className={errors.user && 'error-border'}
+                                            {...register("user", {required: true, minLength: 1 })} />
+                                        {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
+                                    </InputBox>
 
-                                <InputBox>
-                                    <label htmlFor='password'> Senha </label>
-                                    <input id='password' type='password' className={errors.password && 'error-border'}
-                                        {...register("password", {required: true, minLength: 1 })} />
-                                    {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
-                                </InputBox>
+                                    <InputBox>
+                                        <label htmlFor='password'> Senha </label>
+                                        <input id='password' type='password' className={errors.password && 'error-border'}
+                                            {...register("password", {required: true, minLength: 1 })} />
+                                        {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
+                                    </InputBox>
 
-                                <Button onClick={() => {clearErrors("credentials")}}> Entrar </Button>
+                                    <Button onClick={() => {clearErrors("credentials")}}> Entrar </Button>
 
-                                {errors.credentials && <p> Credenciais inválidas </p> }
-                            </>
-                        }
+                                    {errors.credentials && <p> Credenciais inválidas </p> }
+                                </>
+                            }
 
-                        {isLoading &&
-                            <Loading>
-                                <img src='./loading.svg' alt='SSI 2023 - Loading' />
-                            </Loading>
-                        }
-                    </form>
-                </FormWrapper>
+                            {isLoading &&
+                                <Loading>
+                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                </Loading>
+                            }
+                        </form>
+                    </FormWrapper>
+                </div>
             </LoginWrapper>
         </>
     )
@@ -96,39 +98,55 @@ const Loading = styled.figure`
     }
 `
 
-const LoginWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 30px;
+const LoginWrapper = styled.section`
+    background: url('./images/background_imgs/background1_mobile.svg') no-repeat;
+    background-size: cover;
+
+    .page-description {
+        text-align: center;
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 3.5rem;
+        margin-block: 3.75rem; /* match navbar height */
+        gap: 3rem;
+
+        h5 {
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media (min-width:1000px) {
+        background-image: url('./images/background_imgs/background1_desktop.svg');
+    }
 `
 
 const ErrorMessage = styled.span`
-    color: white;
-    text-decoration: underline 0.5px;
+    color: var(--color-invalid);
+    text-decoration: underline;
     position: absolute;
     bottom: 0;
 `
 
-const FormWrapper = styled.section`
+const FormWrapper = styled.div`
     width: 100%;
-    margin-top: 2rem;
 
     form {
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 1rem;
         text-align: center;
     }
 
-    h3 {
-        margin: 2rem 0;
-    }
-
-    p {
-        margin-top: 1rem;
+    input {
+        border: 4px solid transparent;
     }
 
     label {
@@ -141,7 +159,7 @@ const FormWrapper = styled.section`
     }
 
     .error-border {
-        border: .5px solid white;
+        border: 4px solid var(--color-invalid);
     }
 `
 

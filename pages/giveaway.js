@@ -231,8 +231,8 @@ const Giveaway = () => {
                                                         <CountdownCircleTimer
                                                             isPlaying
                                                             duration={40}
-                                                            colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                                                            colorsTime={[40, 30, 20, 10]}
+                                                            colors={["#3A006E", "#A86BDA", "#F7B801", "#A30000"]}
+                                                            colorsTime={[40, 30, 20, 0]}
                                                             >
                                                             {renderTime}
                                                         </CountdownCircleTimer>
@@ -251,7 +251,7 @@ const Giveaway = () => {
                                                 <CheckboxBox>
                                                     <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
                                                         {...register('isPresencialOnly')} />
-                                                    <label htmlFor='isPresencialOnly'> Apenas Presencial? </label>
+                                                    <label htmlFor='isPresencialOnly'> Apenas presencial? </label>
                                                 </CheckboxBox>
 
                                                 {giveawayResultName === placeholderMessage &&
@@ -347,6 +347,7 @@ const FormWrapper = styled.div`
     width: 100%;
 
     form {
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -444,10 +445,6 @@ const ResultSection = styled.div`
     align-items: center;
     justify-content: center;
     gap: 3rem;
-
-    button {
-        width: fit-content;
-    }
 
     .show-list-btn {
         margin-top: 2rem;

@@ -207,10 +207,11 @@ const ErrorMessage = styled.span`
     bottom: 0;
 `
 
-const FormWrapper = styled.section`
+const FormWrapper = styled.div`
     width: 100%;
 
     form {
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;

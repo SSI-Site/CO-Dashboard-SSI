@@ -6,6 +6,7 @@ const Button = styled.button`
     --background: var(--color-primary);
 
     width: 100%;
+    max-width: 24.5rem;
     height: 2.75rem;
     padding: var(--padding);
     border-radius: 9px;

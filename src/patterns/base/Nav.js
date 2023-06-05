@@ -158,7 +158,7 @@ const NavWrapper = styled.div`
         color: var(--color-neutral-50);
     }
 
-    @media (min-width:1300px) {
+    @media (min-width:800px) {
         position: unset;
         height: 3.75rem;
         z-index: unset;
@@ -196,7 +196,8 @@ const NavMobile = styled.nav`
         align-items: center;
         justify-content: space-between;
         height: 100%;
-        width: fit-content;
+        width: 200px;
+        min-width: 40%;
         position: fixed;
         top: 0;
         right: 0;
@@ -266,7 +267,7 @@ const NavMobile = styled.nav`
             }
 
             ${props => props.currentPage && css`
-                li:nth-child(${pages[props.currentPage]+1}){
+                li:nth-child(${pages[props.currentPage]}){
                     a {
                         font-family: 'Space_Mono_Bold';
                         font-weight: 400;
@@ -309,7 +310,7 @@ const NavMobile = styled.nav`
         }
     }
 
-    @media (min-width:1300px) {
+    @media (min-width:800px) {
         display: none;
     }
 `
@@ -395,7 +396,7 @@ const NavDesktop = styled.nav`
 
     }
 
-    @media (min-width:1300px) {
+    @media (min-width:800px) {
         display: block;
     }
 `
