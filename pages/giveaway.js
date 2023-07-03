@@ -96,54 +96,7 @@ const Giveaway = () => {
             })
     }
 
-    // Timer 1
-    const getTimeRemaining = (e) => {
-        const total = Date.parse(e) - Date.parse(new Date());
-        const seconds = Math.floor((total / 1000) % 60);
-        const minutes = Math.floor((total / 1000 / 60) % 60);
-        const hours = Math.floor((total / 1000 / 60 / 60) % 24);
-        return {
-            total, hours, minutes, seconds
-        };
-    }
-  
-    const startTimer = (e) => {
-        // setTimeout(3);
-        let { total, hours, minutes, seconds } = getTimeRemaining(e);
-        if (total >= 0) {
-  
-            setTimer(
-                // (hours > 9 ? hours : '0' + hours) + ':' +
-                (minutes > 9 ? minutes : '0' + minutes) + ':'
-                + (seconds > 9 ? seconds : '0' + seconds)
-            );
-        }
-    }
-  
-    const clearTimer = (e) => {
-        // Se alterar o tempo, deve-se alterar esse placeholder também 
-        setTimer('00:40');
-  
-        if (Ref.current) clearInterval(Ref.current);
-        const id = setInterval(() => {
-            startTimer(e);
-        }, 1000);
-        Ref.current = id;
-    }
-  
-    const getDeadTime = () => {
-        let deadline = new Date();
-  
-        // Ajustar aqui para adicionar mais tempo
-        deadline.setSeconds(deadline.getSeconds() + 40);
-        return deadline;
-    }
-  
-    const onClickReset = () => {
-        clearTimer(getDeadTime());
-    }
-
-    // Timer 2
+    // Timer
     const renderTime = ({ remainingTime }) => {
         const currentTime = useRef(remainingTime);
         const prevTime = useRef(null);
@@ -187,8 +140,6 @@ const Giveaway = () => {
     useEffect(() => {
         // checkKey();
         // listLectures();
-        
-        setTimer('00:40'); // Timer 1: Se alterar o tempo, deve-se alterar esse placeholder também 
     }, []);
 
     return (
@@ -219,13 +170,7 @@ const Giveaway = () => {
 
                                         <FormWrapper>
 
-                                            {/* Timer 1 */}
                                             {!isLoading && gotResult &&
-                                                <h1 className='timer'>{timer}</h1>                 
-                                            }
-
-                                            {/* Timer 2 */}
-                                            {!isLoading /*&& gotResult */ &&
                                                 <TimerWrapper>
                                                     <div className="timer-wrapper">
                                                         <CountdownCircleTimer
@@ -243,9 +188,11 @@ const Giveaway = () => {
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <InputBox>
                                                     <label htmlFor='lectureId'> ID da palestra: </label>
-                                                    <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
-                                                        {...register("lectureId", { required: true, minLength: 1, })} />
-                                                    {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                                    <div className='form-input'>
+                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
+                                                            {...register("lectureId", { required: true, minLength: 1, })} />
+                                                    </div>
+                                                    {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
                                                 </InputBox>
 
                                                 <CheckboxBox>
@@ -259,12 +206,12 @@ const Giveaway = () => {
                                                 }
 
                                                 {giveawayResultName !== placeholderMessage &&
-                                                    <Button type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
+                                                    <Button className='secondary-btn' type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
                                                 }
                                             </form>
 
-                                            <Button className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
-                                                {showList ? "Esconder palestras" : "Mostrar palestras"} </Button>
+                                            <SecondaryButton className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
+                                                {showList ? "Esconder palestras" : "Mostrar palestras"} </SecondaryButton>
 
                                         </FormWrapper>
                                     </>
@@ -279,14 +226,19 @@ const Giveaway = () => {
 
                             {showList &&
                                 <LecturesList>
-                                    <ul>
-                                        {lectures.map((lecture, key) =>
-                                            <li key={key}>
-                                                id: {lecture.id} | Título: {lecture.title}
-                                            </li>)}
-                                    </ul>
+                                    <div className='lecture-list-container'>
+                                        <ul>
+                                            {lectures.map((lecture, key) =>
+                                                <li key={key}>
+                                                    ID: <span>{lecture.id}</span> | Título: {lecture.title}
+                                                </li>)}
+                                        </ul>
+                                    </div>
                                 </LecturesList>
                             }
+                            
+                                
+                                
                         </>
                     {/* } */}
                 </div>
@@ -310,8 +262,10 @@ const Loading = styled.figure`
 `
 
 const GiveawayWrapper = styled.section`
-    background: url('./images/background_imgs/background4_mobile.svg') no-repeat;
+    background: url('./images/background_imgs/background4_mobile.svg') top fixed no-repeat;
+    background-position: top;
     background-size: cover;
+    min-height: calc(100vh - 3.75rem);
 
     .page-description {
         text-align: center;
@@ -325,6 +279,16 @@ const GiveawayWrapper = styled.section`
         padding-block: 3.5rem;
         margin-block: 3.75rem; /* match navbar height */
         gap: 3rem;
+
+        h3 {
+            text-align: center;
+        }
+    }
+
+    button {
+        width: fit-content;
+        max-width: 450px;
+        margin-top: 1rem;
     }
 
     @media (min-width:1000px) {
@@ -340,34 +304,114 @@ const ErrorMessage = styled.span`
 `
 
 const FormWrapper = styled.div`
+    --color-invalid: #F24822;
+    --color-valid: #14AE5C;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-radius: 5px;
+        gap: 1rem;
+    }
+
+    .form-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 15rem;
+        height: 4rem;
+        background-color: var(--color-neutral-50);
+        border-radius: 16px;
+        padding: 0.5rem;
+        margin-left: -4px;
+
+        border: 4px solid transparent;
+        background-clip: padding-box;
+
+        &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(.error-border) {
+            border-color: var(--color-invalid);
+        }
+
+        &:has(.token-registered) {
+            border-color: var(--color-valid);
+        }
+
+        input[type=text], input[type=password],  select {
+            width: 95%;
+            border: none;
+            height: 100%;
+            background-color: transparent;
+        }
+
+        select {
+            color: var(--color-neutral-400);
+        }
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    span {
+        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        color: var(--color-invalid);
+    }
+`
+
+
+const SecondaryButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    width: 100%;
+    width: 9.1875rem;
+    height: 3rem;
+    padding: 0.5625rem 1.3125rem;
+    margin-bottom: 5px;
+    border-radius: 9px;
+    border: 3px solid var(--color-neutral-50);
+    background-color: transparent;
+    transition: 500ms;
+    cursor: pointer;
 
-    form {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+    font: 400 1rem/1.25rem 'Space_Mono_Bold';
+
+    &:hover {
+        background-color: var(--color-neutral-50);
+        
+        color: var(--color-neutral-900);
     }
 
-    input {
-        border: 4px solid transparent;
+    &:active {
+        background-color: var(--color-neutral-100);
+        border-color: var(--color-neutral-100);
+        color: var(--color-neutral-900);
     }
+        
+    @media (min-width:560px) {
+        width: 9.6875rem;
+        height: 3rem;
 
-    .error-border {
-        border: 4px solid var(--color-invalid);
-    }
-
-    // Timer 1:
-    .timer { 
-        margin-top: 3rem;
-        margin-bottom: 3rem;
+        span {
+            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
+        }
     }
 `
 
@@ -378,43 +422,11 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 500px;
-    padding: 1.5rem 20px;
-
-    input {
-        border: unset;
-        background-color: #241D3C;
-        filter: brightness(130%);
-
-        width: 100px;
-        border-radius: 5px;
-        padding: 8px 15px;
-
-        color: var(--color-text);
-        text-align: center;
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #241D3C inset;
-        -webkit-text-fill-color: var(--color-text);
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
+    max-width: 450px;
+    padding: 0 0 1.2rem 0;
 
     label {
-        color: var(--color-text);
-        margin-bottom: 10px;
+        margin-bottom: .5rem;
     }
 `
 
@@ -423,11 +435,15 @@ const CheckboxBox = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 2rem;
+    max-width: 450px;
+    padding-block: 1.5rem;
+    background-color: var(--color-neutral-800);
+    border-radius: 8px;
 
     label {
         margin-left: 15px;
         color: var(--color-text);
+        font: 700 0.875rem/1rem 'Space_Mono';
 
         cursor: pointer;
     }
@@ -465,17 +481,35 @@ const ResultSection = styled.div`
     }
 `
 
-const LecturesList = styled.section`
+const LecturesList = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: -1rem;
+
+    .lecture-list-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    span {
+        font: inherit;
+        color: var(--color-primary-500);
+        font-family: 'Space_Mono_Bold';
+        font-weight: 400;
+    }
 
     ul {
-        color: var(--color-text);
+
+        li {
+            margin-bottom: 10px;
+        }
     }
 `
 
-// Timer 2:
+// Timer:
 const TimerWrapper = styled.section`
     margin-block: 2rem 3rem;
 

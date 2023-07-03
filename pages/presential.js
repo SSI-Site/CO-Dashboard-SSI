@@ -2,6 +2,8 @@ import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
+import { cpf } from 'cpf-cnpj-validator';
+import InputMask from 'react-input-mask';
 import Swal from 'sweetalert2'
 
 import useAuth from '../hooks/useAuth';
@@ -81,21 +83,20 @@ const Presential = () => {
                                     <>
                                         <InputBox1>
                                             <label htmlFor='lectureId'> ID da palestra: </label>
-                                            <input id='lectureId' type='text' className={errors.lectureId && 'error-border'}
-                                                {...register("lectureId", { required: true, minLength: 1, })} />
-                                            {errors.lectureId && <ErrorMessage> ID inválido. </ErrorMessage>}
+                                            <div className='form-input'>
+                                                <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
+                                                    {...register("lectureId", { required: true, minLength: 1, })} />
+                                            </div>
+                                            {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
                                         </InputBox1>
 
                                         <InputBox2>
-                                            <label htmlFor='email'> E-mail do inscrito: </label>
-                                            <input id='email' type='text' className={errors.email && 'error-border'}
-                                                {...register("email", {
-                                                    required: true,
-                                                    minLength: 2,
-                                                    maxLength: 60,
-                                                })
-                                                } />
-                                            {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
+                                            <label htmlFor='email'> CPF do inscrito: </label>
+                                            <div className='form-input'>
+                                                <InputMask id='cpf_value' type='text' mask='999.999.999-99' placeholder='Insira o CPF' className={errors.cpf_value && 'error-border'}
+                                                    {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
+                                            </div>
+                                            {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>}
                                         </InputBox2>
 
                                         <Button> Registrar </Button>
@@ -132,8 +133,9 @@ const Loading = styled.figure`
 `
 
 const PresenceWrapper = styled.section`
-    background: url('./images/background_imgs/background2_mobile.svg') no-repeat;
+    background: url('./images/background_imgs/background2_mobile.svg') bottom fixed no-repeat;
     background-size: cover;
+    min-height: calc(100vh - 3.75rem);
 
     .page-description {
         text-align: center;
@@ -162,32 +164,77 @@ const ErrorMessage = styled.span`
 `
 
 const FormWrapper = styled.div`
+    --color-invalid: #F24822;
+    --color-valid: #14AE5C;
     width: 100%;
 
     form {
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
+        flex-wrap: wrap;
+        border-radius: 5px;
+        gap: 1rem;
+
+        button {
+            width: fit-content;
+            max-width: 450px;
+            margin-top: 1rem;
+        }
     }
 
-    input {
+    .form-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 4rem;
+        background-color: var(--color-neutral-50);
+        border-radius: 16px;
+        padding: 0.5rem;
+        margin-left: -4px;
+
         border: 4px solid transparent;
+        background-clip: padding-box;
+
+        &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(.error-border) {
+            border-color: var(--color-invalid);
+        }
+
+        &:has(.token-registered) {
+            border-color: var(--color-valid);
+        }
+
+        input[type=text], input[type=password],  select {
+            width: 95%;
+            border: none;
+            height: 100%;
+            background-color: transparent;
+        }
+
+        select {
+            color: var(--color-neutral-400);
+        }
     }
 
-    label {
-        color: var(--color-text);
-        margin-bottom: .5rem;
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 
-    button {
-        margin-top: 2rem;
-    }
-
-    .error-border {
-        border: 4px solid var(--color-invalid);
+    span {
+        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        color: var(--color-invalid);
     }
 `
 
@@ -199,37 +246,10 @@ const InputBox1 = styled.div`
     position: relative;
     width: 100%;
     max-width: 450px;
-    padding: 1.5rem 20px;
+    padding: 0 0 1.2rem 0;
 
-    input {
-        border: unset;
-        background-color: #241D3C;
-        filter: brightness(130%);
-
-        width: 100px;
-        border-radius: 5px;
-        padding: 8px 15px;
-
-        color: var(--color-text);
-        text-align: center;
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #241D3C inset;
-        -webkit-text-fill-color: var(--color-text);
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
+    label {
+        margin-bottom: .5rem;
     }
 `
 
@@ -241,36 +261,10 @@ const InputBox2 = styled.div`
     position: relative;
     width: 100%;
     max-width: 450px;
-    padding: 1.5rem 20px;
+    padding: 0 0 1.2rem 0;
 
-    input {
-        border: unset;
-        background-color: #241D3C;
-        filter: brightness(130%);
-
-        width: 90%;
-        border-radius: 5px;
-        padding: 8px 15px;
-        color: var(--color-text);
-        text-align: center;
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #241D3C inset;
-        -webkit-text-fill-color: var(--color-text);
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
+    label {
+        margin-bottom: .5rem;
     }
 `
 

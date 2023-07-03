@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^10.0.0",
     "firebase": "8.3.1",
     "js-cookie": "^3.0.1",

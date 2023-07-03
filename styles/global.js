@@ -25,10 +25,6 @@ export default createGlobalStyle`
         --color-neutral-100: #D7D7D7;
         --color-neutral-50: #F3F3F3;
 
-
-        --color-invalid: #F24822;
-        --color-valid: #14AE5C;
-
         /* 16 pixels (100% = 16 pixels) */
         font-size: 100%;
     }
@@ -91,7 +87,7 @@ export default createGlobalStyle`
     h3 {
         font: 400 2.5rem/3rem 'Space_Mono_Bold';
         color: var(--color-neutral-50);
-        text-align: center;
+        text-align: left;
     }
 
     h4 {
@@ -129,8 +125,16 @@ export default createGlobalStyle`
         color: var(--color-neutral-50);
     }
 
-    input[type=text] { 
+    input[type=text], input[type=password] { 
+        text-align: center;
         text-transform: uppercase;
+        font: 700 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-400);
+        background-color: var(--color-neutral-50);
+        border: 0;
+    }
+    
+    select, option {
         font: 700 1rem/1.25rem 'Space_Mono';
         color: var(--color-neutral-400);
         background-color: var(--color-neutral-50);
@@ -155,8 +159,8 @@ export default createGlobalStyle`
 
     ::placeholder { /* Recent browsers */
         text-transform: none;
-        font: 400 1rem/1.25rem 'Space_Mono';
-        color: var(--color-neutral-400);
+        font: 700 1rem/1.25rem 'Space_Mono';
+        color: var(--color-neutral-200);
     }
 
     @media (min-width:480px) {
@@ -165,11 +169,12 @@ export default createGlobalStyle`
 
     @media (min-width:560px) {
 
-        input[type=text] { 
+        input[type=text], input[type=password], select, option { 
             font: 700 1.125rem/1.75rem 'Space_Mono';
+            color: var(--color-neutral-400);
             
             ::placeholder {
-                font: 400 1.125rem/1.75rem 'Space_Mono';
+                font: 700 1.125rem/1.75rem 'Space_Mono';
             }
         }
 

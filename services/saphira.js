@@ -23,6 +23,11 @@ const saphira = {
     return axios.get(requestUrl);
   },
 
+  getTokenGenerated: async (lectureId) => {
+    const requestUrl = `${BASE_URL}/talk/${lectureId}/draw_auditorium` // REVER COM INFRA
+    return axios.get(requestUrl);
+  }
+
 }
 
 export default saphira;

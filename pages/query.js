@@ -2,6 +2,8 @@ import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
+import { cpf } from 'cpf-cnpj-validator';
+import InputMask from 'react-input-mask';
 import Swal from 'sweetalert2';
 
 import useAuth from '../hooks/useAuth';
@@ -25,7 +27,7 @@ const Query = () => {
     const onSubmit = data => {
         setIsLoading(true);
 
-        listPresences(data.email);
+        listPresences(data.cpf_value);
         setIsListingPresences(false);
 
         setTimeout(() => {
@@ -42,11 +44,11 @@ const Query = () => {
         }
     }
 
-    const listPresences = (email) => {
+    const listPresences = (cpf_value) => {
         setIsLoading(true);
-        setUserEmail(email);
+        setUserEmail(cpf_value);
 
-        saphira.listPresences(email)
+        saphira.listPresences(cpf_value)
             .then((res) => {
                 setUserPresences([...res.data]);
                 setIsLoading(true);
@@ -57,12 +59,12 @@ const Query = () => {
             })
     }
 
-    const countOnlinePresences = () => {
+    const countTotalPresences = () => {
         if (!userPresences) return;
         let count = 0;
 
         userPresences.forEach((lecture) => {
-            if (lecture.online) count++;
+            count++;
         });
 
         console.log(count);
@@ -117,35 +119,32 @@ const Query = () => {
                                 {!isLoading &&
                                     <>
                                         <InputBox>
-                                            <label htmlFor='email'> E-mail do inscrito: </label>
-                                            <input id='email' type='text' className={errors.email && 'error-border'}
-                                                {...register("email", {
-                                                    required: true,
-                                                    minLength: 2,
-                                                    maxLength: 60,
-                                                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Formato de email inválido" }
-                                                })
-                                                } />
-                                            {errors.email && <ErrorMessage> E-mail inválido </ErrorMessage>}
+                                            <label htmlFor='email'> CPF do inscrito: </label>
+                                            <div className='form-input'>
+                                                <InputMask id='cpf_value' type='text' mask='999.999.999-99' placeholder='Insira o CPF' className={errors.cpf_value && 'error-border'}
+                                                    {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
+                                            </div>
+                                            {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>}
                                         </InputBox>
-
-                                        {/* <Button> Registrar </Button> */}
 
                                         {userPresences.length === 0 ?
                                             <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
                                             :
-
                                             <PresencesList>
-                                                <h3>E-mail: {userEmail}</h3>
-                                                <h3>Presenças online: {countOnlinePresences()}</h3>
-                                                <h3>Presenças presenciais: {countPresencialPresences()}</h3>
+                                                <div className='user-info'>
+                                                    <h6>E-mail: <span>alkplima@usp.br{userEmail}</span></h6>
+                                                    <h6>Total de presenças: <span>{countTotalPresences()}</span></h6>
+                                                    <h6>Presenças presenciais: <span>{countPresencialPresences()}</span></h6>
+                                                </div>
+                                                    
                                                 <ul>
-                                                    {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - {lecture.online ? "Online" : "Presencial"}</li>)}
+                                                    {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - <span>{lecture.online ? "Online" : "Presencial"}</span></li>)}
                                                 </ul>
 
-                                                <Button type="button" onClick={() => clearPresences()}> Limpar </Button>
+                                                <SecondaryButton type="button" onClick={() => clearPresences()}> Limpar </SecondaryButton>
                                             </PresencesList>
                                         }
+                                        
                                     </>
                                 }
 
@@ -178,8 +177,9 @@ const Loading = styled.figure`
 `
 
 const QueryWrapper = styled.section`
-    background: url('./images/background_imgs/background5_mobile.svg') no-repeat;
+    background: url('./images/background_imgs/background5_mobile.svg') top fixed;
     background-size: cover;
+    min-height: calc(100vh - 3.75rem);
 
     .page-description {
         text-align: center;
@@ -208,33 +208,77 @@ const ErrorMessage = styled.span`
 `
 
 const FormWrapper = styled.div`
+    --color-invalid: #F24822;
+    --color-valid: #14AE5C;
     width: 100%;
 
     form {
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
+        flex-wrap: wrap;
+        border-radius: 5px;
+        gap: 1rem;
+
+        button {
+            width: fit-content;
+            max-width: 450px;
+            margin-top: 1rem;
+        }
     }
 
-    input {
+    .form-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 4rem;
+        background-color: var(--color-neutral-50);
+        border-radius: 16px;
+        padding: 0.5rem;
+        margin-left: -4px;
+
         border: 4px solid transparent;
+        background-clip: padding-box;
+
+        &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+            border-color: var(--color-primary);
+        }
+
+        &:has(.error-border) {
+            border-color: var(--color-invalid);
+        }
+
+        &:has(.token-registered) {
+            border-color: var(--color-valid);
+        }
+
+        input[type=text], input[type=password],  select {
+            width: 95%;
+            border: none;
+            height: 100%;
+            background-color: transparent;
+        }
+
+        select {
+            color: var(--color-neutral-400);
+        }
     }
 
-
-    label {
-        color: var(--color-text);
-        margin-bottom: 10px;
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 
-    button {
-        margin-top: 2rem;
-    }
-
-    .error-border {
-        border: 4px solid var(--color-invalid);
+    span {
+        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        color: var(--color-invalid);
     }
 `
 
@@ -245,56 +289,83 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    padding: 1.5rem 20px;
+    max-width: 450px;
+    padding: 0 0 1.2rem 0;
 
-    input {
-        border: unset;
-        background-color: #241D3C;
-        filter: brightness(130%);
-
-        width: 90%;
-        border-radius: 5px;
-        padding: 8px 15px;
-        color: var(--color-text);
-        text-align: center;
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #241D3C inset;
-        -webkit-text-fill-color: var(--color-text);
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
+    label {
+        margin-bottom: .5rem;
     }
 `
 
 const PresencesList = styled.div`
-    text-align: center;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin-top: 1rem;
     color: var(--color-text);
 
-    ul {
+    .user-info {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
         text-align: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        background-color: var(--color-neutral-800);
+        border-radius: 8px;
+    }
 
-        width: 100%;
-        padding: 0 5%;
+    span {
+        font: inherit;
+        color: var(--color-primary-500);
+    }
+
+    ul {
+        margin-top: 1.5rem;
 
         li {
             margin-bottom: 10px;
+        }
+    }
+`
+
+const SecondaryButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 9.1875rem;
+    height: 3rem;
+    padding: 0.5625rem 1.3125rem;
+    margin-bottom: 5px;
+    border-radius: 9px;
+    border: 3px solid var(--color-neutral-50);
+    background-color: transparent;
+    transition: 500ms;
+    cursor: pointer;
+
+    font: 400 1rem/1.25rem 'Space_Mono_Bold';
+
+    &:hover {
+        background-color: var(--color-neutral-50);
+        
+        color: var(--color-neutral-900);
+    }
+
+    &:active {
+        background-color: var(--color-neutral-100);
+        border-color: var(--color-neutral-100);
+        color: var(--color-neutral-900);
+    }
+        
+    @media (min-width:560px) {
+        width: 9.6875rem;
+        height: 3rem;
+
+        span {
+            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
         }
     }
 `
