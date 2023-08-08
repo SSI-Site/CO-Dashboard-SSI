@@ -395,7 +395,6 @@ const SecondaryButton = styled.button`
 
     &:hover {
         background-color: var(--color-neutral-50);
-        
         color: var(--color-neutral-900);
     }
 

@@ -32,9 +32,9 @@ const Meta = ({ title, keywords, description }) => {
 }
 
 Meta.defaultProps = {
-  title: 'CO Dashboard 2022',
+  title: 'CO Dashboard 2023',
   keywords: 'Semana, semana, Sistemas, sistemas, Informação, informação, informacao, USP, usp, EACH, each, SI, si, Evento, evento, palestras, tecnologia, universidade, universitário, universitario',
-  description: 'Destinado a comissão organizadora da SSI 2022',
+  description: 'Destinado à Comissão Organizadora da SSI de 2023',
 }
 
 export default Meta;
