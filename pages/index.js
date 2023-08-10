@@ -71,7 +71,7 @@ const Login = () => {
 
                                     <Button onClick={() => {clearErrors("credentials")}}> Entrar </Button>
 
-                                    {errors.credentials && <p> Credenciais inválidas </p> }
+                                    {errors.credentials && <p className='error-message'> Credenciais inválidas </p> }
                                 </>
                             }
 
@@ -155,6 +155,12 @@ const FormWrapper = styled.div`
             width: fit-content;
             max-width: 450px;
             margin-top: 1rem;
+        }
+
+        .error-message {
+            color: var(--color-invalid);
+            text-decoration: underline;
+            bottom: 0;
         }
     }
 
