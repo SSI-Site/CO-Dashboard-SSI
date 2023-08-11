@@ -119,12 +119,17 @@ const Query = () => {
                                 {!isLoading &&
                                     <>
                                         <InputBox>
-                                            <label htmlFor='email'> CPF do inscrito: </label>
+                                            <label htmlFor='document'> Documento do inscrito: </label>
                                             <div className='form-input'>
-                                                <InputMask id='cpf_value' type='text' mask='999.999.999-99' placeholder='Insira o CPF' className={errors.cpf_value && 'error-border'}
-                                                    {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
+                                                <InputMask id='cpf_value' /* cpf_value mesmo ? */ type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                    // {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
+                                                    // {...register("nusp_value", { minLength: 5, pattern: /^[0-9]*$/i })} 
+                                                    // VER AQUI COM INFRA
+                                                />
+
                                             </div>
-                                            {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>}
+                                            {/* {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>} */}
+                                            {/* VER AQUI COM INFRA */}
                                         </InputBox>
 
                                         {userPresences.length === 0 ?
