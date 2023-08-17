@@ -8,6 +8,7 @@ import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
+import CopyIcon from '../public/images/icons/copy.svg'
 
 const Token = () => {
 
@@ -112,12 +113,15 @@ const Token = () => {
                             <ResultSection className='tooltip'>
                                 {!isLoading &&
                                     <>
-                                        {tokenGenerated !== placeholderMessage &&
-                                            <p>Clique no token para copiá-lo para a área de transferência:</p>
-                                        }
-                                        <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}
-                                                onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
-                                            <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}> {tokenGenerated} </h3>
+                                        <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}>
+                                            <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}
+                                                onClick={tokenGenerated !== placeholderMessage ? copyContent : null}> {tokenGenerated} </h3>
+                                            {tokenGenerated !== placeholderMessage &&
+                                                <div className='copy-btn'
+                                                    onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
+                                                    <img src={CopyIcon} />
+                                                </div>
+                                            }
                                             {textCopied &&
                                                 <span className='tooltiptext'>Token copiado!</span>
                                             }
@@ -316,6 +320,10 @@ const ResultSection = styled.div`
 
     h3 {
         color: var(--color-primary-500);
+
+        :hover {
+            cursor: copy;
+        }
     }
 
     .neon {
@@ -330,16 +338,15 @@ const ResultSection = styled.div`
     }
 
     .token-wrapper {
-        padding: 2rem 5rem;
-        background-color: var(--color-neutral-800);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;             
+        padding: 0 5rem;
         border-radius: 8px;
         border: 2px solid transparent;
         transition: 0.3s all ease-in-out;
-
-        :hover {
-            cursor: copy;
-            border: 2px solid var(--color-primary-700);
-        }
     }
 
     .tooltip {
@@ -357,7 +364,7 @@ const ResultSection = styled.div`
         /* Position the tooltip text */
         position: absolute;
         z-index: 1;
-        bottom: -35%;
+        bottom: -70%;
         right: 22%;
 
         /* Fade in tooltip */
@@ -375,5 +382,33 @@ const ResultSection = styled.div`
         border-width: 5px;
         border-style: solid;
         border-color: transparent transparent var(--color-neutral-700) transparent;
+    }
+    
+    .copy-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        width: 2.25rem;
+        height: 2.25rem;
+        gap: 0.5rem;
+        position: absolute;
+        top: 17%;
+        right: 12%;
+        border-radius: 8px;
+        transition: 0.3s all ease-in-out;
+        
+        img {
+            width: 1.5rem;
+        }
+
+        &:hover {
+            cursor: copy;
+            background-color: var(--color-neutral-700);
+        }
+
+        &:active {
+            background-color: var(--color-neutral-500);
+        }
     }
 `
