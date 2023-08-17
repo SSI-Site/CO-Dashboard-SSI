@@ -18,10 +18,25 @@ const Token = () => {
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [textCopied, setTextCopied] = useState(false);
     const [tokenGenerated, setTokenGenerated] = useState(placeholderMessage);
     
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
-    
+
+    const currentDateTime = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+        const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        return formattedDateTime;
+    }
+    // console.log("Data atual",currentDateTime());
+      
     const onSubmit = data => {
         getTokenGenerated(data.lectureId);
     }
@@ -30,20 +45,32 @@ const Token = () => {
         setIsLoading(true);
 
         setTimeout(() => {
-            saphira.getTokenGenerated(lectureId)
+            saphira.getTokenGenerated(lectureId, currentDateTime())
                 .then((res) => {
-                    setTokenGenerated(res.data.token); // ??? REVER COM INFRA
+                    console.log(res);
+                    setTokenGenerated(res.data.code);
                     setIsLoading(false);
-                    onClickReset();
-                    reset();
-                })
-                .catch(err => {
+                }, (err) => {
                     console.log(err);
                     setIsLoading(false);
                     setError("lectureId", { type: "focus" }, { shouldFocus: true })
                 })
         }, 2000);
     }
+
+    // Para permitir copiar token ao clicar sobre ele
+    const copyContent = async () => {
+        try {
+          await navigator.clipboard.writeText(tokenGenerated);
+          console.log('Content copied to clipboard');
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+        setTextCopied(true);
+        setTimeout(() => {
+            setTextCopied(false);
+        }, 2000);
+      }
 
     const checkKey = () => {
         if (key) {
@@ -55,7 +82,7 @@ const Token = () => {
     }
 
     useEffect(() => {
-        // checkKey();
+        checkKey();
     }, []);
 
     return (
@@ -80,12 +107,21 @@ const Token = () => {
 
                     <h5 className='page-description'> Geração de tokens do online :)</h5>
 
-                    {/* {isKeyPresent && */}
+                    {isKeyPresent &&
                         <>
-                            <ResultSection>
+                            <ResultSection className='tooltip'>
                                 {!isLoading &&
                                     <>
-                                        <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}> {tokenGenerated} </h3>
+                                        {tokenGenerated !== placeholderMessage &&
+                                            <p>Clique no token para copiá-lo para a área de transferência:</p>
+                                        }
+                                        <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}
+                                                onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
+                                            <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}> {tokenGenerated} </h3>
+                                            {textCopied &&
+                                                <span className='tooltiptext'>Token copiado!</span>
+                                            }
+                                        </div>
 
                                         <FormWrapper>
                                             <form onSubmit={handleSubmit(onSubmit)}>
@@ -117,7 +153,7 @@ const Token = () => {
                                 }
                             </ResultSection>
                         </>
-                    {/* } */}
+                    }
                 </div>
             </TokenWrapper>
         </>
@@ -283,12 +319,61 @@ const ResultSection = styled.div`
     }
 
     .neon {
-        color: #fff;
+        color: var(--color-primary-500);
+        /* color: #fff;
         text-shadow:
             0 0 1px #fff,
             0 0 20px var(--color-primary-500),
             0 0 60px var(--color-primary-500),
             0 0 70px var(--color-primary-500),
-            0 0 80px var(--color-primary-500);
+            0 0 80px var(--color-primary-500); */
+    }
+
+    .token-wrapper {
+        padding: 2rem 5rem;
+        background-color: var(--color-neutral-800);
+        border-radius: 8px;
+        border: 2px solid transparent;
+        transition: 0.3s all ease-in-out;
+
+        :hover {
+            cursor: copy;
+            border: 2px solid var(--color-primary-700);
+        }
+    }
+
+    .tooltip {
+        position: relative;
+    }
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+        visibility: visible;
+        background-color: var(--color-neutral-700);
+        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        text-align: center;
+        padding: 7px 15px;
+        border-radius: 4px;
+
+        /* Position the tooltip text */
+        position: absolute;
+        z-index: 1;
+        bottom: -35%;
+        right: 22%;
+
+        /* Fade in tooltip */
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
+
+    /* Tooltip arrow */
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        right: 50%;
+        margin-right: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent var(--color-neutral-700) transparent;
     }
 `

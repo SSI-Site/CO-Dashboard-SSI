@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
                 `}
             </style>
             {/** isso aqui deve estar comentado ao fim do desenvolvimento e teste da plataforma */}
-            <NavBar/> 
+            {/* <NavBar/>  */}
             <GlobalStyle />
             <SiteWrapper>
                 <main>

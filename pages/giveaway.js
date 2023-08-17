@@ -138,8 +138,8 @@ const Giveaway = () => {
     };
 
     useEffect(() => {
-        // checkKey();
-        // listLectures();
+        checkKey();
+        listLectures();
     }, []);
 
     return (
@@ -161,7 +161,7 @@ const Giveaway = () => {
                 <div className='section-container'>
                     <h3>Sorteio</h3>
 
-                    {/* {isKeyPresent && */}
+                    {isKeyPresent &&
                         <>
                             <ResultSection>
                                 {!isLoading &&
@@ -170,7 +170,7 @@ const Giveaway = () => {
 
                                         <FormWrapper>
 
-                                            {!isLoading && gotResult &&
+                                            {!isLoading && gotResult && giveawayResultName !== placeholderMessage &&
                                                 <TimerWrapper>
                                                     <div className="timer-wrapper">
                                                         <CountdownCircleTimer
@@ -189,10 +189,10 @@ const Giveaway = () => {
                                                 <InputBox>
                                                     <label htmlFor='lectureId'> ID da palestra: </label>
                                                     <div className='form-input'>
-                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
-                                                            {...register("lectureId", { required: true, minLength: 1, })} />
+                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={/*errors.lectureId*/ false && 'error-border'}
+                                                            {...register("lectureId", { required: true, minLength: 1 })} />
                                                     </div>
-                                                    {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
+                                                    {/* {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>} */}
                                                 </InputBox>
 
                                                 <CheckboxBox>
@@ -224,7 +224,7 @@ const Giveaway = () => {
                                 }
                             </ResultSection>
 
-                            {showList &&
+                            {!isLoading && showList &&
                                 <LecturesList>
                                     <div className='lecture-list-container'>
                                         <ul>
@@ -240,7 +240,7 @@ const Giveaway = () => {
                                 
                                 
                         </>
-                    {/* } */}
+                    }
                 </div>
             </GiveawayWrapper>
         </>

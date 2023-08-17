@@ -3,6 +3,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 
 const saphira = {
 
+  addPresentialPresenceToUser: async (lectureId, document) => {
+    const requestUrl = `${BASE_URL}/admin/presence/add/${document}`
+    const params = new URLSearchParams();
+    params.append('id', lectureId);
+    return axios.post(requestUrl, params);
+  },
+
   getGivawayResult: async (lectureId) => {
     const requestUrl = `${BASE_URL}/talk/${lectureId}/draw`
     return axios.get(requestUrl);
@@ -17,15 +24,18 @@ const saphira = {
     return axios.get(`${BASE_URL}/talks`);
   },
 
-  listPresences: async (email) => {
-    const requestUrl = `${BASE_URL}/user/${email}/presences`
-
+  listPresences: async (document) => {
+    const requestUrl = `${BASE_URL}/admin/presence/get/${document}`
     return axios.get(requestUrl);
   },
 
-  getTokenGenerated: async (lectureId) => {
-    const requestUrl = `${BASE_URL}/talk/${lectureId}/draw_auditorium` // REVER COM INFRA
-    return axios.get(requestUrl);
+  getTokenGenerated: async (lectureId, currentTime) => {
+    const requestUrl = `${BASE_URL}/admin/token/add`
+    const params = new URLSearchParams();
+    params.append('id', lectureId);
+    params.append('duration', '5');
+    params.append('begin', currentTime);
+    return axios.post(requestUrl, params);
   }
 
 }

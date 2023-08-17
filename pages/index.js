@@ -35,7 +35,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        // checkKey();
+        checkKey();
     }, []);
 
     return (

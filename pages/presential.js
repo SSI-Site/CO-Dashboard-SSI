@@ -19,27 +19,48 @@ const Presential = () => {
 
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isListingPresences, setIsListingPresences] = useState(false);
-    const [userPresences, setUserPresences] = useState([]);
-    const [userEmail, setUserEmail] = useState("");
 
     const onSubmit = data => {
         setIsLoading(true);
-
-        // setTimeout(() => {
-        //     reset();
-        //     setIsLoading(false);
-
-        //     Swal.fire({
-        //         icon: 'info',
-        //         title: 'Presença registrada para:',
-        //         text: data.document,
-        //         showConfirmButton: true,
-        //         confirmButtonText: "Ok!",
-        //         confirmButtonColor: "#151023"
-        //     })
-        // }, 2000);
+        addPresentialPresence(data.lectureId, data.document);
     };
+
+    const addPresentialPresence = (lectureId, document) => {
+        setIsLoading(true);
+
+        setTimeout(() => {
+            saphira.addPresentialPresenceToUser(lectureId, document)
+                .then((res) => {
+                    console.log(res);
+                    setIsLoading(false);
+                    
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Presença registrada para:',
+                        text: document,
+                        showConfirmButton: true,
+                        confirmButtonText: "Ok!",
+                        confirmButtonColor: "#151023"
+                    })
+                    // reset();
+                }, (err) => {
+                    setIsLoading(false);
+                    // const message = err.response.data.message;
+        
+                    // if (message?.includes("Falha")) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Falha no registro!',
+                            showConfirmButton: true,
+                            confirmButtonText: "Ok",
+                            confirmButtonColor: "#151023"
+                        })
+                    // } else {
+                        // router.reload();
+                    // }
+                });
+        }, 2000);
+    }
 
     const checkKey = () => {
         if (key) {
@@ -51,7 +72,7 @@ const Presential = () => {
     }
 
     useEffect(() => {
-        // checkKey();
+        checkKey();
     }, []);
 
     return (
@@ -76,7 +97,7 @@ const Presential = () => {
 
                     <h5 className='page-description'> Registro de presenças presenciais :)</h5>
 
-                    {/* {isKeyPresent && */}
+                    {isKeyPresent &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
@@ -91,17 +112,16 @@ const Presential = () => {
                                         </InputBox1>
 
                                         <InputBox2>
-                                            <label htmlFor='document'> Documento do inscrito: </label>
+                                            <label htmlFor='document'> Documento do inscrito<br/> (se for CPF, coloque a máscara):</label>
+                                            {/* <div className='form-input'>
+                                                <InputMask id='cpf_value' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                    {...register("cpf_value", { minLength: 5, pattern: /^[0-9]*$/i })} />
+                                            </div> */}
                                             <div className='form-input'>
-                                                <InputMask id='cpf_value' /* cpf_value mesmo ? */ type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
-                                                    // {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
-                                                    // {...register("nusp_value", { minLength: 5, pattern: /^[0-9]*$/i })} 
-                                                    // VER AQUI COM INFRA
-                                                />
-
+                                                <input id='document' type='text' placeholder='Insira o documento' className={errors.document && 'error-border'}
+                                                    {...register("document", { required: true, minLength: 5 })} />
                                             </div>
-                                            {/* {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>} */}
-                                            {/* VER AQUI COM INFRA */}
+                                            {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
                                         </InputBox2>
 
                                         <Button> Registrar </Button>
@@ -115,7 +135,7 @@ const Presential = () => {
                                 }
                             </form>
                         </FormWrapper>
-                    {/* } */}
+                    }
 
                 </div>
             </PresenceWrapper>
@@ -270,6 +290,7 @@ const InputBox2 = styled.div`
 
     label {
         margin-bottom: .5rem;
+        text-align: center;
     }
 `
 

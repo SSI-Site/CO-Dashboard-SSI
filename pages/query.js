@@ -21,13 +21,13 @@ const Query = () => {
     const [isKeyPresent, setIsKeyPresent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isListingPresences, setIsListingPresences] = useState(false);
-    const [userPresences, setUserPresences] = useState([]);
-    const [userEmail, setUserEmail] = useState("");
+    const [userPresences, setUserPresences] = useState("");
+    const [userDocument, setUserDocument] = useState("");
 
     const onSubmit = data => {
         setIsLoading(true);
 
-        listPresences(data.cpf_value);
+        listPresences(data.document);
         setIsListingPresences(false);
 
         setTimeout(() => {
@@ -44,17 +44,17 @@ const Query = () => {
         }
     }
 
-    const listPresences = (cpf_value) => {
+    const listPresences = (document) => {
         setIsLoading(true);
-        setUserEmail(cpf_value);
+        setUserDocument(document);
 
-        saphira.listPresences(cpf_value)
+        saphira.listPresences(document)
             .then((res) => {
-                setUserPresences([...res.data]);
+                setUserPresences([...res.data.message]);
                 setIsLoading(true);
             })
             .catch(() => {
-                setUserPresences([]);
+                setUserPresences("");
                 setIsLoading(true);
             })
     }
@@ -88,7 +88,7 @@ const Query = () => {
     }
 
     useEffect(() => {
-        // checkKey();
+        checkKey();
     }, []);
 
     return (
@@ -113,37 +113,38 @@ const Query = () => {
 
                     <h5 className='page-description'> Número de presenças nas palestras :)</h5>
 
-                    {/* {isKeyPresent && */}
+                    {isKeyPresent &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
                                     <>
                                         <InputBox>
-                                            <label htmlFor='document'> Documento do inscrito: </label>
+                                        <label htmlFor='document'> Documento do inscrito: </label>
+                                            {/* <div className='form-input'>
+                                                <InputMask id='cpf_value' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                    {...register("cpf_value", { minLength: 5, pattern: /^[0-9]*$/i })} />
+                                            </div> */}
                                             <div className='form-input'>
-                                                <InputMask id='cpf_value' /* cpf_value mesmo ? */ type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
-                                                    // {...register("cpf_value", { validate: value => cpf.isValid(value) || "CPF inválido" })} />
-                                                    // {...register("nusp_value", { minLength: 5, pattern: /^[0-9]*$/i })} 
-                                                    // VER AQUI COM INFRA
-                                                />
-
+                                                <input id='document' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                    {...register("document", { required: false, minLength: 5 })} />
                                             </div>
                                             {/* {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>} */}
                                             {/* VER AQUI COM INFRA */}
                                         </InputBox>
 
-                                        {userPresences.length === 0 ?
+                                        {userPresences == "" ?
                                             <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
                                             :
                                             <PresencesList>
                                                 <div className='user-info'>
-                                                    <h6>E-mail: <span>alkplima@usp.br{userEmail}</span></h6>
-                                                    <h6>Total de presenças: <span>{countTotalPresences()}</span></h6>
-                                                    <h6>Presenças presenciais: <span>{countPresencialPresences()}</span></h6>
+                                                    <h6>Documento: <span>{userDocument}</span></h6>
+                                                    <h6>{userPresences}</h6>
+                                                    {/* <h6>Total de presenças: <span>{countTotalPresences()}</span></h6>
+                                                    <h6>Presenças presenciais: <span>{countPresencialPresences()}</span></h6> */}
                                                 </div>
                                                     
                                                 <ul>
-                                                    {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - <span>{lecture.online ? "Online" : "Presencial"}</span></li>)}
+                                                    {/* {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - <span>{lecture.online ? "Online" : "Presencial"}</span></li>)} */}
                                                 </ul>
 
                                                 <SecondaryButton type="button" onClick={() => clearPresences()}> Limpar </SecondaryButton>
@@ -160,7 +161,7 @@ const Query = () => {
                                 }
                             </form>
                         </FormWrapper>
-                    {/* } */}
+                    }
                 </div>
             </QueryWrapper>
         </>
