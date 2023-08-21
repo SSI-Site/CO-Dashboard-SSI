@@ -5,6 +5,7 @@ const saphira = {
 
   adminLogIn : async (user, password) => {
     const requestUrl = `${BASE_URL}/admin/login`
+    const params = new URLSearchParams();
     params.append('email', user);
     params.append('password', password);
     return axios.post(requestUrl, params);
