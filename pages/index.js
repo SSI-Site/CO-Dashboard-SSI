@@ -69,7 +69,7 @@ const Login = () => {
                                         {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
                                     </InputBox>
 
-                                    <Button onClick={() => {clearErrors("credentials")}}> Entrar </Button>
+                                    <Button type='submit' onClick={() => {clearErrors("credentials")}}> Entrar </Button>
 
                                     {errors.credentials && <p className='error-message'> Credenciais inválidas </p> }
                                 </>
