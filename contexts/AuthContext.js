@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
         if (session) {
             cookie.set('co-auth', session, {
                 expires: 1,
+                sameSite: 'none'
             });
         } else {
             cookie.remove('co-auth');
