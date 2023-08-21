@@ -40,6 +40,7 @@ const Login = () => {
                     setIsLoading(false);
                     
                 }, (err) => {
+                    console.log("Deu ruim o login: ", res);
                     setIsLoading(false);
                 });
         }, 2000);
