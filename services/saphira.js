@@ -3,6 +3,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 
 const saphira = {
 
+  adminLogIn : async (user, password) => {
+    const requestUrl = `${BASE_URL}/admin/login`
+    params.append('email', user);
+    params.append('password', password);
+    return axios.post(requestUrl, params);
+  },
+
   addPresentialPresenceToUser: async (lectureId, document) => {
     const requestUrl = `${BASE_URL}/admin/presence/add/${document}`
     const params = new URLSearchParams();

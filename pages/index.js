@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
+import saphira from '../services/saphira';
 
 import useAuth from '../hooks/useAuth';
 import Meta from '../src/infra/Meta';
@@ -18,6 +19,7 @@ const Login = () => {
     const onSubmit = data => {
         setIsLoading(true);
         const isSignInValid = signIn(data.user, data.password);
+        loginAdmin(data.user, data.password);
 
         if (isSignInValid) {
             router.push("/presential");
@@ -27,6 +29,21 @@ const Login = () => {
 
         setIsLoading(false);
     };
+
+    const loginAdmin = (user, password) => {
+        setIsLoading(true);
+
+        setTimeout(() => {
+            saphira.adminLogIn(user, password)
+                .then((res) => {
+                    console.log("Deu bom o login: ", res);
+                    setIsLoading(false);
+                    
+                }, (err) => {
+                    setIsLoading(false);
+                });
+        }, 2000);
+    }
 
     const checkKey = () => {
         if (key) {
