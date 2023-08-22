@@ -26,6 +26,15 @@ const Query = () => {
 
     const onSubmit = data => {
         setIsLoading(true);
+        saphira.adminLogIn(user, password)
+            .then((res) => {
+                console.log("Deu bom o login: ", res);
+                setIsLoading(false);
+                
+            }, (err) => {
+                console.log("Deu ruim o login: ", res);
+                setIsLoading(false);
+            });
 
         listPresences(data.document);
         setIsListingPresences(false);
