@@ -8,20 +8,14 @@ const saphira = {
     const params = new URLSearchParams();
     params.append('email', user);
     params.append('password', password);
-    return axios.post(requestUrl, params, {
-      withCredentials: true,
-      headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFTOKEN': this.csrf_token,
-      },
-    });
+    return axios.post(requestUrl, params);
   },
 
   addPresentialPresenceToUser: async (lectureId, document) => {
     const requestUrl = `${BASE_URL}/admin/presence/add/${document}`
     const params = new URLSearchParams();
     params.append('id', lectureId);
-    return axios.post(requestUrl, params, { withCredentials: true });
+    return axios.post(requestUrl, params);
   },
 
   getGivawayResult: async (lectureId) => {
@@ -40,7 +34,7 @@ const saphira = {
 
   listPresences: async (document) => {
     const requestUrl = `${BASE_URL}/admin/presence/get/${document}`
-    return axios.get(requestUrl, { withCredentials: true });
+    return axios.get(requestUrl);
   },
 
   getTokenGenerated: async (lectureId, currentTime) => {
@@ -49,7 +43,7 @@ const saphira = {
     params.append('id', lectureId);
     params.append('duration', '5');
     params.append('begin', currentTime);
-    return axios.post(requestUrl, params, { withCredentials: true });
+    return axios.post(requestUrl, params);
   }
 
 }
