@@ -27,7 +27,7 @@ const Query = () => {
     const onSubmit = data => {
         setIsLoading(true);
         setTimeout(() => {
-        saphira.adminLogIn(process.env.NEXT_PUBLIC_AUTH_USERNAME, process.env.NEXT_PUBLIC_AUTH_PASSWORD)
+        saphira.adminLogIn(user, password)
             .then((res) => {
                 console.log("Deu bom o login: ", res);
                 setIsLoading(false);
