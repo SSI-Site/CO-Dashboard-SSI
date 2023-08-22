@@ -26,6 +26,7 @@ const Query = () => {
 
     const onSubmit = data => {
         setIsLoading(true);
+        setTimeout(() => {
         saphira.adminLogIn(user, password)
             .then((res) => {
                 console.log("Deu bom o login: ", res);
@@ -35,6 +36,7 @@ const Query = () => {
                 console.log("Deu ruim o login: ", res);
                 setIsLoading(false);
             });
+        }, 2000);
 
         listPresences(data.document);
         setIsListingPresences(false);
