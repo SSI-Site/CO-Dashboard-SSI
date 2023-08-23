@@ -28,13 +28,14 @@ export function AuthProvider({ children }) {
 
     const setSession = (session) => {
         if (session) {
-            cookie.set('co-auth', session, {
-                expires: 1,
+            cookie.set('identity', session, {
+                // expires: 1,
+                httpOnly: false,
                 sameSite: 'none',
-                secure: true
+                secure: false
             });
         } else {
-            cookie.remove('co-auth');
+            cookie.remove('identity');
         }
     }
 
