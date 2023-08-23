@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
     const signIn = (username, password) => {
         if (username === USER_KEY && password === PASS_KEY) {
             setKey(process.env.NEXT_PUBLIC_AUTH_TOKEN);
-            setSession(tprocess.env.NEXT_PUBLIC_AUTH_TOKENrue);
+            setSession(true);
             return true;
         }
 
@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
 
     const setSession = (session) => {
         if (session) {
-            cookie.set('identity', session, {
+            cookie.set('identity', key, {
                 // expires: 1,
                 httpOnly: false,
                 sameSite: 'none',
