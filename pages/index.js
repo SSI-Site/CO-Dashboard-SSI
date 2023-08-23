@@ -36,7 +36,7 @@ const Login = () => {
         setTimeout(() => {
             saphira.adminLogIn(user, password)
                 .then((res) => {
-                    console.log("Deu bom o login: ", res.headers.cookie);
+                    console.log("Deu bom o login: ", res.headers.set-cookie);
                     setIsLoading(false);
                     
                 }, (err) => {
