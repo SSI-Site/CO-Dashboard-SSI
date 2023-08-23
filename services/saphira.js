@@ -8,7 +8,7 @@ const saphira = {
     const params = new URLSearchParams();
     params.append('email', user);
     params.append('password', password);
-    return axios.post(requestUrl, params, { withCredentials: true });
+    return axios.post(requestUrl, params);
   },
 
   addPresentialPresenceToUser: async (lectureId, document) => {
