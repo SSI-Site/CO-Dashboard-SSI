@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
+import styled from 'styled-components';
 import saphira from '../services/saphira';
 
 import useAuth from '../hooks/useAuth';
-import Meta from '../src/infra/Meta';
 import Button from '../src/components/Button';
+import Meta from '../src/infra/Meta';
 
 const Login = () => {
 
@@ -58,14 +58,14 @@ const Login = () => {
 
     return (
         <>
-            <Meta title='CO SSI 2023 | Login' />
+            <Meta title='CO SSI 2024 | Login' />
 
             <LoginWrapper>
                 <div className='section-container'>
                     <h3>Login</h3>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <h5> Entrada exclusiva para a Comissão Organizadora da SSI de 2023</h5>
+                            <h5> Entrada exclusiva para a Comissão Organizadora da SSI de 2024</h5>
 
                             {!isLoading &&
                                 <>
@@ -95,7 +95,7 @@ const Login = () => {
 
                             {isLoading &&
                                 <Loading>
-                                    <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                    <img src='./loading.svg' alt='SSI 2024 - Loading' />
                                 </Loading>
                             }
                         </form>

@@ -1,7 +1,11 @@
 import Head from 'next/head';
 import img_src from '../../public/images/logos/preview_logo.jpg';
 
-const Meta = ({ title, keywords, description }) => {
+const Meta = ({  
+  title = 'CO Dashboard 2024',
+  keywords = 'Semana, semana, Sistemas, sistemas, Informação, informação, informacao, USP, usp, EACH, each, SI, si, Evento, evento, palestras, tecnologia, universidade, universitário, universitario',
+  description = 'Destinado à Comissão Organizadora da SSI de 2024',
+}) => {
   return (
     <Head>
       <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -29,12 +33,6 @@ const Meta = ({ title, keywords, description }) => {
 
     </Head>
   )
-}
-
-Meta.defaultProps = {
-  title: 'CO Dashboard 2023',
-  keywords: 'Semana, semana, Sistemas, sistemas, Informação, informação, informacao, USP, usp, EACH, each, SI, si, Evento, evento, palestras, tecnologia, universidade, universitário, universitario',
-  description: 'Destinado à Comissão Organizadora da SSI de 2023',
 }
 
 export default Meta;

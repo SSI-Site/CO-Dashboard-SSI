@@ -2,7 +2,6 @@ import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
-import { cpf } from 'cpf-cnpj-validator';
 import InputMask from 'react-input-mask';
 import Swal from 'sweetalert2';
 
@@ -103,7 +102,7 @@ const Query = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2023 | Consulta' />
+            <Meta title='CO SSI 2024 | Consulta' />
 
             <NavBar />
             <QueryWrapper>
@@ -156,7 +155,7 @@ const Query = () => {
 
                                 {isLoading &&
                                     <Loading>
-                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
                                     </Loading>
                                 }
                             </form>

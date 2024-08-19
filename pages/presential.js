@@ -2,7 +2,6 @@ import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
-import { cpf } from 'cpf-cnpj-validator';
 import InputMask from 'react-input-mask';
 import Swal from 'sweetalert2'
 
@@ -87,7 +86,7 @@ const Presential = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2023 | Presencial' />
+            <Meta title='CO SSI 2024 | Presencial' />
 
             <NavBar />
             <PresenceWrapper>
@@ -130,7 +129,7 @@ const Presential = () => {
 
                                 {isLoading &&
                                     <Loading>
-                                        <img src='./loading.svg' alt='SSI 2023 - Loading' />
+                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
                                     </Loading>
                                 }
                             </form>

@@ -40,58 +40,58 @@ const Nav = () => {
                 <a className="logo-container">
                     <img src={LogoPrincipal} alt="SSI logo" />
                     <p className='text-small'>
-                        Semana de Sistemas de Informação 2023
+                        Semana de Sistemas de Informação 2024
                     </p>
                 </a>
             </div>
             
             {/* Navbar para Desktop */}
-            <NavDesktop currentPage={router.pathname}>
+            <NavDesktop $currentPage={router.pathname}>
                 <ul>
                     <li>
-                        <Link href="/presential"><a>Presencial</a></Link>
+                        <Link legacyBehavior href="/presential"><a>Presencial</a></Link>
                         <div></div>
                     </li>
 
                     <li>
-                        <Link href="/token"><a>Token</a></Link>
+                        <Link legacyBehavior href="/token"><a>Token</a></Link>
                         <div></div>
                     </li>
 
                     <li>
-                        <Link href="/giveaway" ><a>Sorteio</a></Link>
+                        <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
                         <div></div>
                     </li>
 
                     <li>
-                        <Link href="/query"><a>Consulta</a></Link>
+                        <Link legacyBehavior href="/query"><a>Consulta</a></Link>
                         <div></div>
                     </li>
                 </ul>
             </NavDesktop>
 
             {/* Navbar para Mobile */}
-            <NavMobile isOpen={isOpen} currentPage={router.pathname}>
+            <NavMobile $isOpen={isOpen} currentPage={router.pathname}>
                 <div className={isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
 
                     <ul>
                         <li onClick={() => setIsOpen(false)}>
-                            <Link href="/presential"><a>Presencial</a></Link>
+                            <Link legacyBehavior href="/presential"><a>Presencial</a></Link>
                             <div></div>
                         </li>
 
                         <li onClick={() => setIsOpen(false)}>
-                            <Link href="/token"><a>Token</a></Link>
+                            <Link legacyBehavior href="/token"><a>Token</a></Link>
                             <div></div>
                         </li>
 
                         <li onClick={() => setIsOpen(false)}>
-                            <Link href="/giveaway"><a>Sorteio</a></Link>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
                             <div></div>
                         </li>
 
                         <li onClick={() => setIsOpen(false)}>
-                            <Link href="/query"><a>Consulta</a></Link>
+                            <Link legacyBehavior href="/query"><a>Consulta</a></Link>
                             <div></div>
                         </li>
                     </ul>
@@ -266,8 +266,8 @@ const NavMobile = styled.nav`
                 }
             }
 
-            ${props => props.currentPage && css`
-                li:nth-child(${pages[props.currentPage]}){
+            ${props => props.$currentPage && css`
+                li:nth-child(${pages[props.$currentPage]}){
                     a {
                         font-family: 'Space_Mono_Bold';
                         font-weight: 400;
@@ -367,8 +367,8 @@ const NavDesktop = styled.nav`
             cursor: default;
         }
 
-        ${props => props.currentPage && css`
-            li:nth-child(${pages[props.currentPage]}) {
+        ${props => props.$currentPage && css`
+            li:nth-child(${pages[props.$currentPage]}) {
                 a {
                     font-family: 'Space_Mono_Bold';
                     font-weight: 400;
@@ -384,7 +384,7 @@ const NavDesktop = styled.nav`
                 }
             }
 
-            li:not(:nth-child(${pages[props.currentPage]})):hover {
+            li:not(:nth-child(${pages[props.$currentPage]})):hover {
                 div {
                     width: calc(100% - 24px);
                     margin-left: 12px;
