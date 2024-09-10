@@ -13,11 +13,11 @@ import CopyIcon from '../public/images/icons/copy.svg'
 const Token = () => {
 
     const router = useRouter();
-    const { key } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     const placeholderMessage = "O token aparecerá aqui!";
 
-    const [isKeyPresent, setIsKeyPresent] = useState(false);
+    const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [textCopied, setTextCopied] = useState(false);
     const [tokenGenerated, setTokenGenerated] = useState(placeholderMessage);
@@ -46,10 +46,10 @@ const Token = () => {
         setIsLoading(true);
 
         setTimeout(() => {
-            saphira.getTokenGenerated(lectureId, currentDateTime())
+            saphira.generateOnlineToken(lectureId, currentDateTime())
                 .then((res) => {
                     console.log(res);
-                    setTokenGenerated(res.data.code);
+                    setTokenGenerated(res.data.token.code);
                     setIsLoading(false);
                 }, (err) => {
                     console.log(err);
@@ -73,17 +73,17 @@ const Token = () => {
         }, 2000);
       }
 
-    const checkKey = () => {
-        if (key) {
-            setIsKeyPresent(true);
+    const checkAuthentication = () => {
+        if (isAuthenticated) {
+            setAccessAllowed(true);
         } else {
-            setIsKeyPresent(false);
+            setAccessAllowed(false);
             router.push("/");
         }
     }
 
     useEffect(() => {
-        checkKey();
+        checkAuthentication();
     }, []);
 
     return (
@@ -108,7 +108,7 @@ const Token = () => {
 
                     <h5 className='page-description'> Geração de tokens do online :)</h5>
 
-                    {isKeyPresent &&
+                    {accessAllowed &&
                         <>
                             <ResultSection className='tooltip'>
                                 {!isLoading &&

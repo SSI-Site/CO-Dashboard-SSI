@@ -1,29 +1,50 @@
 import { createContext, useState, useEffect } from 'react';
 import Router from 'next/router';
 import cookie from 'js-cookie';
+import saphira from '../services/saphira';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
-    const USER_KEY = process.env.NEXT_PUBLIC_AUTH_USERNAME;
-    const PASS_KEY = process.env.NEXT_PUBLIC_AUTH_PASSWORD;
-    const [key, setKey] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const signIn = (username, password) => {
-        if (username === USER_KEY && password === PASS_KEY) {
-            setKey(process.env.NEXT_PUBLIC_AUTH_TOKEN);
-            setSession(true);
-            return true;
+    useEffect(() => {
+        const savedKey = cookie.get('co-auth');
+        if (savedKey) {
+            setIsAuthenticated(true);
         }
+    }, []);
 
-        return false;
+    const signIn = async (username, password) => {
+        try {
+            const res = await saphira.adminLogIn(username, password);
+
+            if (res.status === 200) {
+                setSession(true);
+                setIsAuthenticated(true);
+                Router.push('/presential');
+                return true;
+            }
+            return false
+        } catch (error) {
+            console.log("Erro ao fazer login", error);
+            return false;
+        }
     }
 
-    const signOut = () => {
-        setKey("");
-        setSession(false);
-        Router.push('/');
+    const signOut = async () => {
+        try {
+            const res = await saphira.adminLogOut();
+
+            if (res.status === 200) {
+                setSession(false);
+                setIsAuthenticated(false);
+                Router.push('/');
+            }
+        } catch (error) {
+            console.log("Erro ao fazer logout", error);
+        }
     }
 
     const setSession = (session) => {
@@ -37,7 +58,7 @@ export function AuthProvider({ children }) {
     }
 
     return <AuthContext.Provider value={{
-        key,
+        isAuthenticated,
         signIn,
         signOut
     }}>{children}</AuthContext.Provider>;

@@ -14,80 +14,56 @@ import Button from '../src/components/Button';
 const Query = () => {
 
     const router = useRouter();
-    const { key } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const [isKeyPresent, setIsKeyPresent] = useState(false);
+    const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isListingPresences, setIsListingPresences] = useState(false);
-    const [userPresences, setUserPresences] = useState("");
+    const [user, setUser] = useState();
     const [userDocument, setUserDocument] = useState("");
 
     const onSubmit = data => {
         setIsLoading(true);
 
-        listPresences(data.document);
-        setIsListingPresences(false);
+        getStudentInfo(data.document);
 
         setTimeout(() => {
             setIsLoading(false);
         }, 3000);
     };
 
-    const checkKey = () => {
-        if (key) {
-            setIsKeyPresent(true);
+    const checkAuthentication = () => {
+        if (isAuthenticated) {
+            setAccessAllowed(true);
         } else {
-            setIsKeyPresent(false);
+            setAccessAllowed(false);
             router.push("/");
         }
     }
 
-    const listPresences = (document) => {
+    const getStudentInfo = (document) => {
         setIsLoading(true);
         setUserDocument(document);
 
-        saphira.listPresences(document)
+        saphira.getStudentInfo(document)
             .then((res) => {
-                setUserPresences([...res.data.message]);
+                console.log(res.data);
+                setUser(res.data);
                 setIsLoading(true);
             })
-            .catch(() => {
-                setUserPresences("");
+            .catch((err) => {
+                console.log("Erro ao buscar informações do estudante", err);
+                setUser();
                 setIsLoading(true);
             })
     }
 
-    const countTotalPresences = () => {
-        if (!userPresences) return;
-        let count = 0;
-
-        userPresences.forEach((lecture) => {
-            count++;
-        });
-
-        console.log(count);
-        return count;
-    }
-
-    const countPresencialPresences = () => {
-        if (!userPresences) return;
-        let count = 0;
-
-        userPresences.forEach((lecture) => {
-            if (!lecture.online) count++;
-        });
-
-        return count;
-    }
-
-
-    const clearPresences = () => {
-        setUserPresences([]);
+    const clearUserInfo = () => {
+        setUser();
     }
 
     useEffect(() => {
-        checkKey();
+        checkAuthentication();
     }, []);
 
     return (
@@ -112,41 +88,30 @@ const Query = () => {
 
                     <h5 className='page-description'> Número de presenças nas palestras :)</h5>
 
-                    {isKeyPresent &&
+                    {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
                                     <>
                                         <InputBox>
                                         <label htmlFor='document'> Documento do inscrito: </label>
-                                            {/* <div className='form-input'>
-                                                <InputMask id='cpf_value' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
-                                                    {...register("cpf_value", { minLength: 5, pattern: /^[0-9]*$/i })} />
-                                            </div> */}
                                             <div className='form-input'>
                                                 <input id='document' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
                                                     {...register("document", { required: false, minLength: 5 })} />
                                             </div>
-                                            {/* {errors.cpf_value && <ErrorMessage>{errors.cpf_value?.message}</ErrorMessage>} */}
-                                            {/* VER AQUI COM INFRA */}
                                         </InputBox>
 
-                                        {userPresences == "" ?
-                                            <Button onClick={() => setIsListingPresences(true)}> Listar presenças </Button>
+                                        {!user ?
+                                            <Button> Listar presenças </Button>
                                             :
                                             <PresencesList>
                                                 <div className='user-info'>
-                                                    <h6>Documento: <span>{userDocument}</span></h6>
-                                                    <h6>{userPresences}</h6>
-                                                    {/* <h6>Total de presenças: <span>{countTotalPresences()}</span></h6>
-                                                    <h6>Presenças presenciais: <span>{countPresencialPresences()}</span></h6> */}
+                                                    <h6>{user.name} - {userDocument}</h6>
+                                                    {/* <p>Código único: <span>{user.code}</span></p> */}
+                                                    <p>Total de presenças: <span>{user.total_presences_count}</span></p>
+                                                    <p>Presenças presenciais: <span>{user.in_person_presences_count}</span></p>
                                                 </div>
-                                                    
-                                                <ul>
-                                                    {/* {userPresences.map((lecture, key) => <li key={key}> * {lecture.talk_title} - <span>{lecture.online ? "Online" : "Presencial"}</span></li>)} */}
-                                                </ul>
-
-                                                <SecondaryButton type="button" onClick={() => clearPresences()}> Limpar </SecondaryButton>
+                                                <SecondaryButton type="button" onClick={() => clearUserInfo()}> Limpar </SecondaryButton>
                                             </PresencesList>
                                         }
                                         

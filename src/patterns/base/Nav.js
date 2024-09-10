@@ -71,7 +71,7 @@ const Nav = () => {
             </NavDesktop>
 
             {/* Navbar para Mobile */}
-            <NavMobile $isOpen={isOpen} currentPage={router.pathname}>
+            <NavMobile $isOpen={isOpen} $currentPage={router.pathname}>
                 <div className={isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
 
                     <ul>

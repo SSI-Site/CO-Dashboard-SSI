@@ -11,15 +11,22 @@ import Meta from '../src/infra/Meta';
 const Login = () => {
 
     const router = useRouter();
-    const { key, signIn } = useAuth();
+    const { isAuthenticated, signIn } = useAuth();
     const { register, setError, clearErrors, formState: { errors }, handleSubmit } = useForm();
 
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/presential");
+        }
+    }, [isAuthenticated, router]);
+
     const onSubmit = data => {
         setIsLoading(true);
         const isSignInValid = signIn(data.user, data.password);
-        loginAdmin(data.user, data.password);
+
+        console.log(isSignInValid);
 
         if (isSignInValid) {
             router.push("/presential");
@@ -30,31 +37,6 @@ const Login = () => {
         setIsLoading(false);
     };
 
-    const loginAdmin = (user, password) => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            saphira.adminLogIn(user, password)
-                .then((res) => {
-                    console.log("Deu bom o login", res);
-                    setIsLoading(false);
-                    
-                }, (err) => {
-                    console.log("Deu ruim o login");
-                    setIsLoading(false);
-                });
-        }, 2000);
-    }
-
-    const checkKey = () => {
-        if (key) {
-            router.push("/presential");
-        }
-    }
-
-    useEffect(() => {
-        checkKey();
-    }, []);
 
     return (
         <>

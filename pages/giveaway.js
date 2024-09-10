@@ -14,11 +14,11 @@ const Giveaway = () => {
 
     const Ref = useRef(null);
     const router = useRouter();
-    const { key } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     const placeholderMessage = "Seu nome aparecerá aqui!";
 
-    const [isKeyPresent, setIsKeyPresent] = useState(false);
+    const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [gotResult, setGotResult] = useState(false);
     const [timer, setTimer] = useState('00:00');
@@ -28,11 +28,11 @@ const Giveaway = () => {
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const checkKey = () => {
-        if (key) {
-            setIsKeyPresent(true);
+    const checkAuthentication = () => {
+        if (isAuthenticated) {
+            setAccessAllowed(true);
         } else {
-            setIsKeyPresent(false);
+            setAccessAllowed(false);
             router.push("/");
         }
     }
@@ -51,10 +51,9 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getGivawayResult(lectureId)
                 .then((res) => {
-                    setGiveawayResultName(res.data.nome);
+                    setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
-                    onClickReset();
                     reset();
                 })
                 .catch(err => {
@@ -71,10 +70,9 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getPresencialOnlyGivawayResult(lectureId)
                 .then((res) => {
-                    setGiveawayResultName(res.data.nome);
+                    setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
-                    onClickReset();
                     reset();
                 })
                 .catch(err => {
@@ -86,6 +84,7 @@ const Giveaway = () => {
     }
 
     const listLectures = () => {
+        setLectures([]);
         saphira.getLectures()
             .then((res) => {
                 console.log(res);
@@ -138,7 +137,7 @@ const Giveaway = () => {
     };
 
     useEffect(() => {
-        checkKey();
+        checkAuthentication();
         listLectures();
     }, []);
 
@@ -161,7 +160,7 @@ const Giveaway = () => {
                 <div className='section-container'>
                     <h3>Sorteio</h3>
 
-                    {isKeyPresent &&
+                    {accessAllowed &&
                         <>
                             <ResultSection>
                                 {!isLoading &&
@@ -189,10 +188,10 @@ const Giveaway = () => {
                                                 <InputBox>
                                                     <label htmlFor='lectureId'> ID da palestra: </label>
                                                     <div className='form-input'>
-                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={/*errors.lectureId*/ false && 'error-border'}
+                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
                                                             {...register("lectureId", { required: true, minLength: 1 })} />
                                                     </div>
-                                                    {/* {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>} */}
+                                                    {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
                                                 </InputBox>
 
                                                 <CheckboxBox>
@@ -211,7 +210,8 @@ const Giveaway = () => {
                                             </form>
 
                                             <SecondaryButton className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
-                                                {showList ? "Esconder palestras" : "Mostrar palestras"} </SecondaryButton>
+                                                {showList ? "Esconder palestras" : "Mostrar palestras"}
+                                            </SecondaryButton>
 
                                         </FormWrapper>
                                     </>

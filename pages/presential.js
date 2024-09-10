@@ -13,10 +13,10 @@ import Button from '../src/components/Button';
 
 const Presential = () => {
     const router = useRouter();
-    const { key } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const [isKeyPresent, setIsKeyPresent] = useState(false);
+    const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = data => {
@@ -30,48 +30,39 @@ const Presential = () => {
         setTimeout(() => {
             saphira.addPresentialPresenceToUser(lectureId, document)
                 .then((res) => {
-                    console.log(res);
                     setIsLoading(false);
-                    
                     Swal.fire({
                         icon: 'info',
-                        title: 'Presença registrada para:',
-                        text: document,
+                        title: `Presença registrada para ${document}`,
                         showConfirmButton: true,
                         confirmButtonText: "Ok!",
                         confirmButtonColor: "#151023"
                     })
-                    // reset();
                 }, (err) => {
                     setIsLoading(false);
-                    // const message = err.response.data.message;
-        
-                    // if (message?.includes("Falha")) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Falha no registro!',
-                            showConfirmButton: true,
-                            confirmButtonText: "Ok",
-                            confirmButtonColor: "#151023"
-                        })
-                    // } else {
-                        // router.reload();
-                    // }
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Falha no registro!',
+                        text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                        showConfirmButton: true,
+                        confirmButtonText: "Ok",
+                        confirmButtonColor: "#151023"
+                    })
                 });
         }, 2000);
     }
 
-    const checkKey = () => {
-        if (key) {
-            setIsKeyPresent(true);
+    const checkAuthentication = () => {
+        if (isAuthenticated) {
+            setAccessAllowed(true);
         } else {
-            setIsKeyPresent(false);
+            setAccessAllowed(false);
             router.push("/");
         }
     }
 
     useEffect(() => {
-        checkKey();
+        checkAuthentication();
     }, []);
 
     return (
@@ -96,7 +87,7 @@ const Presential = () => {
 
                     <h5 className='page-description'> Registro de presenças presenciais :)</h5>
 
-                    {isKeyPresent &&
+                    {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
@@ -111,14 +102,10 @@ const Presential = () => {
                                         </InputBox1>
 
                                         <InputBox2>
-                                            <label htmlFor='document'> Documento do inscrito<br/> (se for CPF, coloque a máscara):</label>
-                                            {/* <div className='form-input'>
-                                                <InputMask id='cpf_value' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
-                                                    {...register("cpf_value", { minLength: 5, pattern: /^[0-9]*$/i })} />
-                                            </div> */}
+                                            <label htmlFor='document'> Documento do inscrito:</label>
                                             <div className='form-input'>
                                                 <input id='document' type='text' placeholder='Insira o documento' className={errors.document && 'error-border'}
-                                                    {...register("document", { required: true, minLength: 5 })} />
+                                                    {...register("document", { required: true, minLength: 3 })} />
                                             </div>
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
                                         </InputBox2>
