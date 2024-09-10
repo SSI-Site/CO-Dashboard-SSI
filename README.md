@@ -4,8 +4,8 @@
 
 É preciso ter o **node.js** e o **npm** instalados na máquina e executar os comandos:
 
-* 'npm install' ou 'yarn' para instalar as dependências
-* 'npm run dev' ou 'yarn dev' para subir a aplicação no **localhost:3000**
+* 'yarn' para instalar as dependências
+* 'yarn dev' para subir a aplicação no **localhost:3000**
 
 Para executar o projeto por completo localmente, é preciso incluir as variáveis de ambiente para a configuração do Google Firebase.
 
