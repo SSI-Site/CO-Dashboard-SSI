@@ -1,8 +1,19 @@
 import axios from 'axios';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
+import cookie from 'js-cookie';
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
+
+axios.interceptors.request.use((config) => {
+    const csrfToken = cookie.get('csrftoken');
+    if (csrfToken) {
+        config.headers['X-CSRFToken'] = csrfToken;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
 
 const saphira = {
 
@@ -15,11 +26,16 @@ const saphira = {
         return await axios.post(
             requestUrl, 
             params.toString(),
-            { 
+            {
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
+    },
+
+    adminLogOut: async () => {
+        const requestUrl = `${BASE_URL}/admin/logout`
+        return await axios.post(requestUrl);
     },
 
     addPresentialPresenceToUser: async (lectureId, document) => {

@@ -186,7 +186,7 @@ const Giveaway = () => {
                                         {giveawayResultName === placeholderMessage ?
                                             <Button> Sortear </Button>
                                             :
-                                            <SecondaryButton type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar </SecondaryButton>
+                                            <SecondaryButton type="button" onClick={() => {setGiveawayResultName(placeholderMessage); setKey(prev => prev+1); setGotResult(false); setIsLastSeconds(false)}}> Limpar </SecondaryButton>
                                         }
                                     </div>
                                 </InputBox>
@@ -202,50 +202,49 @@ const Giveaway = () => {
                 </div>
 
                 <div className='section-container'>
-                    <ResultSection>
-                        {!isLoading &&
-                            <>
-                                <h6> {giveawayResultName} </h6>   
-                            </>
-                        }
-                        {isLoading &&
-                            <Loading>
-                                <img src='./loading.svg' alt='SSI 2024 - Loading' />
-                            </Loading>
-                        }
-                    </ResultSection>
-                    <TimerWrapper>
-                        {isLastSeconds ? 
-                            <img src={SleepEmoji} alt="sleep emoji" /> 
-                            :
-                            <img src={TimerEmoji} alt="timer emoji" />
-                        }
-                        <div className="timer-wrapper">
-                            <CountdownCircleTimer
-                                key={key}
-                                isPlaying={gotResult}
-                                duration={40}
-                                colors={["#9638FF", "#A86BDA", "#F7B801", "#A30000"]}
-                                colorsTime={[40, 30, 20, 0]}
-                                onUpdate={(remainingTime) => {
-                                    if (remainingTime === 10) {
-                                        setIsLastSeconds(true);
-                                    }
-                                    if (remainingTime === 0) {
-                                        setGiveawayResultName('Dormiu no ponto...');
-                                        setGotResult(false);
-                                    }
-                                }}
-                                >
-                                {renderTime}
-                            </CountdownCircleTimer>
-                        </div>
-                        {isLastSeconds ? 
-                            <img src={SleepEmoji} alt="sleep emoji" /> 
-                            :
-                            <img src={TimerEmoji} alt="timer emoji" />
-                        }
-                    </TimerWrapper> 
+                    {isLoading ?
+                        <Loading>
+                            <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                        </Loading>
+                        :
+                        <>
+                            <ResultSection>
+                                <h6> {giveawayResultName} </h6>
+                            </ResultSection>
+                            <TimerWrapper>
+                                {isLastSeconds ? 
+                                    <img src={SleepEmoji} alt="sleep emoji" /> 
+                                    :
+                                    <img src={TimerEmoji} alt="timer emoji" />
+                                }
+                                <div className="timer-wrapper">
+                                    <CountdownCircleTimer
+                                        key={key}
+                                        isPlaying={gotResult}
+                                        duration={40}
+                                        colors={["#9638FF", "#A86BDA", "#F7B801", "#A30000"]}
+                                        colorsTime={[40, 30, 20, 0]}
+                                        onUpdate={(remainingTime) => {
+                                            if (remainingTime === 10) {
+                                                setIsLastSeconds(true);
+                                            }
+                                            if (remainingTime === 0) {
+                                                setGiveawayResultName('Dormiu no ponto...');
+                                                setGotResult(false);
+                                            }
+                                        }}
+                                        >
+                                        {renderTime}
+                                    </CountdownCircleTimer>
+                                </div>
+                                {isLastSeconds ? 
+                                    <img src={SleepEmoji} alt="sleep emoji" /> 
+                                    :
+                                    <img src={TimerEmoji} alt="timer emoji" />
+                                }
+                            </TimerWrapper>
+                        </>
+                    }
                 </div>
             </GiveawayWrapper>
         </>

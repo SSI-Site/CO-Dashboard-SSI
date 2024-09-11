@@ -34,7 +34,7 @@ const Query = () => {
 
         setTimeout(() => {
             setIsLoading(false);
-        }, 3000);
+        }, 1000);
     };
 
     const checkAuthentication = () => {
@@ -52,7 +52,6 @@ const Query = () => {
 
         saphira.getStudentInfo(document)
             .then((res) => {
-                console.log(res.data);
                 setUser(res.data);
                 setIsLoading(true);
             })
@@ -136,7 +135,7 @@ const Query = () => {
                     }
                 </div>
 
-                {user &&
+                {user && !isLoading &&
                     <GiftsProgressSection id='meus-brindes'>
                         <div className='user-gifts-wrapper'>
                             {Object.entries(gifts).map(([key, gift]) => {

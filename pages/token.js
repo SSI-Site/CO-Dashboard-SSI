@@ -7,7 +7,10 @@ import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
+
+// components
 import Button from '../src/components/Button';
+import SecondaryButton from '../src/components/SecondaryButton';
 
 const Token = () => {
 
@@ -47,7 +50,6 @@ const Token = () => {
         setTimeout(() => {
             saphira.generateOnlineToken(lectureId, currentDateTime())
                 .then((res) => {
-                    console.log(res);
                     setTokenGenerated(res.data.token.code);
                     setIsLoading(false);
                 }, (err) => {
