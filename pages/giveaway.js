@@ -1,8 +1,8 @@
-import { React, useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { React, useEffect, useRef, useState } from 'react';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useForm } from "react-hook-form";
-import { useCountdown, CountdownCircleTimer } from 'react-countdown-circle-timer';
+import styled from 'styled-components';
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
@@ -19,7 +19,6 @@ import TimerEmoji from '../public/images/emojis/timer.png';
 
 const Giveaway = () => {
 
-    const Ref = useRef(null);
     const router = useRouter();
     const { isAuthenticated } = useAuth();
 

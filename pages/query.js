@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
+import NavBar from '../src/patterns/base/Nav';
 
 // components
-import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 import SecondaryButton from '../src/components/SecondaryButton';
 import UserGiftCard from '../src/components/UserGiftCard';

@@ -1,14 +1,15 @@
-import { React, useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { React, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-import InputMask from 'react-input-mask';
-import Swal from 'sweetalert2'
+import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
+
+// components
 import Button from '../src/components/Button';
 
 const Presential = () => {

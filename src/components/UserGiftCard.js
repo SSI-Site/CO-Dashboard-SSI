@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+
+// assets
 import giftLocked from '../../public/images/gifts/gift-locked.png';
 import giftUnlocked from '../../public/images/gifts/gift-unlocked.png';
 

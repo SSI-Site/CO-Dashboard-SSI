@@ -2,11 +2,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
-import saphira from '../services/saphira';
 
 import useAuth from '../hooks/useAuth';
-import Button from '../src/components/Button';
 import Meta from '../src/infra/Meta';
+
+// components
+import Button from '../src/components/Button';
 
 const Login = () => {
 
