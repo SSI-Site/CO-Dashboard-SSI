@@ -3,7 +3,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 import cookie from 'js-cookie';
 
 axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 axios.interceptors.request.use((config) => {
     const csrfToken = cookie.get('csrftoken');

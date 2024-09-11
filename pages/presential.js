@@ -95,7 +95,7 @@ const Presential = () => {
                                         <InputBox>
                                             <label htmlFor='lectureId'> ID da palestra: </label>
                                             <div className='form-input'>
-                                                <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
+                                                <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
                                                     {...register("lectureId", { required: true, minLength: 1, })} />
                                             </div>
                                             {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
@@ -104,7 +104,7 @@ const Presential = () => {
                                         <InputBox>
                                             <label htmlFor='document'> Documento do inscrito:</label>
                                             <div className='form-input'>
-                                                <input id='document' type='text' placeholder='Insira o documento' className={errors.document && 'error-border'}
+                                                <input id='document' type='text' placeholder='Insira o documento' className={`${errors.document && 'error-border'}`}
                                                     {...register("document", { required: true, minLength: 3 })} />
                                             </div>
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}

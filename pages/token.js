@@ -116,7 +116,7 @@ const Token = () => {
 
                                     <div className='input-btn'>
                                         <div className='form-input'>
-                                            <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
+                                            <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
                                                 {...register("lectureId", { required: true, minLength: 1, })} />
                                         </div>
                                         {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}

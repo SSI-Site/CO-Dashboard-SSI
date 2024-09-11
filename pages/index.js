@@ -58,7 +58,7 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='user'> Usuário </label>
                                         <div className='form-input'>
-                                            <input id='user' type='text' placeholder='Insira o usuário' className={errors.user && 'error-border'}
+                                            <input id='user' type='text' placeholder='Insira o usuário' className={`${errors.user && 'error-border'}`}
                                                 {...register("user", {required: true, minLength: 1 })} />
                                         </div>
                                         {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
@@ -67,7 +67,7 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='password'> Senha </label>
                                         <div className='form-input'>
-                                            <input id='password' type='password' placeholder='Insira a senha' className={errors.password && 'error-border'}
+                                            <input id='password' type='password' placeholder='Insira a senha' className={`${errors.password && 'error-border'}`}
                                                 {...register("password", {required: true, minLength: 1 })} />
                                         </div>
                                         {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}

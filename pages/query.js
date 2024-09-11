@@ -100,7 +100,7 @@ const Query = () => {
                                             <label htmlFor='document'> Documento do inscrito: </label>
                                             <div className='input-btn'>
                                                 <div className='form-input'>
-                                                    <input id='document' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                    <input id='document' type='text' placeholder='Insira o documento' className={`${errors.name && 'error-border'}`}
                                                         {...register("document", { required: false, minLength: 5 })} />
                                                 </div>
                                                 {!user ?
