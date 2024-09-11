@@ -1,15 +1,20 @@
-import { React, useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { React, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-import InputMask from 'react-input-mask';
-import Swal from 'sweetalert2';
+import styled from 'styled-components';
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
+
+// components
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
+import SecondaryButton from '../src/components/SecondaryButton';
+import UserGiftCard from '../src/components/UserGiftCard';
+
+// assets
+import gifts from '../data/gifts';
 
 const Query = () => {
 
@@ -78,43 +83,46 @@ const Query = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2024 | Consulta' />
+            <Meta title='CO SSI 2024 | Consultar presença' />
 
             <NavBar />
             <QueryWrapper>
                 <div className='section-container'>
 
-                    <h3>Consulta</h3>
-
-                    <h5 className='page-description'> Número de presenças nas palestras :)</h5>
+                    <h5>Consultar presença</h5>
 
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
+                                <p> Número de presenças nas palestras :)</p>
                                 {!isLoading &&
                                     <>
                                         <InputBox>
-                                        <label htmlFor='document'> Documento do inscrito: </label>
-                                            <div className='form-input'>
-                                                <input id='document' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
-                                                    {...register("document", { required: false, minLength: 5 })} />
-                                            </div>
-                                        </InputBox>
-
-                                        {!user ?
-                                            <Button> Listar presenças </Button>
-                                            :
-                                            <PresencesList>
-                                                <div className='user-info'>
-                                                    <h6>{user.name} - {userDocument}</h6>
-                                                    {/* <p>Código único: <span>{user.code}</span></p> */}
-                                                    <p>Total de presenças: <span>{user.total_presences_count}</span></p>
-                                                    <p>Presenças presenciais: <span>{user.in_person_presences_count}</span></p>
+                                            <label htmlFor='document'> Documento do inscrito: </label>
+                                            <div className='input-btn'>
+                                                <div className='form-input'>
+                                                    <input id='document' type='text' placeholder='Insira o documento' className={errors.name && 'error-border'}
+                                                        {...register("document", { required: false, minLength: 5 })} />
                                                 </div>
-                                                <SecondaryButton type="button" onClick={() => clearUserInfo()}> Limpar </SecondaryButton>
-                                            </PresencesList>
-                                        }
-                                        
+                                                {!user ?
+                                                    <Button> Consultar </Button>
+                                                    :
+                                                    <SecondaryButton type="button" onClick={() => clearUserInfo()}> Limpar consulta </SecondaryButton>
+                                                }
+                                            </div>
+                                            {user &&
+                                                <div className='lectures-count'>
+                                                    <div className='total-lectures'>
+                                                        <p>Total de registros:</p>
+                                                        <h4>{user.total_presences_count}</h4>
+                                                    </div>
+                                                    <div className='in-person-lectures'>
+                                                        <p>Registros presenciais:</p>
+                                                        <h4>{user.in_person_presences_count}</h4>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </InputBox>
                                     </>
                                 }
 
@@ -127,6 +135,18 @@ const Query = () => {
                         </FormWrapper>
                     }
                 </div>
+
+                {user &&
+                    <GiftsProgressSection id='meus-brindes'>
+                        <div className='user-gifts-wrapper'>
+                            {Object.entries(gifts).map(([key, gift]) => {
+                                return (
+                                    <UserGiftCard key={key} index={key} gift={gift} totalPres={user.total_presences_count} presentialPres={user.in_person_presences_count}></UserGiftCard>
+                                )
+                            })}
+                        </div>
+                    </GiftsProgressSection>
+                }
             </QueryWrapper>
         </>
     )
@@ -147,34 +167,30 @@ const Loading = styled.figure`
 `
 
 const QueryWrapper = styled.section`
-    background: url('./images/background_imgs/background5_mobile.svg') top fixed;
-    background-size: cover;
-    min-height: calc(100vh - 3.75rem);
-
-    .page-description {
-        text-align: center;
-    }
+    margin-top: 3.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .section-container {
+        width: fit-content;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-block: 3.5rem;
-        margin-block: 3.75rem; /* match navbar height */
-        gap: 3rem;
-    }
+        background-color: var(--color-background-neutrals-secondary); 
+        padding: 2rem 3.5rem;
+        gap: 1.5rem;
 
-    @media (min-width:1000px) {
-        background-image: url('./images/background_imgs/background5_desktop.svg');
-    }
-`
+        h5 {
+            width: 100%;
+        }
 
-const ErrorMessage = styled.span`
-    color: var(--color-invalid);
-    text-decoration: underline;
-    position: absolute;
-    bottom: 0;
+        @media (min-width: 480px) {
+            width: 41rem;
+        }
+    }
 `
 
 const FormWrapper = styled.div`
@@ -188,13 +204,23 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 5px;
         gap: 1rem;
 
+        p {
+            font: 700 1rem/1.5rem 'AT Aero Bold';
+            text-align: left;
+            width: 100%;
+        }
+
+        .input-btn {
+            display: flex;
+            width: 100%;
+            gap: .5rem;
+        }
+
         button {
+            padding-inline: 1.5rem;
             width: fit-content;
-            max-width: 450px;
-            margin-top: 1rem;
         }
     }
 
@@ -204,14 +230,13 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 4rem;
         background-color: var(--color-neutral-50);
-        border-radius: 16px;
         padding: 0.5rem;
-        margin-left: -4px;
 
-        border: 4px solid transparent;
+        border: 2px solid white;
+        background: transparent;
         background-clip: padding-box;
+        color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -232,12 +257,23 @@ const FormWrapper = styled.div`
         input[type=text], input[type=password],  select {
             width: 95%;
             border: none;
-            height: 100%;
             background-color: transparent;
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
             color: var(--color-neutral-400);
+        }
+
+        ::placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
+        }
+
+        ::-ms-input-placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
     }
 
@@ -247,7 +283,7 @@ const FormWrapper = styled.div`
     }
 
     span {
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
 `
@@ -259,83 +295,62 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
 
     label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;
         margin-bottom: .5rem;
     }
-`
 
-const PresencesList = styled.div`
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1rem;
-    color: var(--color-text);
-
-    .user-info {
+    .lectures-count {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 0.5rem;
-        padding: 1rem 2rem;
-        background-color: var(--color-neutral-800);
-        border-radius: 8px;
-    }
+        justify-content: space-between;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 1rem;
 
-    span {
-        font: inherit;
-        color: var(--color-primary-500);
-    }
+        .total-lectures, .in-person-lectures {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: .5rem;
+            width: 100%;
+            padding: 0.75rem;
+        }
 
-    ul {
-        margin-top: 1.5rem;
+        .total-lectures {
+            background-color: var(--color-primary); 
+        }
 
-        li {
-            margin-bottom: 10px;
+        .in-person-lectures {
+            background-color: white;
+
+            p, h4 {
+                color: var(--color-primary);
+            }
         }
     }
 `
 
-const SecondaryButton = styled.button`
+const GiftsProgressSection = styled.section`
+    padding-block: 2rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 9.1875rem;
-    height: 3rem;
-    padding: 0.5625rem 1.3125rem;
-    margin-bottom: 5px;
-    border-radius: 9px;
-    border: 3px solid var(--color-neutral-50);
-    background-color: transparent;
-    transition: 500ms;
-    cursor: pointer;
+    flex-direction: column;
+    gap: 2rem;
 
-    font: 400 1rem/1.25rem 'Space_Mono_Bold';
+    .user-gifts-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
 
-    &:hover {
-        background-color: var(--color-neutral-50);
-        
-        color: var(--color-neutral-900);
-    }
-
-    &:active {
-        background-color: var(--color-neutral-100);
-        border-color: var(--color-neutral-100);
-        color: var(--color-neutral-900);
-    }
-        
-    @media (min-width:560px) {
-        width: 9.6875rem;
-        height: 3rem;
-
-        span {
-            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
+        @media(min-width: 800px) {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
         }
     }
 `

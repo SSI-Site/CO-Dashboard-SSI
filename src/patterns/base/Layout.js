@@ -14,12 +14,12 @@ const Layout = ({ children }) => {
             <style jsx>
                 {`
                   @font-face {
-                    font-family: 'Space_Mono';
-                    src: url('/fonts/space_mono-regular.ttf');
+                    font-family: 'AT Aero';
+                    src: url('/fonts/at_aero-regular.ttf');
                   }
                   @font-face {
-                    font-family: 'Space_Mono_Bold';
-                    src: url('/fonts/space_mono-bold.ttf');
+                    font-family: 'AT Aero Bold';
+                    src: url('/fonts/at_aero-bold.ttf');
                   }
                 `}
             </style>
@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
                 <main>
                     {children}
                 </main>
-                <Footer />
+                {/* <Footer /> */}
             </SiteWrapper>
         </>
     )
@@ -40,10 +40,8 @@ export default Layout;
 
 
 const SiteWrapper = styled.div`
-    min-height: 100vh;
     margin: auto;
     position: relative;
-    padding-bottom: 21rem; /* match footer height */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -51,10 +49,6 @@ const SiteWrapper = styled.div`
 
     main {
         width: 100%;
-    }
-
-    @media (min-width:960px) {
-        padding-bottom: 21rem; /* match footer height */
     }
 
     @media (min-width:1365px) {

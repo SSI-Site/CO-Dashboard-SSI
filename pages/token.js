@@ -8,7 +8,6 @@ import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
-import CopyIcon from '../public/images/icons/copy.svg'
 
 const Token = () => {
 
@@ -104,60 +103,58 @@ const Token = () => {
             <TokenWrapper>
                 <div className='section-container'>
 
-                    <h3>Token</h3>
-
-                    <h5 className='page-description'> Geração de tokens do online :)</h5>
+                    <h5>Token</h5>
 
                     {accessAllowed &&
-                        <>
-                            <ResultSection className='tooltip'>
-                                {!isLoading &&
-                                    <>
-                                        <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}>
-                                            <h3 className={tokenGenerated !== placeholderMessage ? 'neon' : ''}
-                                                onClick={tokenGenerated !== placeholderMessage ? copyContent : null}> {tokenGenerated} </h3>
-                                            {tokenGenerated !== placeholderMessage &&
-                                                <div className='copy-btn'
-                                                    onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
-                                                    <img src={CopyIcon} />
-                                                </div>
-                                            }
-                                            {textCopied &&
-                                                <span className='tooltiptext'>Token copiado!</span>
-                                            }
+                        <FormWrapper>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <p> Geração de tokens do online :)</p>
+                                <InputBox>
+                                    <label htmlFor='lectureId'> ID da palestra: </label>
+
+                                    <div className='input-btn'>
+                                        <div className='form-input'>
+                                            <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
+                                                {...register("lectureId", { required: true, minLength: 1, })} />
                                         </div>
-
-                                        <FormWrapper>
-                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                <InputBox>
-                                                    <label htmlFor='lectureId'> ID da palestra: </label>
-                                                    <div className='form-input'>
-                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
-                                                            {...register("lectureId", { required: true, minLength: 1, })} />
-                                                    </div>
-                                                    {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                                </InputBox>
-
-                                                {tokenGenerated === placeholderMessage &&
-                                                    <Button > Gerar token </Button>
-                                                }
-
-                                                {tokenGenerated !== placeholderMessage &&
-                                                    <Button type="button" onClick={() => setTokenGenerated(placeholderMessage)}> Limpar Token </Button>
-                                                }
-                                            </form>
-                                        </FormWrapper>
-                                    </>
-                                }
-
-                                {isLoading &&
-                                    <Loading>
-                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
-                                    </Loading>
-                                }
-                            </ResultSection>
-                        </>
+                                        {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
+                                        {tokenGenerated === placeholderMessage ?
+                                            <Button> Gerar token </Button>
+                                            :
+                                            <SecondaryButton type="button" onClick={() => setTokenGenerated(placeholderMessage)}> Limpar token </SecondaryButton>
+                                        }
+                                    </div>
+                                </InputBox>
+                            </form>
+                        </FormWrapper>
                     }
+                    <ResultSection className='tooltip'>
+                        {!isLoading &&
+                            <>
+                                <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}>
+                                    <h6 onClick={tokenGenerated !== placeholderMessage ? 
+                                        copyContent : null}
+                                    > 
+                                        {tokenGenerated}
+                                    </h6>
+                                    {tokenGenerated !== placeholderMessage &&
+                                        <div className='copy-btn'
+                                            onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                                                <path d="M17.375 6.375V2.625H3.125V16.875H6.875M7.625 7.125V21.375H21.875V7.125H7.625Z" stroke="#9638FF" stroke-width="2.25" stroke-linecap="square"/>
+                                            </svg>
+                                        </div>
+                                    }
+                                </div>
+                            </>
+                        }
+
+                        {isLoading &&
+                            <Loading>
+                                <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                            </Loading>
+                        }
+                    </ResultSection>
                 </div>
             </TokenWrapper>
         </>
@@ -179,34 +176,29 @@ const Loading = styled.figure`
 `
 
 const TokenWrapper = styled.section`
-    background: url('./images/background_imgs/background3_mobile.svg') top fixed no-repeat;
-    background-size: cover;
-    min-height: calc(100vh - 3.75rem);
-
-    .page-description {
-        text-align: center;
-    }
+    margin-top: 7.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .section-container {
+        width: fit-content;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-block: 3.5rem;
-        margin-block: 3.75rem; /* match navbar height */
-        gap: 3rem;
+        background-color: var(--color-background-neutrals-secondary); 
+        padding: 2rem 3.5rem;
+        gap: 1.5rem;
 
         h5 {
-            /* margin-bottom: 2rem; */
+            width: 100%;
         }
 
-        h3 {
-            text-align: center;
+        @media (min-width: 480px) {
+            width: 41rem;
         }
-    }
-
-    @media (min-width:1000px) {
-        background-image: url('./images/background_imgs/background3_desktop.svg');
     }
 `
 
@@ -214,7 +206,7 @@ const ErrorMessage = styled.span`
     color: var(--color-invalid);
     text-decoration: underline;
     position: absolute;
-    bottom: 0;
+    bottom: -1.1rem;
 `
 
 const FormWrapper = styled.div`
@@ -228,13 +220,23 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 5px;
         gap: 1rem;
 
+        p {
+            font: 700 1rem/1.5rem 'AT Aero Bold';
+            text-align: left;
+            width: 100%;
+        }
+
+        .input-btn {
+            display: flex;
+            width: 100%;
+            gap: .5rem;
+        }
+
         button {
+            padding-inline: 1.5rem;
             width: fit-content;
-            max-width: 450px;
-            margin-top: 1rem;
         }
     }
 
@@ -243,15 +245,14 @@ const FormWrapper = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 15rem;
-        height: 4rem;
+        width: 100%;
         background-color: var(--color-neutral-50);
-        border-radius: 16px;
         padding: 0.5rem;
-        margin-left: -4px;
 
-        border: 4px solid transparent;
+        border: 2px solid white;
+        background: transparent;
         background-clip: padding-box;
+        color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -272,12 +273,23 @@ const FormWrapper = styled.div`
         input[type=text], input[type=password],  select {
             width: 95%;
             border: none;
-            height: 100%;
             background-color: transparent;
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
             color: var(--color-neutral-400);
+        }
+
+        ::placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
+        }
+
+        ::-ms-input-placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
     }
 
@@ -287,7 +299,7 @@ const FormWrapper = styled.div`
     }
 
     span {
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
 `
@@ -299,10 +311,10 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
 
     label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;
         margin-bottom: .5rem;
     }
 `
@@ -313,28 +325,20 @@ const ResultSection = styled.div`
     align-items: center;
     justify-content: center;
     gap: 3rem;
+    width: 100%;
+    background-color: white;
+    padding: 1rem 1.5rem;
 
     .show-list-btn {
         margin-top: 2rem;
     }
 
-    h3 {
-        color: var(--color-primary-500);
+    h6 {
+        color: var(--color-primary);
 
         :hover {
             cursor: copy;
         }
-    }
-
-    .neon {
-        color: var(--color-primary-500);
-        /* color: #fff;
-        text-shadow:
-            0 0 1px #fff,
-            0 0 20px var(--color-primary-500),
-            0 0 60px var(--color-primary-500),
-            0 0 70px var(--color-primary-500),
-            0 0 80px var(--color-primary-500); */
     }
 
     .token-wrapper {
@@ -348,41 +352,6 @@ const ResultSection = styled.div`
         border: 2px solid transparent;
         transition: 0.3s all ease-in-out;
     }
-
-    .tooltip {
-        position: relative;
-    }
-    /* Tooltip text */
-    .tooltip .tooltiptext {
-        visibility: visible;
-        background-color: var(--color-neutral-700);
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
-        text-align: center;
-        padding: 7px 15px;
-        border-radius: 4px;
-
-        /* Position the tooltip text */
-        position: absolute;
-        z-index: 1;
-        bottom: -70%;
-        right: 22%;
-
-        /* Fade in tooltip */
-        opacity: 1;
-        transition: opacity 0.3s;
-    }
-
-    /* Tooltip arrow */
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        bottom: 100%;
-        right: 50%;
-        margin-right: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: transparent transparent var(--color-neutral-700) transparent;
-    }
     
     .copy-btn {
         display: flex;
@@ -393,22 +362,12 @@ const ResultSection = styled.div`
         height: 2.25rem;
         gap: 0.5rem;
         position: absolute;
-        top: 17%;
-        right: 12%;
-        border-radius: 8px;
+        bottom: 2.85rem;
+        right: calc(100% / 2 - 5rem);
         transition: 0.3s all ease-in-out;
-        
-        img {
-            width: 1.5rem;
-        }
 
         &:hover {
             cursor: copy;
-            background-color: var(--color-neutral-700);
-        }
-
-        &:active {
-            background-color: var(--color-neutral-500);
         }
     }
 `

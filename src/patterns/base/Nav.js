@@ -1,27 +1,38 @@
-import { useState, useEffect } from 'react';
-import styled, { css } from 'styled-components';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import useAuth from '../../../hooks/useAuth';
 
+// components
+import SecondaryButton from '../../components/SecondaryButton';
+
 // assets
-import LogoPrincipal from '../../../public/images/logos/logo_principal.svg';
 import CloseBtn from '../../../public/images/icons/close.svg';
+import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
 const pages = {
     "/presential": 1,
-    "/token": 2,
-    "/giveaway": 3,
-    "/query": 4,
+    "/query": 2,
+    "/token": 3,
+    "/giveaway": 4,
 }
 
 const Nav = () => {
 
-    const { user } = useAuth();
+    const { signOut } = useAuth();
     const router = useRouter();
     
     const [isOpen, setIsOpen] = useState(false);
+
+    const handleLogout = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error("Erro ao deslogar:", error);
+        }
+    }
 
     useEffect(() => {
         if (isOpen) {
@@ -34,82 +45,93 @@ const Nav = () => {
     return (
         <NavWrapper>
             <div>
-                
-            {/* Logo que redireciona para a home */}
-            <div>
-                <a className="logo-container">
-                    <img src={LogoPrincipal} alt="SSI logo" />
-                    <p className='text-small'>
-                        Semana de Sistemas de Informação 2024
-                    </p>
-                </a>
-            </div>
-            
-            {/* Navbar para Desktop */}
-            <NavDesktop $currentPage={router.pathname}>
-                <ul>
-                    <li>
-                        <Link legacyBehavior href="/presential"><a>Presencial</a></Link>
-                        <div></div>
-                    </li>
+                <Link legacyBehavior href='/' passHref>
+                    <a>
+                        <img
+                            src={LogoHorizontal}
+                            width={180}
+                            height={45}
+                            alt='Semana de Sistemas de Informação'
+                        />
+                    </a>
 
-                    <li>
-                        <Link legacyBehavior href="/token"><a>Token</a></Link>
-                        <div></div>
-                    </li>
+                </Link>
 
-                    <li>
-                        <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
-                        <div></div>
-                    </li>
+                {/* Navbar para Mobile */}
+                <NavMobile $isOpen={isOpen}>
+                    <div className={isOpen ? 'click-out' : "click-out click-out-hidden"} onClick={() => setIsOpen(false)}>
+                    </div>
+                    <div className = {isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
+                        <div className = "sidepanel-wrapper">
+                            <div className = 'header-nav'>
+                                <h6>Navegação rápida</h6>
+                                <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
+                                    <img 
+                                        src={CloseBtn}
+                                        width={18}
+                                        height={18}
+                                        alt='Fechar'
+                                    />
+                                </div>
+                            </div>
 
-                    <li>
-                        <Link legacyBehavior href="/query"><a>Consulta</a></Link>
-                        <div></div>
-                    </li>
-                </ul>
-            </NavDesktop>
+                            <ul>
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
+                                    <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                                </li>
 
-            {/* Navbar para Mobile */}
-            <NavMobile $isOpen={isOpen} $currentPage={router.pathname}>
-                <div className={isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
+                                    <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                                </li>
 
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
+                                    <Link legacyBehavior href="/token"><a>Token</a></Link>
+                                </li>
+
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
+                                    <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+                    </div>
+
+                    <div className='hamburguer-wrapper'>
+                        <button className='hamburguer-menu' type="button" aria-label='Menu' onClick={() => setIsOpen(!isOpen)}>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+
+                </NavMobile>
+
+                {/* Navbar para Desktop */}
+                <NavDesktop $currentPage={router.pathname}>
                     <ul>
-                        <li onClick={() => setIsOpen(false)}>
-                            <Link legacyBehavior href="/presential"><a>Presencial</a></Link>
+                        <li className = {router.pathname == '/presential' ? 'active': ''}>
+                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
                             <div></div>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)}>
+                        <li className = {router.pathname == '/query' ? 'active': ''}>
+                            <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                            <div></div>
+                        </li>
+
+                        <li className = {router.pathname == '/token' ? 'active': ''}>
                             <Link legacyBehavior href="/token"><a>Token</a></Link>
                             <div></div>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)}>
-                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                        <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                            <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
                             <div></div>
                         </li>
-
-                        <li onClick={() => setIsOpen(false)}>
-                            <Link legacyBehavior href="/query"><a>Consulta</a></Link>
-                            <div></div>
-                        </li>
+                        <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
                     </ul>
-
-                    <div className='close-btn' onClick={() => setIsOpen(!isOpen)}>
-                        <div className='close'>
-                            <img src={CloseBtn} alt='Botão de fechar'></img>
-                        </div>
-                        <p className='text-small'>Fechar</p>
-                    </div>
-                </div>
-
-                <button className='hamburguer-menu' type="button" onClick={() => setIsOpen(!isOpen)}>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </NavMobile>
+                </NavDesktop>
 
             </div>
         </NavWrapper>
@@ -120,48 +142,87 @@ export default Nav;
 
 
 const NavWrapper = styled.div`
+    position:sticky;
+    top:0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-inline: 1rem;
-    position: fixed;
-    width: 100%;
-    height: 3.75rem;
-    z-index: 10;
-    background-color: var(--color-neutral-900);
-    box-shadow: 0px 5px 24px 14px rgba(16,3,26,0.38);
+    /*max-width: 1576px;*/
+    margin: auto;
+    z-index: 11;
+    padding: 1.5rem 1rem; 
+    background-color: var(--color-neutral);
 
     > div {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        max-width: 1440px;
+        max-width: 1328px; // 1920px - (344px * 2)
         height: 100%;
-    }
 
-    .logo-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 14rem;
-        gap: 1rem;
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-        img {
-            height: 2.75rem;
+            &:focus-visible {
+                outline: 2px solid var(--color-primary);
+                outline-offset: 2px;
+            }
         }
     }
 
-    .text-small {
-        font: 400 0.875rem/1.125rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
+    ul {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        justify-content: center;
+        gap: 1.5rem;
+
+        li a {
+            display: block;
+            padding: 0.125rem 0.5rem;
+            background-color: transparent;
+            background-image: linear-gradient(to right, var(--color-neutral-50), var(--color-neutral-50));
+            background-size: 200%;
+            background-position-x: 200%;
+            transition: all 100ms ease-out;
+            background-repeat: no-repeat;
+            white-space: nowrap;
+            line-height: 1.5rem;
+            font-weight: 400;
+
+            &:hover, &:focus-visible {
+                color: var(--color-neutral);
+                background-position-x: 100%;
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--color-primary);
+                outline-offset: 2px;
+            }
+                
+        }
+
+        .active {            
+            background: linear-gradient(to right, var(--color-neutral-50) 50%, var(--color-primary) 50%);
+            background-size: 250% 100%;
+            background-position: right;
+            
+            a {
+                font-family: 'At Aero Bold';
+            }
+
+            &:hover a, a:focus-visible {
+                color: var(--color-primary);
+            }
+        }
     }
 
-    @media (min-width:800px) {
-        position: unset;
-        height: 3.75rem;
-        z-index: unset;
+    @media (min-width:1300px) {
+        padding-block: 1rem;
         justify-content: center;
         box-shadow: unset;
         padding-inline: 6.75rem;
@@ -169,7 +230,43 @@ const NavWrapper = styled.div`
 `
 
 const NavMobile = styled.nav`
-    overflow: hidden;
+    overflow: hidden;   
+
+    .sidepanel-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1.5rem;
+        height: 100%;
+    }
+
+    .header-nav {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .close {
+        padding: 1rem;
+        cursor: pointer;       
+    }
+
+    .hamburguer-wrapper {
+        padding: .75rem;
+        background: linear-gradient(to right, var(--color-neutral-50) 50%, transparent 50%);
+        background-position: right;
+        background-size: 202% 100%;
+        transition: 100ms all ease-out;
+    }
+
+    .hamburguer-wrapper:hover {
+        background-position: left;
+
+        span {
+            background-color: #161616;
+        }
+    }
 
     .hamburguer-menu {
         background-color: unset;
@@ -177,17 +274,30 @@ const NavMobile = styled.nav`
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 1.375rem;
-        width: 2rem;
+        width: 1.5rem;
+        gap: .25rem;
 
         span {
             display: block;
             height: 3px;
             width: 100%;
-            background: #FFF;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            background-color: #FFF;
         }
+    }
+
+    .click-out {
+        position:fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        
+        z-index: 9;
+    }
+
+    .click-out-hidden {
+        display: none
     }
 
     .sidepanel {
@@ -195,122 +305,119 @@ const NavMobile = styled.nav`
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
+        overflow-y: scroll;
         height: 100%;
-        width: 200px;
-        min-width: 40%;
+        width: 100%;
         position: fixed;
+        z-index: 10;
         top: 0;
         right: 0;
-        background-color: var(--color-neutral-900);
-        transition: all linear .15s;
-        border-radius: 12px;
-        padding: 1.5rem;
-        
-        .close-btn {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            width: 5rem;
-            cursor: pointer;
-            
-            .close {
-                img {
-                    width: 17.58px;
-                    margin-top: 0.3rem;
-                }
-            }
+        background-color: var(--color-neutral-800);
+        transition: all ease-out 100ms;
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+
+        @media (min-width:648px) {
+            width: 50%;
         }
 
-        ul {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            .login-button {
-                margin-bottom: 2rem;
-                
-                button {
-                    padding-block: 0.65rem;
-                }
-            }
-
-            li {
-                margin-bottom: 1.5rem;
-                position: relative;
-
-                a {
-                    color: var(--color-neutral-50);
-                    margin: 0 12px;
-                    transition: all .2s;
-                }
-
-                span {
-                    color: gray;
-                    margin: 0 12px;
-
-                    cursor: default;
-                }
-
-                img {
-                    width: 2.75rem;
-                    border-radius: 100%;
-                    margin-right: 1rem;
-                }
-
-                a:active {
-                    cursor: pointer;
-                    color: var(--color-secondary);
-                    filter: brightness(1.1);
-                }
-            }
-
-            ${props => props.$currentPage && css`
-                li:nth-child(${pages[props.$currentPage]}){
-                    a {
-                        font-family: 'Space_Mono_Bold';
-                        font-weight: 400;
-                        padding: .2rem -5rem;
-                        pointer-events: none;
-                    }
-
-                    div {
-                        width: calc(100% - 24px);
-                        margin-left: 12px;
-                        height: 4px;
-                        background-color: var(--color-primary-500);
-                        border-radius: 12px;
-                    }
-                }
-            `}
+        h6 {
+            color: #FFF;
         }
 
-        @media (max-height:590px) {
+        .profile-side-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
             width: 100%;
-            height: 100%;
-            max-width: unset;
+            height: 44px;
+            flex-direction: row;
+            justify-content: space-between;
+    
+            a {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                padding: 0 0.25rem;
+            
+                &:hover, &:focus-visible {
+                    color: var(--color-neutral);
+                    background-position-x: 100%;
 
-            ul {
-                width: 45%;
-                margin-top: 0;
-                margin-right: 10px;
+                    p {
+                        color: var(--color-neutral);
+                    }
+
+                    svg path {
+                        fill: var(--color-primary);
+                    }
+                }
+                
+                &:focus-visible {
+                    outline: 2px solid var(--color-primary);
+                    outline-offset: 2px;
+                }
+            }
+    
+            .profile-content{
+                width: 6.625rem;
+                height: 2.75rem;
+                padding: 0;
+                gap: 0.5rem;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+    
+            .user-pic-container {
+                background: var(--color-primary);
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                gap: 0.5rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            p {
+                text-align: left;
+                font-family: 'AT Aero Bold';
+                font-size: 1rem;
+            }
+    
+            .see-profile {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+                align-items: center;
+            }
+        }
+        
+        .user-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 1rem;
+            width: 100%;
+
+            p {
+                font-family: 'AT Aero Bold';
+                font-weight: 700;
             }
         }
     }
 
     .sidepanel-hidden {
-        right: -450px;
-
-        @media (max-height:590px) {
-            right: -100%;
-        }
+        right: -999px;
     }
 
-    @media (min-width:800px) {
+    @media (min-width:995px) {
         display: none;
     }
 `
@@ -319,84 +426,51 @@ const NavDesktop = styled.nav`
     display: none;
     margin-left: auto;
 
-    ul {
+    @media (min-width:995px) {
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: 40px;
-
-        li {
-            position: relative;
-            max-height: 44px;
-
-            div {
-                position: absolute;
-                margin-top: 2px;
-                width: 0%;
-                margin-left: 50%;
-                height: 4px;
-                background-color: var(--color-neutral-50);
-                transition: all .2s;
-                border-radius: 12px;
-            }
-
-            a {
-                max-height: 44px;
-            }
+        
+        ul {
+            flex-direction: row;
+            align-items: center;
+            justify-content: unset;
+            gap: 1rem;
         }
+        
+        .profile-container {
+            background-color: var(--color-neutral-800);
 
-        button {
-            padding-block: 0.65rem;
-            height: 44px;
-            width: 108px;
-        }
+            .profile-content {
+                gap: 0.5rem;
+                display: flex;
+                flex-direction: row;
+                padding: 0.25rem;
 
-        a {
-            font: 700 1rem/1.25rem 'Space_Mono';
-            margin: 0 12px;
-            transition: all .2s;
-
-            :hover {
-                cursor: pointer;
-            }
-        }
-
-        span {
-            color: gray;
-            margin: 0 12px;
-            cursor: default;
-        }
-
-        ${props => props.$currentPage && css`
-            li:nth-child(${pages[props.$currentPage]}) {
-                a {
-                    font-family: 'Space_Mono_Bold';
-                    font-weight: 400;
-                    padding: .2rem -5rem;
-                    pointer-events: none;
-                }
-
-                div {
-                    width: calc(100% - 24px);
-                    margin-left: 12px;
-                    height: 4px;
-                    background-color: var(--color-primary-500);
+                &:hover, &:focus-visible {
+                    p {
+                        color: var(--color-neutral);
+                    }
                 }
             }
 
-            li:not(:nth-child(${pages[props.$currentPage]})):hover {
-                div {
-                    width: calc(100% - 24px);
-                    margin-left: 12px;
-                    height: 4px;
-                    background-color: var(--color-neutral-50);
+            .user-pic-container {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                gap: 0.5rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+    
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                 }
             }
-        `}
 
-    }
-
-    @media (min-width:800px) {
-        display: block;
+            &:hover, &:focus-visible {
+                background: var(--color-neutral-800);
+            }
+        }        
     }
 `

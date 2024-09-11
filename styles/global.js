@@ -3,27 +3,33 @@ import { createGlobalStyle } from 'styled-components';
 export default createGlobalStyle`
 
     :root {
-        /* paleta de cores */
-        --color-primary: #3A006E;
-        --color-secondary: #FF82FF;
-        --color-tertiary: #8A45C6; // excluir posteriormente
-        --color-neutral: #0A0A0A;
+        --color-primary: #9638FF;   //Ajustada
+        --color-secondary: #DDA6FF; //Ajustada
+        --color-tertiary: #8A45C6;  //excluir posteriormente
+        --color-neutral: #161616;   //Ajustada
+        --color-neutral-secondary: #4B4B4B;
+        --color-background-neutrals-secondary: #252525;
+        --color-background-neutrals-tertiary: #4B4B4B;
+        --color-content-neutrals-tertiary: #CACACA;
 
-        /* variações da paleta */
-        --color-primary-900: #4C286C;
-        --color-primary-800: #63358D;
-        --color-primary-700: #7B44AB;
-        --color-primary-600: #9256C5;
-        --color-primary-500: #A86BDA;
-        --color-neutral-900: #121212;
-        --color-neutral-800: #272727;
-        --color-neutral-700: #3C3C3C;
-        --color-neutral-600: #545454;
-        --color-neutral-500: #6C6C6C;
-        --color-neutral-400: #858585;
-        --color-neutral-300: #A0A0A0;
-        --color-neutral-100: #D7D7D7;
-        --color-neutral-50: #F3F3F3;
+        /* variações da paleta - ainda tenho que dar uma olhada melhor nas cores que são usadas */
+        --color-primary-900: #390078; 
+        --color-primary-800: #6618BB; 
+        --color-primary-700: #7E25E1; 
+        --color-primary-600: #9638FF; 
+        --color-primary-500: #AF52FF; 
+        --color-primary-400: #C66EFF;
+        --color-primary-300: #D98DFF;
+        --color-primary-200: #DDA6FF;
+        --color-neutral-900: #000000; 
+        --color-neutral-800: #252525; 
+        --color-neutral-700: #3C3C3C; // Ainda não usou
+        --color-neutral-600: #545454; // Ainda não usou
+        --color-neutral-500: #6C6C6C; // Ainda não usou
+        --color-neutral-400: #858585; // Ainda não usou
+        --color-neutral-300: #A0A0A0; // Ainda não usou
+        --color-neutral-100: #D7D7D7; // Ainda não usou
+        --color-neutral-50: #FFFFFF;  
 
         /* 16 pixels (100% = 16 pixels) */
         font-size: 100%;
@@ -61,48 +67,38 @@ export default createGlobalStyle`
 
         > div {
             width: 100%;
-            max-width: 1224px;
+            max-width: 1328px;
             margin: 0;
             padding: 0;
         }
     }
 
-    button {
-        font: 400 1rem/1.25rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
-        cursor: pointer;
-    }
-
     h1 {
-        font: 400 3.5rem/4.25rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
-        text-align: center;
+        font: 700 2.5rem/3rem 'AT Aero Bold';
     }
 
     h2 {
-        font: 400 3rem/3.5rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
+        font: 700 2rem/2.5rem 'AT Aero Bold';
     }
 
     h3 {
-        font: 400 2.5rem/3rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
-        text-align: left;
+        font: 700 1.5rem/1.75rem 'AT Aero Bold';
     }
 
     h4 {
-        font: 400 2rem/2.5rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
+        font: 700 1.25rem/1.5rem 'AT Aero Bold';
     }
 
     h5 {
-        font: 400 1.5rem/1.75rem 'Space_Mono_Bold';
-        color: var(--color-neutral-50);
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
     }
 
     h6 {
-        font: 400 1.25rem/1.5rem 'Space_Mono_Bold';
-        color: var(--color-neutral-100);
+        font: 700 1rem/1.5rem 'AT Aero Bold';
+    }
+
+    button {
+        font: 700 1rem/1.25rem 'AT Aero Bold';
     }
 
     ul {
@@ -112,33 +108,32 @@ export default createGlobalStyle`
     }
 
     body, p, span, a {
-        font: 700 1rem/1.25rem 'Space_Mono';
-        color: var(--color-neutral-50);
+        font: 700 0.875rem/1.5rem 'AT Aero';
     }
 
     a {
         text-decoration: none;
+        
+        &:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
     }
 
     label {
-        font: 700 1rem/1.25rem 'Space_Mono';
-        color: var(--color-neutral-50);
-    }
-
-    input[type=text], input[type=password] { 
-        text-align: center;
-        text-transform: uppercase;
-        font: 700 1rem/1.25rem 'Space_Mono';
-        color: var(--color-neutral-400);
-        background-color: var(--color-neutral-50);
-        border: 0;
+        font: 700 1rem/1.25rem 'AT Aero';
     }
     
-    select, option {
-        font: 700 1rem/1.25rem 'Space_Mono';
+    input[type=text], select, option {
+        font: 700 1rem/1.25rem 'AT Aero';
         color: var(--color-neutral-400);
         background-color: var(--color-neutral-50);
         border: 0;
+    }
+
+    button, h1, h2, h3, h4, h5, h6, body, p, span, a, label {
+        color: var(--color-neutral-50);
+        text-align: left;
     }
 
     ::-webkit-input-placeholder { /* WebKit browsers */
@@ -159,8 +154,8 @@ export default createGlobalStyle`
 
     ::placeholder { /* Recent browsers */
         text-transform: none;
-        font: 700 1rem/1.25rem 'Space_Mono';
-        color: var(--color-neutral-200);
+        font: 700 1rem/1.25rem 'AT Aero';
+        color: var(--color-neutral-400);
     }
 
     @media (min-width:480px) {
@@ -168,19 +163,7 @@ export default createGlobalStyle`
     }
 
     @media (min-width:560px) {
-
-        input[type=text], input[type=password], select, option { 
-            font: 700 1.125rem/1.75rem 'Space_Mono';
-            color: var(--color-neutral-400);
-            
-            ::placeholder {
-                font: 700 1.125rem/1.75rem 'Space_Mono';
-            }
-        }
-
-        button {
-            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
-        }
+        
     }
 
     @media (min-width:600px) {
@@ -188,7 +171,58 @@ export default createGlobalStyle`
     }
 
     @media (min-width:801px) {
+        h1 {
+            font: 700 4rem/4.5rem 'AT Aero Bold';
+        }
 
+        h2 {
+            font: 700 3.5rem/4.5rem 'AT Aero Bold';
+        }
+
+        h3 {
+            font: 700 3rem/3.5rem 'AT Aero Bold';
+        }
+
+        h4 {
+            font: 700 2.5rem/3.5rem 'AT Aero Bold';
+        }
+
+        h5 {
+            font: 700 2rem/2.5rem 'AT Aero Bold';
+        }
+
+        h6 {
+            font: 700 1.5rem/2rem 'AT Aero Bold';
+        }
+
+        button {
+            font: 700 1rem/1.25rem 'AT Aero Bold';
+            cursor: pointer;
+        }
+
+        body, p, span, a {
+            font: 700 1rem/1.5rem 'AT Aero';
+        }
+
+        label {
+            font: 700 1rem/1.25rem 'AT Aero';
+        }
+
+        input[type=text] {
+            font: 700 1rem/1.25rem 'AT Aero';
+            
+            :disabled {
+                cursor: not-allowed;
+            }
+        }
+        
+        select, option {
+            font: 700 1rem/1.25rem 'AT Aero';
+        }
+
+        ::placeholder { /* Recent browsers */
+            font: 700 1rem/1.25rem 'AT Aero';
+        }
     }
 
     @media (min-width:1021px) {

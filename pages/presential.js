@@ -77,38 +77,37 @@ const Presential = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2024 | Presencial' />
+            <Meta title='CO SSI 2024 | Registrar presença' />
 
             <NavBar />
             <PresenceWrapper>
                 <div className='section-container'>
                     
-                    <h3>Presencial</h3>
-
-                    <h5 className='page-description'> Registro de presenças presenciais :)</h5>
+                    <h5>Registrar presença</h5>
 
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
+                                <p> Registro de presenças presenciais :)</p>
                                 {!isLoading &&
                                     <>
-                                        <InputBox1>
+                                        <InputBox>
                                             <label htmlFor='lectureId'> ID da palestra: </label>
                                             <div className='form-input'>
                                                 <input id='lectureId' type='text' placeholder='Insira o ID' className={errors.lectureId && 'error-border'}
                                                     {...register("lectureId", { required: true, minLength: 1, })} />
                                             </div>
                                             {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                        </InputBox1>
+                                        </InputBox>
 
-                                        <InputBox2>
+                                        <InputBox>
                                             <label htmlFor='document'> Documento do inscrito:</label>
                                             <div className='form-input'>
                                                 <input id='document' type='text' placeholder='Insira o documento' className={errors.document && 'error-border'}
                                                     {...register("document", { required: true, minLength: 3 })} />
                                             </div>
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
-                                        </InputBox2>
+                                        </InputBox>
 
                                         <Button> Registrar </Button>
                                     </>
@@ -144,26 +143,29 @@ const Loading = styled.figure`
 `
 
 const PresenceWrapper = styled.section`
-    background: url('./images/background_imgs/background2_mobile.svg') bottom fixed no-repeat;
-    background-size: cover;
-    min-height: calc(100vh - 3.75rem);
-
-    .page-description {
-        text-align: center;
-    }
+    margin-top: 3.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .section-container {
+        width: fit-content;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-block: 3.5rem;
-        margin-block: 3.75rem; /* match navbar height */
-        gap: 3rem;
-    }
+        background-color: var(--color-background-neutrals-secondary); 
+        padding: 2rem 3.5rem;
+        gap: 1.5rem;
 
-    @media (min-width:1000px) {
-        background-image: url('./images/background_imgs/background2_desktop.svg');
+        h5 {
+            width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            width: 41rem;
+        }
     }
 `
 
@@ -171,7 +173,7 @@ const ErrorMessage = styled.span`
     color: var(--color-invalid);
     text-decoration: underline;
     position: absolute;
-    bottom: 0;
+    bottom: -1.1rem;
 `
 
 const FormWrapper = styled.div`
@@ -185,13 +187,16 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 5px;
         gap: 1rem;
 
+        p {
+            font: 700 1rem/1.5rem 'AT Aero Bold';
+            text-align: left;
+            width: 100%;
+        }
+
         button {
-            width: fit-content;
-            max-width: 450px;
-            margin-top: 1rem;
+            margin-top: .5rem;
         }
     }
 
@@ -203,12 +208,13 @@ const FormWrapper = styled.div`
         width: 100%;
         height: 4rem;
         background-color: var(--color-neutral-50);
-        border-radius: 16px;
         padding: 0.5rem;
         margin-left: -4px;
 
-        border: 4px solid transparent;
+        border: 2px solid white;
+        background: transparent;
         background-clip: padding-box;
+        color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -231,10 +237,22 @@ const FormWrapper = styled.div`
             border: none;
             height: 100%;
             background-color: transparent;
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
             color: var(--color-neutral-400);
+        }
+
+        ::placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
+        }
+
+        ::-ms-input-placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
     }
 
@@ -244,60 +262,22 @@ const FormWrapper = styled.div`
     }
 
     span {
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
 `
 
-const InputBox1 = styled.div`
+const InputBox = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
 
     label {
-        margin-bottom: .5rem;
-    }
-`
-
-const InputBox2 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
-
-    label {
-        margin-bottom: .5rem;
-        text-align: center;
-    }
-`
-
-const PresencesList = styled.div`
-    text-align: center;
-
-    margin-top: 1rem;
-    color: var(--color-text);
-
-    ul {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
-
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
         width: 100%;
-        padding: 0 5%;
-
-        li {
-            margin-bottom: 10px;
-        }
+        margin-bottom: .5rem;
     }
 `

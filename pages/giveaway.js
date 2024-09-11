@@ -8,7 +8,14 @@ import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
+
+// components
 import Button from '../src/components/Button';
+import SecondaryButton from '../src/components/SecondaryButton';
+
+// assets
+import SleepEmoji from '../public/images/emojis/sleep.png';
+import TimerEmoji from '../public/images/emojis/timer.png';
 
 const Giveaway = () => {
 
@@ -21,10 +28,10 @@ const Giveaway = () => {
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [gotResult, setGotResult] = useState(false);
-    const [timer, setTimer] = useState('00:00');
     const [lectures, setLectures] = useState([]);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
-    const [showList, setShowList] = useState(placeholderMessage);
+    const [isLastSeconds, setIsLastSeconds] = useState(false);
+    const [key, setKey] = useState(0);
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
@@ -54,6 +61,7 @@ const Giveaway = () => {
                     setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
+                    setKey(prevKey => prevKey + 1);
                     reset();
                 })
                 .catch(err => {
@@ -73,6 +81,7 @@ const Giveaway = () => {
                     setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
+                    setKey(prevKey => prevKey + 1);
                     reset();
                 })
                 .catch(err => {
@@ -158,89 +167,85 @@ const Giveaway = () => {
             <NavBar />
             <GiveawayWrapper>
                 <div className='section-container'>
-                    <h3>Sorteio</h3>
+                    <h5>Sorteio</h5>
 
                     {accessAllowed &&
-                        <>
-                            <ResultSection>
-                                {!isLoading &&
-                                    <>
-                                        <h3 className={giveawayResultName !== placeholderMessage ? 'neon' : ''}> {giveawayResultName} </h3>
+                        <FormWrapper>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <p> Realização do sorteio :)</p>
+                                <InputBox>
+                                    <label htmlFor='lectureId'> ID da palestra: </label>
 
-                                        <FormWrapper>
+                                    <div className='input-btn'>
+                                        <div className='form-input'>
+                                            <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
+                                                {...register("lectureId", { required: true, minLength: 1 })} />
+                                        </div>
+                                        {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
 
-                                            {!isLoading && gotResult && giveawayResultName !== placeholderMessage &&
-                                                <TimerWrapper>
-                                                    <div className="timer-wrapper">
-                                                        <CountdownCircleTimer
-                                                            isPlaying
-                                                            duration={40}
-                                                            colors={["#3A006E", "#A86BDA", "#F7B801", "#A30000"]}
-                                                            colorsTime={[40, 30, 20, 0]}
-                                                            >
-                                                            {renderTime}
-                                                        </CountdownCircleTimer>
-                                                    </div>
-                                                </TimerWrapper>                                           
-                                            }
-
-                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                <InputBox>
-                                                    <label htmlFor='lectureId'> ID da palestra: </label>
-                                                    <div className='form-input'>
-                                                        <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
-                                                            {...register("lectureId", { required: true, minLength: 1 })} />
-                                                    </div>
-                                                    {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                                </InputBox>
-
-                                                <CheckboxBox>
-                                                    <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
-                                                        {...register('isPresencialOnly')} />
-                                                    <label htmlFor='isPresencialOnly'> Apenas presencial? </label>
-                                                </CheckboxBox>
-
-                                                {giveawayResultName === placeholderMessage &&
-                                                    <Button > Sortear </Button>
-                                                }
-
-                                                {giveawayResultName !== placeholderMessage &&
-                                                    <Button className='secondary-btn' type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar Vencedor </Button>
-                                                }
-                                            </form>
-
-                                            <SecondaryButton className="show-list-btn" type="button" onClick={() => setShowList(!showList)}>
-                                                {showList ? "Esconder palestras" : "Mostrar palestras"}
-                                            </SecondaryButton>
-
-                                        </FormWrapper>
-                                    </>
-                                }
-
-                                {isLoading &&
-                                    <Loading>
-                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
-                                    </Loading>
-                                }
-                            </ResultSection>
-
-                            {!isLoading && showList &&
-                                <LecturesList>
-                                    <div className='lecture-list-container'>
-                                        <ul>
-                                            {lectures.map((lecture, key) =>
-                                                <li key={key}>
-                                                    ID: <span>{lecture.id}</span> | Título: {lecture.title}
-                                                </li>)}
-                                        </ul>
+                                        {giveawayResultName === placeholderMessage ?
+                                            <Button> Sortear </Button>
+                                            :
+                                            <SecondaryButton type="button" onClick={() => setGiveawayResultName(placeholderMessage)}> Limpar </SecondaryButton>
+                                        }
                                     </div>
-                                </LecturesList>
-                            }
-                            
-                                
-                                
-                        </>
+                                </InputBox>
+
+                                <CheckboxBox>
+                                    <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
+                                        {...register('isPresencialOnly')} />
+                                    <label htmlFor='isPresencialOnly'> Apenas presencial? </label>
+                                </CheckboxBox>
+                            </form>
+                        </FormWrapper>
                     }
+                </div>
+
+                <div className='section-container'>
+                    <ResultSection>
+                        {!isLoading &&
+                            <>
+                                <h6> {giveawayResultName} </h6>   
+                            </>
+                        }
+                        {isLoading &&
+                            <Loading>
+                                <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                            </Loading>
+                        }
+                    </ResultSection>
+                    <TimerWrapper>
+                        {isLastSeconds ? 
+                            <img src={SleepEmoji} alt="sleep emoji" /> 
+                            :
+                            <img src={TimerEmoji} alt="timer emoji" />
+                        }
+                        <div className="timer-wrapper">
+                            <CountdownCircleTimer
+                                key={key}
+                                isPlaying={gotResult}
+                                duration={40}
+                                colors={["#9638FF", "#A86BDA", "#F7B801", "#A30000"]}
+                                colorsTime={[40, 30, 20, 0]}
+                                onUpdate={(remainingTime) => {
+                                    if (remainingTime === 10) {
+                                        setIsLastSeconds(true);
+                                    }
+                                    if (remainingTime === 0) {
+                                        setGiveawayResultName('Dormiu no ponto...');
+                                        setGotResult(false);
+                                    }
+                                }}
+                                >
+                                {renderTime}
+                            </CountdownCircleTimer>
+                        </div>
+                        {isLastSeconds ? 
+                            <img src={SleepEmoji} alt="sleep emoji" /> 
+                            :
+                            <img src={TimerEmoji} alt="timer emoji" />
+                        }
+                    </TimerWrapper> 
                 </div>
             </GiveawayWrapper>
         </>
@@ -262,37 +267,35 @@ const Loading = styled.figure`
 `
 
 const GiveawayWrapper = styled.section`
-    background: url('./images/background_imgs/background4_mobile.svg') top fixed no-repeat;
-    background-position: top;
-    background-size: cover;
-    min-height: calc(100vh - 3.75rem);
-
-    .page-description {
-        text-align: center;
-    }
+    margin-top: 7.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 
     .section-container {
+        width: fit-content;
+        height: 18.5rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-block: 3.5rem;
-        margin-block: 3.75rem; /* match navbar height */
-        gap: 3rem;
+        background-color: var(--color-background-neutrals-secondary); 
+        padding: 2rem 3.5rem;
+        gap: 1.5rem;
 
-        h3 {
-            text-align: center;
+        h5 {
+            width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            width: 41rem;
         }
     }
 
-    button {
-        width: fit-content;
-        max-width: 450px;
-        margin-top: 1rem;
-    }
-
-    @media (min-width:1000px) {
-        background-image: url('./images/background_imgs/background4_desktop.svg');
+    @media (min-width: 960px) {
+        flex-direction: row;
     }
 `
 
@@ -300,17 +303,13 @@ const ErrorMessage = styled.span`
     color: var(--color-invalid);
     text-decoration: underline;
     position: absolute;
-    bottom: 0;
+    bottom: -1.1rem;
 `
 
 const FormWrapper = styled.div`
     --color-invalid: #F24822;
     --color-valid: #14AE5C;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
     form {
         display: flex;
@@ -318,8 +317,24 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 5px;
         gap: 1rem;
+
+        p {
+            font: 700 1rem/1.5rem 'AT Aero Bold';
+            text-align: left;
+            width: 100%;
+        }
+
+        .input-btn {
+            display: flex;
+            width: 100%;
+            gap: .5rem;
+        }
+
+        button {
+            padding-inline: 1.5rem;
+            width: fit-content;
+        }
     }
 
     .form-input {
@@ -327,15 +342,15 @@ const FormWrapper = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 15rem;
-        height: 4rem;
+        width: 100%;
         background-color: var(--color-neutral-50);
-        border-radius: 16px;
         padding: 0.5rem;
-        margin-left: -4px;
+        gap: 1rem;
 
-        border: 4px solid transparent;
+        border: 2px solid white;
+        background: transparent;
         background-clip: padding-box;
+        color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -358,10 +373,22 @@ const FormWrapper = styled.div`
             border: none;
             height: 100%;
             background-color: transparent;
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
             color: var(--color-neutral-400);
+        }
+
+        ::placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
+        }
+
+        ::-ms-input-placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
     }
 
@@ -371,46 +398,8 @@ const FormWrapper = styled.div`
     }
 
     span {
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
-    }
-`
-
-
-const SecondaryButton = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 9.1875rem;
-    height: 3rem;
-    padding: 0.5625rem 1.3125rem;
-    margin-bottom: 5px;
-    border-radius: 9px;
-    border: 3px solid var(--color-neutral-50);
-    background-color: transparent;
-    transition: 500ms;
-    cursor: pointer;
-
-    font: 400 1rem/1.25rem 'Space_Mono_Bold';
-
-    &:hover {
-        background-color: var(--color-neutral-50);
-        color: var(--color-neutral-900);
-    }
-
-    &:active {
-        background-color: var(--color-neutral-100);
-        border-color: var(--color-neutral-100);
-        color: var(--color-neutral-900);
-    }
-        
-    @media (min-width:560px) {
-        width: 9.6875rem;
-        height: 3rem;
-
-        span {
-            font: 400 1.125rem/1.5rem 'Space_Mono_Bold';
-        }
     }
 `
 
@@ -421,10 +410,10 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
 
     label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;
         margin-bottom: .5rem;
     }
 `
@@ -432,17 +421,15 @@ const InputBox = styled.div`
 const CheckboxBox = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
-    max-width: 450px;
-    padding-block: 1.5rem;
+    padding: .5rem;
     background-color: var(--color-neutral-800);
-    border-radius: 8px;
 
     label {
         margin-left: 15px;
         color: var(--color-text);
-        font: 700 0.875rem/1rem 'Space_Mono';
+        font: 700 0.875rem/1rem 'AT Aero';
 
         cursor: pointer;
     }
@@ -460,74 +447,37 @@ const ResultSection = styled.div`
     align-items: center;
     justify-content: center;
     gap: 3rem;
+    width: 100%;
+    background-color: white;
+    padding: 1rem 1.5rem;
 
     .show-list-btn {
         margin-top: 2rem;
     }
 
-    h3 {
+    h6 {
         color: var(--color-primary-500);
-    }
-
-    .neon {
-        color: #fff;
-        text-shadow:
-            0 0 1px #fff,
-            0 0 20px var(--color-secondary),
-            0 0 60px var(--color-secondary),
-            0 0 70px var(--color-secondary),
-            0 0 80px var(--color-secondary);
     }
 `
 
-const LecturesList = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: -1rem;
-
-    .lecture-list-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    span {
-        font: inherit;
-        color: var(--color-primary-500);
-        font-family: 'Space_Mono_Bold';
-        font-weight: 400;
-    }
-
-    ul {
-
-        li {
-            margin-bottom: 10px;
-        }
-    }
-`
-
-// Timer:
 const TimerWrapper = styled.section`
-    margin-block: 2rem 3rem;
-
-    h1 {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
+    display: flex;
+    gap: 1.5rem;
+    flex-direction: row;
+    max-height: 60%;
+    
     .timer-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+        height: 100%;
+        width: 7.25rem;
+        height: 7.25rem;
+        font: 700 2.5rem/3.5rem 'AT Aero Bold';
 
-    .time-wrapper {
-        position: relative;
-        width: 80px;
-        height: 60px;
-        font: 400 3.5rem/4.25rem 'Space_Mono_Bold';
+        svg {
+            width: 100%;
+        }
     }
 
     .time-wrapper .time {
@@ -542,16 +492,15 @@ const TimerWrapper = styled.section`
         transform: translateY(0);
         opacity: 1;
         transition: all 0.2s;
-        color: var(--color-text);
     }
 
     .time-wrapper .time.up {
         opacity: 0;
-        transform: translateY(-100%);
+        transform: translateY(-30%);
     }
 
     .time-wrapper .time.down {
         opacity: 0;
-        transform: translateY(100%);
+        transform: translateY(30%);
     }
 `

@@ -43,11 +43,14 @@ const Login = () => {
             <Meta title='CO SSI 2024 | Login' />
 
             <LoginWrapper>
+                <div className='logo-container'>
+                    <img src='./images/logos/logo_horizontal.svg' alt='SSI 2024 - Logo' />
+                </div>
                 <div className='section-container'>
-                    <h3>Login</h3>
+                    <h5>Login</h5>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <h5> Entrada exclusiva para a Comissão Organizadora da SSI de 2024</h5>
+                            <p> Acesso exclusivo para a Comissão Organizadora da SSI 2024</p>
 
                             {!isLoading &&
                                 <>
@@ -103,30 +106,40 @@ const Loading = styled.figure`
 `
 
 const LoginWrapper = styled.section`
-    background: url('./images/background_imgs/background1_mobile.svg') no-repeat;
-    background-size: cover;
-    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .page-description {
-        text-align: center;
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding-block: 4rem;
+
+        img {
+            height: 4rem;
+        }
     }
 
     .section-container {
+        width: fit-content;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-block: 3.5rem;
-        margin-block: 3.75rem; /* match navbar height */
-        gap: 3rem;
+        background-color: var(--color-background-neutrals-secondary); 
+        padding: 2rem 3.5rem;
+        gap: 1.5rem;
 
         h5 {
-            margin-bottom: 2rem;
+            width: 100%;
         }
-    }
 
-    @media (min-width:1000px) {
-        background-image: url('./images/background_imgs/background1_desktop.svg');
+        @media (min-width: 480px) {
+            width: 41rem;
+        }
     }
 `
 
@@ -134,7 +147,7 @@ const ErrorMessage = styled.span`
     color: var(--color-invalid);
     text-decoration: underline;
     position: absolute;
-    bottom: 0;
+    bottom: -1.1rem;
 `
 
 const FormWrapper = styled.div`
@@ -148,13 +161,16 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        border-radius: 5px;
         gap: 1rem;
 
+        p {
+            font: 700 1rem/1.5rem 'AT Aero Bold';
+            text-align: left;
+            width: 100%;
+        }
+
         button {
-            width: fit-content;
-            max-width: 450px;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
 
         .error-message {
@@ -172,12 +188,13 @@ const FormWrapper = styled.div`
         width: 100%;
         height: 4rem;
         background-color: var(--color-neutral-50);
-        border-radius: 16px;
         padding: 0.5rem;
         margin-left: -4px;
 
-        border: 4px solid transparent;
+        border: 2px solid white;
+        background: transparent;
         background-clip: padding-box;
+        color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -200,10 +217,22 @@ const FormWrapper = styled.div`
             border: none;
             height: 100%;
             background-color: transparent;
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
             color: var(--color-neutral-400);
+        }
+
+        ::placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
+        }
+
+        ::-ms-input-placeholder {
+            color: white;
+            font: 400 1rem/1.5rem 'AT Aero';
         }
     }
 
@@ -213,7 +242,7 @@ const FormWrapper = styled.div`
     }
 
     span {
-        font: 400 0.875rem/1rem 'Space_Mono_Bold';
+        font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
 `
@@ -225,10 +254,10 @@ const InputBox = styled.div`
     justify-content: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
-    padding: 0 0 1.2rem 0;
 
     label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;
         margin-bottom: .5rem;
     }
 `
