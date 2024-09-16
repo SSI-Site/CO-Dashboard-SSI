@@ -11,6 +11,7 @@ import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
+import LectureList from '../src/components/LectureList';
 
 const Presential = () => {
     const router = useRouter();
@@ -125,6 +126,7 @@ const Presential = () => {
 
                 </div>
             </PresenceWrapper>
+            <LectureList />
         </>
     )
 }

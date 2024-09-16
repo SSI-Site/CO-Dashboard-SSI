@@ -11,6 +11,7 @@ import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
+import LectureList from '../src/components/LectureList';
 import SecondaryButton from '../src/components/SecondaryButton';
 
 // assets
@@ -246,6 +247,7 @@ const Giveaway = () => {
                     }
                 </div>
             </GiveawayWrapper>
+            <LectureList />
         </>
     )
 }

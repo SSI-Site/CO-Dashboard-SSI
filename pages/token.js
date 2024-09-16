@@ -10,6 +10,7 @@ import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
+import LectureList from '../src/components/LectureList';
 import SecondaryButton from '../src/components/SecondaryButton';
 
 const Token = () => {
@@ -159,6 +160,7 @@ const Token = () => {
                     </ResultSection>
                 </div>
             </TokenWrapper>
+            <LectureList />
         </>
     )
 }
