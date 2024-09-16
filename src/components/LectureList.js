@@ -94,6 +94,7 @@ const LectureListWrapper = styled.div`
 const ListTitle = styled.div`
     display: flex;
     gap: 3rem;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 
