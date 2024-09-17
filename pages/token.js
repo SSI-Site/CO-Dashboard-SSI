@@ -42,14 +42,15 @@ const Token = () => {
     // console.log("Data atual",currentDateTime());
       
     const onSubmit = data => {
-        getTokenGenerated(data.lectureId);
+        getTokenGenerated(data);
     }
 
-    const getTokenGenerated = (lectureId) => {
+    const getTokenGenerated = (data) => {
         setIsLoading(true);
+        const dateTime = data.dateTime && data.dateTime.trim() !== "" ? data.dateTime : currentDateTime()
 
         setTimeout(() => {
-            saphira.generateOnlineToken(lectureId, currentDateTime())
+            saphira.generateOnlineToken(data.lectureId, dateTime)
                 .then((res) => {
                     setTokenGenerated(res.data.token.code);
                     setIsLoading(false);
@@ -121,13 +122,23 @@ const Token = () => {
                                                 {...register("lectureId", { required: true, minLength: 1, })} />
                                         </div>
                                         {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                        {tokenGenerated === placeholderMessage ?
-                                            <Button> Gerar token </Button>
-                                            :
-                                            <SecondaryButton type="button" onClick={() => setTokenGenerated(placeholderMessage)}> Limpar token </SecondaryButton>
-                                        }
                                     </div>
                                 </InputBox>
+                                <InputBox>
+                                    <label htmlFor='dateTime'> Data/hora de início do token (Opcional): </label>
+
+                                    <div className='input-btn'>
+                                        <div className='form-input'>
+                                            <input id='dateTime' type='datetime-local' className={`${errors.dateTime && 'error-border'}`}
+                                                {...register("dateTime")} />
+                                        </div>
+                                    </div>
+                                </InputBox>
+                                {tokenGenerated === placeholderMessage ?
+                                    <Button> Gerar token </Button>
+                                    :
+                                    <SecondaryButton type="button" onClick={() => setTokenGenerated(placeholderMessage)}> Limpar token </SecondaryButton>
+                                }
                             </form>
                         </FormWrapper>
                     }
@@ -135,18 +146,24 @@ const Token = () => {
                         {!isLoading &&
                             <>
                                 <div className={tokenGenerated !== placeholderMessage ? 'token-wrapper tooltip' : ''}>
-                                    <h6 onClick={tokenGenerated !== placeholderMessage ? 
+                                    <h6 
+                                        onClick={tokenGenerated !== placeholderMessage ? 
                                         copyContent : null}
-                                    > 
+                                    >
                                         {tokenGenerated}
                                     </h6>
                                     {tokenGenerated !== placeholderMessage &&
-                                        <div className='copy-btn'
-                                            onClick={tokenGenerated !== placeholderMessage ? copyContent : null}>
+                                        <div 
+                                            className='copy-btn'
+                                            onClick={tokenGenerated !== placeholderMessage ? copyContent : null}
+                                        >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                                                 <path d="M17.375 6.375V2.625H3.125V16.875H6.875M7.625 7.125V21.375H21.875V7.125H7.625Z" stroke="#9638FF" stroke-width="2.25" stroke-linecap="square"/>
                                             </svg>
                                         </div>
+                                    }
+                                    {textCopied &&
+                                        <span className='tooltiptext'>Token copiado!</span>
                                     }
                                 </div>
                             </>
@@ -240,7 +257,6 @@ const FormWrapper = styled.div`
 
         button {
             padding-inline: 1.5rem;
-            width: fit-content;
         }
     }
 
@@ -258,11 +274,7 @@ const FormWrapper = styled.div`
         background-clip: padding-box;
         color: white;
 
-        &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
-            border-color: var(--color-primary);
-        }
-
-        &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
+        &:has(input:focus):not(:has(.error-border)) {
             border-color: var(--color-primary);
         }
 
@@ -270,11 +282,11 @@ const FormWrapper = styled.div`
             border-color: var(--color-invalid);
         }
 
-        &:has(.token-registered) {
-            border-color: var(--color-valid);
+        input {
+            color-scheme: dark;
         }
 
-        input[type=text], input[type=password],  select {
+        input, select {
             width: 95%;
             border: none;
             background-color: transparent;
@@ -313,7 +325,6 @@ const InputBox = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
     width: 100%;
 
     label {
@@ -333,16 +344,16 @@ const ResultSection = styled.div`
     background-color: white;
     padding: 1rem 1.5rem;
 
+    > div {
+        display: flex;
+    }
+
     .show-list-btn {
         margin-top: 2rem;
     }
 
     h6 {
         color: var(--color-primary);
-
-        :hover {
-            cursor: copy;
-        }
     }
 
     .token-wrapper {
@@ -356,6 +367,44 @@ const ResultSection = styled.div`
         border: 2px solid transparent;
         transition: 0.3s all ease-in-out;
     }
+
+    .tooltip {
+        position: relative;
+
+        h6:hover {
+            cursor: copy;
+        }
+    }
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+        visibility: visible;
+        background-color: var(--color-primary);
+        text-align: center;
+        padding: 7px 15px;
+        font: 400 1rem/1.5rem 'AT Aero';
+
+        /* Position the tooltip text */
+        position: absolute;
+        z-index: 1;
+        bottom: -120%;
+        right: 30%;
+
+        /* Fade in tooltip */
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
+
+    /* Tooltip arrow */
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        right: 50%;
+        margin-right: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent var(--color-primary) transparent;
+    }
     
     .copy-btn {
         display: flex;
@@ -364,11 +413,6 @@ const ResultSection = styled.div`
         padding: 0.5rem;
         width: 2.25rem;
         height: 2.25rem;
-        gap: 0.5rem;
-        position: absolute;
-        bottom: 2.85rem;
-        right: calc(100% / 2 - 5rem);
-        transition: 0.3s all ease-in-out;
 
         &:hover {
             cursor: copy;

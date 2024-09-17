@@ -28,11 +28,10 @@ const LectureList = () => {
         setLectures([]);
         saphira.getLectures()
         .then((res) => {
-            console.log(res);
             setLectures(lectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1));
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
     };
 
@@ -50,33 +49,35 @@ const LectureList = () => {
                 </Button>
             </ListTitle>
 
-            {showLectures && (
-                <LecturesTable>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome da Palestra</th>
-                            <th>Palestrante</th>
-                            <th>Dia</th>
-                            <th>Horário</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {lectures.map((lecture, index) => (
-                            <tr
-                                key={lecture.id}
-                                style={{ backgroundColor: index % 2 === 0 ? 'var(--color-background-neutrals-secondary)' : 'transparent' }}
-                            >
-                                <td>{lecture.id}</td>
-                                <td>{lecture.title}</td>
-                                <td>{lecture.speaker}</td>
-                                <td>{formatDay(lecture.date_time)}</td>
-                                <td>{formatTime(lecture.date_time)}</td>
+            <div className='table-container'>
+                {showLectures && (
+                    <LecturesTable>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome da Palestra</th>
+                                <th>Palestrante</th>
+                                <th>Dia</th>
+                                <th>Horário</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </LecturesTable>
-            )}
+                        </thead>
+                        <tbody>
+                            {lectures.map((lecture, index) => (
+                                <tr
+                                    key={lecture.id}
+                                    style={{ backgroundColor: index % 2 === 0 ? 'var(--color-background-neutrals-secondary)' : 'transparent' }}
+                                >
+                                    <td>{lecture.id}</td>
+                                    <td>{lecture.title}</td>
+                                    <td>{lecture.speaker}</td>
+                                    <td>{formatDay(lecture.date_time)}</td>
+                                    <td>{formatTime(lecture.date_time)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </LecturesTable>
+                )}
+            </div>
         </LectureListWrapper>
     );
 };
@@ -89,6 +90,11 @@ const LectureListWrapper = styled.div`
     max-width: 1328px;
     margin: 0 auto;
     padding: 4rem 2rem;
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
 `;
 
 const ListTitle = styled.div`
@@ -107,6 +113,7 @@ const LecturesTable = styled.table`
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 2rem;
+    
 
     thead {
         border-block: 1px solid var(--color-neutral-secondary);
@@ -138,26 +145,21 @@ const LecturesTable = styled.table`
                 text-overflow: ellipsis;
                 max-width: 150px;
                 padding-right: 3rem;
-        
-                &:nth-child(4),
-                &:nth-child(5) {
-                    padding-left: 0;
-                }
 
                 &:nth-child(2) {
-                    max-width: 500px;
-                }
-
-                &:nth-child(3) {
                     max-width: 400px;
                 }
 
+                &:nth-child(3) {
+                    max-width: 200px;
+                }
+
                 &:nth-child(4) {
-                    max-width: 150px;
+                    max-width: 90px;
                 }
             
                 &:nth-child(5) {
-                    padding-right: 0;
+                    padding-inline: 0;
                 }
             }
 

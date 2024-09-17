@@ -42,6 +42,7 @@ const Presential = () => {
                     })
                 }, (err) => {
                     setIsLoading(false);
+                    console.error(err);
                     Swal.fire({
                         icon: 'info',
                         title: 'Falha no registro!',

@@ -28,7 +28,6 @@ const Giveaway = () => {
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [gotResult, setGotResult] = useState(false);
-    const [lectures, setLectures] = useState([]);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
     const [isLastSeconds, setIsLastSeconds] = useState(false);
     const [key, setKey] = useState(0);
@@ -65,7 +64,7 @@ const Giveaway = () => {
                     reset();
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     setIsLoading(false);
                     setError("lectureId", { type: "focus" }, { shouldFocus: true })
                 })
@@ -85,23 +84,11 @@ const Giveaway = () => {
                     reset();
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     setIsLoading(false);
                     setError("lectureId", { type: "focus" }, { shouldFocus: true });
                 })
         }, 2000);
-    }
-
-    const listLectures = () => {
-        setLectures([]);
-        saphira.getLectures()
-            .then((res) => {
-                console.log(res);
-                setLectures(lectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1));
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     }
 
     // Timer
@@ -147,7 +134,6 @@ const Giveaway = () => {
 
     useEffect(() => {
         checkAuthentication();
-        listLectures();
     }, []);
 
     return (
