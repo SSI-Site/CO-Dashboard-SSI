@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import saphira from '../../services/saphira';
-import Button from './Button';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import saphira from '../../services/saphira';
+
+// components
+import Button from './Button';
 
 const LectureList = () => {
     const [lectures, setLectures] = useState([]);
@@ -20,7 +22,9 @@ const LectureList = () => {
     // Função para formatar o horário em "09:40", "13:20", etc.
     const formatTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${hours}h${minutes}`;
     };
 
     // Função para obter as palestras e setá-las
