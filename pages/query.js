@@ -36,8 +36,12 @@ const Query = () => {
             setIsLoading(false);
         }, 1000);
     };
-
+    
     const checkAuthentication = () => {
+        if (isAuthenticated === null) {
+            return;
+        }
+        
         if (isAuthenticated) {
             setAccessAllowed(true);
         } else {

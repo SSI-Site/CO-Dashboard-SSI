@@ -34,15 +34,6 @@ const Giveaway = () => {
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const checkAuthentication = () => {
-        if (isAuthenticated) {
-            setAccessAllowed(true);
-        } else {
-            setAccessAllowed(false);
-            router.push("/");
-        }
-    }
-
     const onSubmit = data => {
         if (data.isPresencialOnly) {
             getPresencialOnlyGivawayResult(data.lectureId);
@@ -131,6 +122,19 @@ const Giveaway = () => {
             </div>
         );
     };
+
+    const checkAuthentication = () => {
+        if (isAuthenticated === null) {
+            return;
+        }
+        
+        if (isAuthenticated) {
+            setAccessAllowed(true);
+        } else {
+            setAccessAllowed(false);
+            router.push("/");
+        }
+    }
 
     useEffect(() => {
         checkAuthentication();

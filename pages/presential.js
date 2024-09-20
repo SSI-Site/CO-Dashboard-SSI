@@ -56,6 +56,10 @@ const Presential = () => {
     }
 
     const checkAuthentication = () => {
+        if (isAuthenticated === null) {
+            return;
+        }
+        
         if (isAuthenticated) {
             setAccessAllowed(true);
         } else {

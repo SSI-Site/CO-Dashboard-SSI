@@ -55,7 +55,7 @@ const Token = () => {
                     setTokenGenerated(res.data.token.code);
                     setIsLoading(false);
                 }, (err) => {
-                    console.log(err);
+                    console.error(err);
                     setIsLoading(false);
                     setError("lectureId", { type: "focus" }, { shouldFocus: true })
                 })
@@ -65,18 +65,23 @@ const Token = () => {
     // Para permitir copiar token ao clicar sobre ele
     const copyContent = async () => {
         try {
-          await navigator.clipboard.writeText(tokenGenerated);
-          console.log('Content copied to clipboard');
+            await navigator.clipboard.writeText(tokenGenerated);
+            console.log('Content copied to clipboard');
         } catch (err) {
           console.error('Failed to copy: ', err);
         }
         setTextCopied(true);
+
         setTimeout(() => {
             setTextCopied(false);
         }, 2000);
-      }
+    }
 
     const checkAuthentication = () => {
+        if (isAuthenticated === null) {
+            return;
+        }
+        
         if (isAuthenticated) {
             setAccessAllowed(true);
         } else {
