@@ -23,7 +23,6 @@ export function AuthProvider({ children }) {
             if (res.status === 200) {
                 setSession(true);
                 setIsAuthenticated(true);
-                Router.push('/presential');
                 return true;
             }
             return false

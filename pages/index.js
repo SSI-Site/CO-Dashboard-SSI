@@ -17,18 +17,12 @@ const Login = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            router.push("/presential");
-        }
-    }, [isAuthenticated, router]);
-
     const onSubmit = data => {
         setIsLoading(true);
+        
         const isSignInValid = signIn(data.user, data.password);
-
-        console.log(isSignInValid);
-
+        // console.log(isSignInValid);
+        
         if (isSignInValid) {
             router.push("/presential");
         } else {
@@ -38,6 +32,11 @@ const Login = () => {
         setIsLoading(false);
     };
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/presential");
+        }
+    }, [isAuthenticated, router]);
 
     return (
         <>
