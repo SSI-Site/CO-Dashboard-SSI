@@ -23,9 +23,7 @@ const Login = () => {
         const isSignInValid = signIn(data.user, data.password);
         // console.log(isSignInValid);
         
-        if (isSignInValid) {
-            router.push("/presential");
-        } else {
+        if (!isSignInValid) {
             setError("credentials" , { type: "focus" }, { shouldFocus: true });
         }
 
