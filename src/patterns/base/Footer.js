@@ -1,13 +1,9 @@
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 // assets
 import LogoPrincipal from '../../../public/images/logos/logo_principal.svg';
-import  Link  from 'next/link';
 
 const Footer = () => {
-    
-    const router = useRouter();
 
     return (
         <>
