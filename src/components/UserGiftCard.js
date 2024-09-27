@@ -6,7 +6,9 @@ import giftLocked from '../../public/images/gifts/gift-locked.png';
 import giftUnlocked from '../../public/images/gifts/gift-unlocked.png';
 
 const UserGiftCard = ({ gift, index, totalPres, presentialPres }) => {
+    
     const locked = totalPres < gift.totalPres && presentialPres < gift.presentialPres;
+
     return (
         <GiftContainer tabIndex={0}>
             <div className={"gift-card-front " + (locked ? "locked-front" : "")} >
@@ -41,7 +43,7 @@ const UserGiftCard = ({ gift, index, totalPres, presentialPres }) => {
                         </div>
                     </div>
                 </>
-                :
+            :
                 <div className='gift-card-back' id={"gift" + index}>
                     <img className="emoji-image" src={giftUnlocked} alt="celebrating emoji" />
 
@@ -69,27 +71,32 @@ export default UserGiftCard;
 
 
 const GiftContainer = styled.div`
-	width: 18.5rem;
-	min-height: 24.6rem;
+	width: 100%;
+    max-width: 26.3rem;
+	height: 24.625rem;
 	display: flex;
 	gap: 1rem;
 	align-items: center;
 	justify-content: center;
 	overflow-y: hidden;
+    position: relative;
 
     .card-title {
 		font: 700 1.5rem/1.25rem 'AT Aero Bold';
 	}
 
 	.gift-card-front {
-		width: 18.5rem;
-		min-height: 24.6rem;
+		width: 100%;
+        max-width: 26.3rem;
+		height: 24.625rem;
 		display: flex;
 		gap: 2rem;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		position: absolute;
+        left: 0;
+        right: 0;
 		background-color: var(--color-primary-900);
 
         figure {
@@ -105,7 +112,6 @@ const GiftContainer = styled.div`
             height: auto;
             width: auto;
 		}
-		
 	}
 	
 	.locked-front {
@@ -124,11 +130,12 @@ const GiftContainer = styled.div`
 	}
 
 	.gift-card-back {
-		min-height: 24.6rem;
-		transition: 0.1s;
+		width: 100%;
+        max-width: 26.3rem;
+		height: 24.625rem;
+		transition: 0.15s;
 		translate: 0 101%;
 		position: relative;
-		width: 18.5rem;
 		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
@@ -202,9 +209,7 @@ const GiftContainer = styled.div`
 					color: var(--color-primary);
 				}
 			}
-
 		}
-
 	}
 
 	.info-button {
@@ -213,13 +218,21 @@ const GiftContainer = styled.div`
         position: absolute;
         width: 3rem;
         height: 3rem;
-        background-color: var(--color-neutral-50);
-        transform: translate(6.75rem, 9.85rem);
+        background: linear-gradient(
+            to bottom,
+            var(--color-neutral-50) 50%,
+            var(--color-primary) 50%
+        );
+        background-size: 100% 200%;
+        background-position: top;
+        right: 1rem;
+        bottom: 1rem;
         align-items: center;
         justify-content: center;
+        transition: all 0.15s ease-in-out;
 
 		svg {
-			transition: 0.3s;
+			transition: 0.15s;
 		}
     }
 
@@ -228,6 +241,7 @@ const GiftContainer = styled.div`
 	}
 
 	.button-flip {
+        background-position: bottom;
         svg {
             transform: rotate(-180deg);
 
@@ -235,7 +249,6 @@ const GiftContainer = styled.div`
                 fill: white;
             }
         }
-        background-color: var(--color-primary);
     }
 
     button:focus-visible {
@@ -244,6 +257,20 @@ const GiftContainer = styled.div`
     }
 
 	@media (min-width:1021px) {
+        width: 26.3rem;
+
+        .gift-card-front {
+            width: 26.3rem;
+            height: 24.625rem;
+            gap: 1.12rem;
+        }
+
+        .gift-card-back {
+            width: 26.3rem;
+            height: 24.625rem;
+            padding: 2rem;
+        }
+
 		&:hover, &:focus-visible {
 			.gift-card-back {
 				translate: 0 0;
