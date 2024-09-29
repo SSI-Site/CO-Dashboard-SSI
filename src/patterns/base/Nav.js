@@ -17,6 +17,7 @@ const pages = {
     "/query": 2,
     "/token": 3,
     "/giveaway": 4,
+    "/exterminate": 5
 }
 
 const Nav = () => {
@@ -91,6 +92,10 @@ const Nav = () => {
                                 <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
                                     <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
                                 </li>
+
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
+                                    <Link legacyBehavior href="/exterminate" ><a>Xterminate</a></Link>
+                                </li>
                             </ul>
                         </div>
 
@@ -127,6 +132,11 @@ const Nav = () => {
 
                         <li className = {router.pathname == '/giveaway' ? 'active': ''}>
                             <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
+                            <div></div>
+                        </li>
+
+                        <li className = {router.pathname == '/exterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/exterminate" ><a>Xterminate</a></Link>
                             <div></div>
                         </li>
                         <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>

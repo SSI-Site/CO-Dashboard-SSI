@@ -88,8 +88,12 @@ const saphira = {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
-    }
+    },
 
+    removePresenceFromUser: async (lectureId, document) => {
+        const requestUrl = `${BASE_URL}/admin/presence/${lectureId}/${document}`
+        return await axios.delete(requestUrl);
+    },
 }
 
 export default saphira;
