@@ -69,7 +69,7 @@ const LectureList = () => {
                             {lectures.map((lecture, index) => (
                                 <tr
                                     key={lecture.id}
-                                    style={{ backgroundColor: index % 2 === 0 ? 'var(--color-background-neutrals-secondary)' : 'transparent' }}
+                                    style={{ backgroundColor: index % 2 === 0 ? 'var(--color-neutral-800)' : 'transparent' }}
                                 >
                                     <td>{lecture.id}</td>
                                     <td>{lecture.title}</td>
@@ -137,7 +137,7 @@ const LecturesTable = styled.table`
 
     tbody {
         tr {
-            background: var(--color-background-neutrals-secondary);
+            background: var(--color-neutral-800);
             border-radius: 0.5rem;
             transition: background 0.3s;
 

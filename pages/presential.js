@@ -163,7 +163,7 @@ const PresenceWrapper = styled.section`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: var(--color-background-neutrals-secondary); 
+        background-color: var(--color-neutral-800); 
         padding: 2rem 3.5rem;
         gap: 1.5rem;
 
