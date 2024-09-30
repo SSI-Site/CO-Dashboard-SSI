@@ -175,7 +175,6 @@ const RegisteredWrapper = styled.section`
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 2rem 3.5rem;
         gap: 1.5rem;
 
         h5 {
