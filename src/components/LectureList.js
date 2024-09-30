@@ -32,7 +32,7 @@ const LectureList = () => {
         setLectures([]);
         saphira.getLectures()
         .then((res) => {
-            setLectures(lectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1));
+            setLectures((prevLectures) => prevLectures.concat(...res.data).sort((a, b) => a.id > b.id ? -1 : 1));
         })
         .catch((err) => {
             console.error(err);

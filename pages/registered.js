@@ -12,8 +12,6 @@ import NavBar from '../src/patterns/base/Nav';
 import Button from '../src/components/Button';
 import SecondaryButton from '../src/components/SecondaryButton';
 
-// assets
-
 const Registered = () => {
 
     const router = useRouter();
@@ -22,12 +20,12 @@ const Registered = () => {
 
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [students, setStudent] = useState();
+    const [students, setStudents] = useState([]);
 
     const onSubmit = data => {
         setIsLoading(true);
 
-        searchStudentByName(data.document);
+        searchStudentByName(data.name);
 
         setTimeout(() => {
             setIsLoading(false);
@@ -47,12 +45,13 @@ const Registered = () => {
         }
     }
 
-    const searchStudentByName = (document) => {
-        setStudent([]);
+    const searchStudentByName = (name) => {
+        setStudents([]);
 
-        saphira.searchStudentByName(document)
+        saphira.searchStudentByName(name)
             .then((res) => {
-                setStudent(students.concat(...res.data).sort((a, b) => a.name.localeCompare(b.name)));
+                console.log(res.data);
+                setStudents((prevStudents) => prevStudents.concat(...res.data).sort((a, b) => a.name.localeCompare(b.name)));
             })
             .catch((err) => {
                 console.log("Erro ao pesquisar estudantes com este nome", err);
@@ -60,7 +59,7 @@ const Registered = () => {
     }
 
     const clearUserInfo = () => {
-        setStudent();
+        setStudents();
     }
 
     useEffect(() => {
@@ -95,8 +94,8 @@ const Registered = () => {
                                         <InputBox>
                                             <div className='input-btn'>
                                                 <div className='form-input'>
-                                                    <input id='document' type='text' placeholder='Busque por nome...' className={`${errors.name && 'error-border'}`}
-                                                        {...register("document", { required: false, minLength: 5 })} />
+                                                    <input id='name' type='text' placeholder='Busque por nome...' className={`${errors.name && 'error-border'}`}
+                                                        {...register("name", { required: true })} />
                                                 </div>
                                                 {!students ?
                                                     <Button> Consultar </Button>

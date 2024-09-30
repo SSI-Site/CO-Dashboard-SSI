@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { useState } from 'react';
 import Meta from '../../infra/Meta';
 import GlobalStyle from '../../../styles/global';
 

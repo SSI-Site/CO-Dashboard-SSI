@@ -25,7 +25,6 @@ const Query = () => {
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState();
-    const [userDocument, setUserDocument] = useState("");
 
     const onSubmit = data => {
         setIsLoading(true);
@@ -51,7 +50,6 @@ const Query = () => {
     }
 
     const getStudentInfo = (document) => {
-        setUserDocument(document);
 
         saphira.getStudentInfo(document)
             .then((res) => {
