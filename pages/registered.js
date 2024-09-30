@@ -175,7 +175,6 @@ const RegisteredWrapper = styled.section`
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        background-color: var(--color-neutral-800); 
         padding: 2rem 3.5rem;
         gap: 1.5rem;
 
@@ -301,8 +300,8 @@ const StudentsListSection = styled.section`
 `
 
 const StudentsTable = styled.table`
-
-width: 100%;
+    width: 100%;
+    max-width: 1328px;
     border-collapse: separate;
     border-spacing: 0 2rem;
     
