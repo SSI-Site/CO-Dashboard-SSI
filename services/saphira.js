@@ -90,6 +90,11 @@ const saphira = {
             });
     },
 
+    searchStudentByName: async (name) => {
+        const requestUrl = `${BASE_URL}/admin/students/search/${name}`
+        return await axios.get(requestUrl);
+    },
+
     removePresenceFromUser: async (lectureId, document) => {
         const requestUrl = `${BASE_URL}/admin/presence/${lectureId}/${document}`
         return await axios.delete(requestUrl);

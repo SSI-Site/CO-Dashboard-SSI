@@ -17,7 +17,8 @@ const pages = {
     "/query": 2,
     "/token": 3,
     "/giveaway": 4,
-    "/exterminate": 5
+    "/registered": 5,
+    "/exterminate": 6
 }
 
 const Nav = () => {
@@ -90,11 +91,15 @@ const Nav = () => {
                                 </li>
 
                                 <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                    <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
+                                    <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                                </li>
+
+                                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
+                                    <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
                                 </li>
 
                                 <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
-                                    <Link legacyBehavior href="/exterminate" ><a>Xterminate</a></Link>
+                                    <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
                                 </li>
                             </ul>
                         </div>
@@ -131,12 +136,17 @@ const Nav = () => {
                         </li>
 
                         <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                            <Link legacyBehavior href="/giveaway" ><a>Sorteio</a></Link>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                            <div></div>
+                        </li>
+
+                        <li className = {router.pathname == '/registered' ? 'active': ''}>
+                            <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
                             <div></div>
                         </li>
 
                         <li className = {router.pathname == '/exterminate' ? 'active': ''}>
-                            <Link legacyBehavior href="/exterminate" ><a>Xterminate</a></Link>
+                            <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
                             <div></div>
                         </li>
                         <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>

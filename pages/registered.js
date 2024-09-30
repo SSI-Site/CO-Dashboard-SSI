@@ -11,12 +11,10 @@ import NavBar from '../src/patterns/base/Nav';
 // components
 import Button from '../src/components/Button';
 import SecondaryButton from '../src/components/SecondaryButton';
-import UserGiftCard from '../src/components/UserGiftCard';
 
 // assets
-import gifts from '../data/gifts';
 
-const Query = () => {
+const Registered = () => {
 
     const router = useRouter();
     const { isAuthenticated } = useAuth();
@@ -24,13 +22,12 @@ const Query = () => {
 
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [user, setUser] = useState();
-    const [userDocument, setUserDocument] = useState("");
+    const [students, setStudent] = useState();
 
     const onSubmit = data => {
         setIsLoading(true);
 
-        getStudentInfo(data.document);
+        searchStudentByName(data.document);
 
         setTimeout(() => {
             setIsLoading(false);
@@ -50,21 +47,20 @@ const Query = () => {
         }
     }
 
-    const getStudentInfo = (document) => {
-        setUserDocument(document);
+    const searchStudentByName = (document) => {
+        setStudent([]);
 
-        saphira.getStudentInfo(document)
+        saphira.searchStudentByName(document)
             .then((res) => {
-                setUser(res.data);
+                setStudent(students.concat(...res.data).sort((a, b) => a.name.localeCompare(b.name)));
             })
             .catch((err) => {
-                console.log("Erro ao buscar informações do estudante", err);
-                setUser();
+                console.log("Erro ao pesquisar estudantes com este nome", err);
             })
     }
 
     const clearUserInfo = () => {
-        setUser();
+        setStudent();
     }
 
     useEffect(() => {
@@ -86,42 +82,28 @@ const Query = () => {
             <Meta title='CO SSI 2024 | Consultar presença' />
 
             <NavBar />
-            <QueryWrapper>
+            <RegisteredWrapper>
                 <div className='section-container'>
 
-                    <h5>Consultar presença</h5>
+                    <h5>Inscritos</h5>
 
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p> Número de presenças nas palestras :)</p>
                                 {!isLoading &&
                                     <>
                                         <InputBox>
-                                            <label htmlFor='document'> Documento do inscrito: </label>
                                             <div className='input-btn'>
                                                 <div className='form-input'>
-                                                    <input id='document' type='text' placeholder='Insira o documento' className={`${errors.name && 'error-border'}`}
+                                                    <input id='document' type='text' placeholder='Busque por nome...' className={`${errors.name && 'error-border'}`}
                                                         {...register("document", { required: false, minLength: 5 })} />
                                                 </div>
-                                                {!user ?
+                                                {!students ?
                                                     <Button> Consultar </Button>
                                                     :
                                                     <SecondaryButton type="button" onClick={() => clearUserInfo()}> Limpar consulta </SecondaryButton>
                                                 }
                                             </div>
-                                            {user &&
-                                                <div className='lectures-count'>
-                                                    <div className='total-lectures'>
-                                                        <p>Total de registros:</p>
-                                                        <h4>{user.total_presences_count}</h4>
-                                                    </div>
-                                                    <div className='in-person-lectures'>
-                                                        <p>Registros presenciais:</p>
-                                                        <h4>{user.in_person_presences_count}</h4>
-                                                    </div>
-                                                </div>
-                                            }
                                         </InputBox>
                                     </>
                                 }
@@ -136,23 +118,37 @@ const Query = () => {
                     }
                 </div>
 
-                {user && !isLoading &&
-                    <GiftsProgressSection id='meus-brindes'>
-                        <div className='user-gifts-wrapper'>
-                            {Object.entries(gifts).map(([key, gift]) => {
-                                return (
-                                    <UserGiftCard key={key} index={key} gift={gift} totalPres={user.total_presences_count} presentialPres={user.in_person_presences_count}></UserGiftCard>
-                                )
-                            })}
-                        </div>
-                    </GiftsProgressSection>
+                {!isLoading &&
+                    <StudentsListSection>
+                        <StudentsTable>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Código SSI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {students && students.map((student, index) => (
+                                    <tr
+                                        key={student.id}
+                                        style={{ backgroundColor: index % 2 === 0 ? 'var(--color-neutral-800)' : 'transparent' }}
+                                    >
+                                        <td>{student.name}</td>
+                                        <td>{student.email}</td>
+                                        <td>{student.code}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </StudentsTable>
+                    </StudentsListSection>
                 }
-            </QueryWrapper>
+            </RegisteredWrapper>
         </>
     )
 }
 
-export default Query;
+export default Registered;
 
 
 const Loading = styled.figure`
@@ -166,18 +162,19 @@ const Loading = styled.figure`
     }
 `
 
-const QueryWrapper = styled.section`
+const RegisteredWrapper = styled.section`
     margin-top: 3.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
 
     .section-container {
-        width: fit-content;
+        width: 100%;
+        max-width: 1328px;
         height: fit-content;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
         background-color: var(--color-neutral-800); 
         padding: 2rem 3.5rem;
@@ -185,10 +182,6 @@ const QueryWrapper = styled.section`
 
         h5 {
             width: 100%;
-        }
-
-        @media (min-width: 480px) {
-            width: 41rem;
         }
     }
 `
@@ -301,56 +294,63 @@ const InputBox = styled.div`
         width: 100%;
         margin-bottom: .5rem;
     }
-
-    .lectures-count {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        gap: 1rem;
-        margin-top: 1rem;
-
-        .total-lectures, .in-person-lectures {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            gap: .5rem;
-            width: 100%;
-            padding: 0.75rem;
-        }
-
-        .total-lectures {
-            background-color: var(--color-primary); 
-        }
-
-        .in-person-lectures {
-            background-color: white;
-
-            p, h4 {
-                color: var(--color-primary);
-            }
-        }
-    }
 `
 
-const GiftsProgressSection = styled.section`
-    padding-block: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+const StudentsListSection = styled.section`
+    width: 100%;
+    overflow-x: auto;
+`
 
-    .user-gifts-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
+const StudentsTable = styled.table`
 
-        @media(min-width: 800px) {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 2rem;
-            justify-content: center;
+width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 2rem;
+    
+
+    thead {
+        border-block: 1px solid var(--color-neutral-secondary);
+        background: transparent;
+    }
+    
+    th {
+        font: 700 1rem/1.5rem 'AT Aero Bold';
+        border-block: 1px solid var(--color-neutral-secondary);
+        padding-block: 1rem;
+        text-align: left;
+
+        &:first-child {
+            padding-left: 2rem;
+        }
+    }
+
+    tbody {
+        tr {
+            background: var(--color-neutral-800);
+            border-radius: 0.5rem;
+            transition: background 0.3s;
+
+            td {
+                padding-block: 0.5rem;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 450px;
+                padding-right: 3rem;
+
+                &:nth-child(2) {
+                    max-width: 500px;
+                }
+
+                &:nth-child(3) {
+                    padding-inline: 0;
+                }
+            }
+
+            td:first-child {
+                padding-left: 2rem;
+            }
         }
     }
 `
