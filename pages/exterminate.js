@@ -95,7 +95,7 @@ const Exterminate = () => {
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p> Registro de presenças presenciais :)</p>
+                                <p> Remoção de presenças </p>
                                 {!isLoading &&
                                     <>
                                         <InputBox>
