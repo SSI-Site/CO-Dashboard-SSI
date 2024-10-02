@@ -100,7 +100,7 @@ const Query = () => {
                                             <div className='input-btn'>
                                                 <div className='form-input'>
                                                     <input id='document' type='text' placeholder='Insira o documento' className={`${errors.name && 'error-border'}`}
-                                                        {...register("document", { required: false, minLength: 5 })} />
+                                                        {...register("document", { required: false, minLength: 3 })} />
                                                 </div>
                                                 {!user ?
                                                     <Button> Consultar </Button>
