@@ -23,7 +23,10 @@ const Presential = () => {
 
     const onSubmit = data => {
         setIsLoading(true);
-        addPresentialPresence(data.lectureId, data.document);
+
+        const uppercasedDocument = data.document.toUpperCase();
+
+        addPresentialPresence(data.lectureId, uppercasedDocument);
     };
 
     const addPresentialPresence = (lectureId, document) => {

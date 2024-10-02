@@ -29,7 +29,9 @@ const Query = () => {
     const onSubmit = data => {
         setIsLoading(true);
 
-        getStudentInfo(data.document);
+        const uppercasedDocument = data.document.toUpperCase();
+
+        getStudentInfo(uppercasedDocument);
 
         setTimeout(() => {
             setIsLoading(false);
