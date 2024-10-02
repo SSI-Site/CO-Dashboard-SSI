@@ -97,7 +97,7 @@ const Registered = () => {
                                                     <input id='name' type='text' placeholder='Busque por nome...' className={`${errors.name && 'error-border'}`}
                                                         {...register("name", { required: true })} />
                                                 </div>
-                                                {!students ?
+                                                {!students || students.length == 0 ?
                                                     <Button> Consultar </Button>
                                                     :
                                                     <SecondaryButton type="button" onClick={() => clearUserInfo()}> Limpar consulta </SecondaryButton>
