@@ -35,6 +35,10 @@ const Giveaway = () => {
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
     const onSubmit = data => {
+        setGiveawayResultName(placeholderMessage);
+        setGotResult(false);
+        setIsLastSeconds(false);
+
         if (data.isPresencialOnly) {
             getPresencialOnlyGivawayResult(data.lectureId);
         } else {
@@ -48,10 +52,10 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getGivawayResult(lectureId)
                 .then((res) => {
+                    setKey(prevKey => prevKey + 1);
                     setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
-                    setKey(prevKey => prevKey + 1);
                     reset();
                 })
                 .catch(err => {
@@ -68,10 +72,10 @@ const Giveaway = () => {
         setTimeout(() => {
             saphira.getPresencialOnlyGivawayResult(lectureId)
                 .then((res) => {
+                    setKey(prevKey => prevKey + 1);
                     setGiveawayResultName(res.data.student_name);
                     setIsLoading(false);
                     setGotResult(true);
-                    setKey(prevKey => prevKey + 1);
                     reset();
                 })
                 .catch(err => {
