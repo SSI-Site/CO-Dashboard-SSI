@@ -52,7 +52,7 @@ const Presential = () => {
                         confirmButtonColor: "#151023"
                     })
                 });
-        }, 2000);
+        }, 1000);
     }
 
     const checkAuthentication = () => {
