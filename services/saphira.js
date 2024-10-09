@@ -39,11 +39,15 @@ const saphira = {
         return await axios.post(requestUrl);
     },
 
-    addPresentialPresenceToUser: async (lectureId, document) => {
+    addPresenceToUser: async (lectureId, document, isOnline) => {
         const requestUrl = `${BASE_URL}/admin/presences`
         const params = new URLSearchParams();
         params.append('talk', lectureId);
         params.append('student_document', document);
+
+        if (isOnline) {
+            params.append('online', 'true');
+        }
 
         return await axios.post(
             requestUrl,

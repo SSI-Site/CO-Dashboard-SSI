@@ -23,23 +23,18 @@ const Presential = () => {
 
     const onSubmit = data => {
         setIsLoading(true);
-        addPresentialPresence(data.lectureId, data.document);
-    };
-
-    const addPresentialPresence = (lectureId, document) => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            saphira.addPresentialPresenceToUser(lectureId, document)
+    
+        // setTimeout(() => {
+            saphira.addPresenceToUser(data.lectureId, data.document, data.onlinePresence)
                 .then((res) => {
                     setIsLoading(false);
                     Swal.fire({
                         icon: 'info',
-                        title: `Presença registrada para ${document}`,
+                        title: `Presença ${data.onlinePresence ? 'online' : 'presencial'} registrada para ${data.document}`,
                         showConfirmButton: true,
                         confirmButtonText: "Ok!",
                         confirmButtonColor: "#151023"
-                    })
+                    });
                 }, (err) => {
                     setIsLoading(false);
                     console.error(err);
@@ -50,10 +45,10 @@ const Presential = () => {
                         showConfirmButton: true,
                         confirmButtonText: "Ok",
                         confirmButtonColor: "#151023"
-                    })
+                    });
                 });
-        }, 1000);
-    }
+        // }, 1000);
+    };
 
     const checkAuthentication = () => {
         if (isAuthenticated === null) {
@@ -115,6 +110,12 @@ const Presential = () => {
                                             </div>
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
                                         </InputBox>
+
+                                        <CheckboxBox>
+                                            <input id='onlinePresence' type='checkbox' defaultChecked={false}
+                                                {...register('onlinePresence')} />
+                                            <label htmlFor='onlinePresence'> Presença online? </label>
+                                        </CheckboxBox>
 
                                         <Button> Registrar </Button>
                                     </>
@@ -287,5 +288,28 @@ const InputBox = styled.div`
         font: 700 1.125rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
+    }
+`
+
+const CheckboxBox = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: .5rem;
+    background-color: var(--color-neutral-800);
+
+    label {
+        margin-left: 15px;
+        color: var(--color-text);
+        font: 700 0.875rem/1rem 'AT Aero';
+
+        cursor: pointer;
+    }
+
+    input[type=checkbox] {
+        transform: scale(1.5);
+        padding: 20px;
+        cursor: pointer;
     }
 `
