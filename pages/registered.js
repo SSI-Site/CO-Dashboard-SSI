@@ -29,7 +29,7 @@ const Registered = () => {
 
         setTimeout(() => {
             setIsLoading(false);
-        }, 1000);
+        }, 500);
     };
     
     const checkAuthentication = () => {

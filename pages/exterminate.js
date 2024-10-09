@@ -29,7 +29,7 @@ const Exterminate = () => {
     const removePresence = (lectureId, document) => {
         setIsLoading(true);
 
-        setTimeout(() => {
+        // setTimeout(() => {
             saphira.removePresenceFromUser(lectureId, document)
                 .then((res) => {
                     setIsLoading(false);
@@ -52,7 +52,7 @@ const Exterminate = () => {
                         confirmButtonColor: "#151023"
                     })
                 });
-        }, 2000);
+        // }, 2000);
     }
 
     const checkAuthentication = () => {

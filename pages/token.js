@@ -59,7 +59,7 @@ const Token = () => {
                     setIsLoading(false);
                     setError("lectureId", { type: "focus" }, { shouldFocus: true })
                 })
-        }, 2000);
+        }, 500);
     }
 
     // Para permitir copiar token ao clicar sobre ele
