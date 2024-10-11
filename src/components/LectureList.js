@@ -93,11 +93,15 @@ const LectureListWrapper = styled.div`
     width: 100%;
     max-width: 1328px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 4rem 1rem;
 
     .table-container {
         width: 100%;
         overflow-x: auto;
+    }
+
+    @media (min-width: 1328px) {
+        padding-inline: 0;
     }
 `;
 

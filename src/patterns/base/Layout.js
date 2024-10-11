@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
                 `}
             </style>
             {/** isso aqui deve estar comentado ao fim do desenvolvimento e teste da plataforma */}
-            <Nav    Bar/>
+            {/* <NavBar/> */}
             <GlobalStyle />
             <SiteWrapper>
                 <main>
