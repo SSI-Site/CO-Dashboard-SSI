@@ -12,7 +12,7 @@ const Footer = () => {
                     <div className="logo-box">
                         <img src={LogoPrincipal} alt="logo" />
                         <h6>
-                            Semana de Sistemas de <br />Informação 2024
+                            Semana de Sistemas de <br />Informação 2025
                         </h6>
                     </div>
                 </div>
