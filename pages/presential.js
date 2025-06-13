@@ -79,7 +79,7 @@ const Presential = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2024 | Registrar presença' />
+            <Meta title='CO SSI 2025 | Registrar presença' />
 
             <NavBar />
             <PresenceWrapper>
@@ -123,7 +123,7 @@ const Presential = () => {
 
                                 {isLoading &&
                                     <Loading>
-                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                                        <img src='./loading.svg' alt='SSI 2025 - Loading' />
                                     </Loading>
                                 }
                             </form>

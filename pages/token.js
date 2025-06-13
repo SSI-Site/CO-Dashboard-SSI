@@ -106,7 +106,7 @@ const Token = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2024 | Token' />
+            <Meta title='CO SSI 2025 | Token' />
 
             <NavBar />
             <TokenWrapper>
@@ -176,7 +176,7 @@ const Token = () => {
 
                         {isLoading &&
                             <Loading>
-                                <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                                <img src='./loading.svg' alt='SSI 2025 - Loading' />
                             </Loading>
                         }
                     </ResultSection>
