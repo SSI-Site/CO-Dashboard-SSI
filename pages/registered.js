@@ -78,7 +78,7 @@ const Registered = () => {
                 }} 
             />
 
-            <Meta title='CO SSI 2024 | Consultar presença' />
+            <Meta title='CO SSI 2025 | Consultar presença' />
 
             <NavBar />
             <RegisteredWrapper>
@@ -109,7 +109,7 @@ const Registered = () => {
 
                                 {isLoading &&
                                     <Loading>
-                                        <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                                        <img src='./loading.svg' alt='SSI 2025 - Loading' />
                                     </Loading>
                                 }
                             </form>

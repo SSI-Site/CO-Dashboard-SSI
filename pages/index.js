@@ -39,17 +39,17 @@ const Login = () => {
 
     return (
         <>
-            <Meta title='CO SSI 2024 | Login' />
+            <Meta title='CO SSI 2025 | Login' />
 
             <LoginWrapper>
                 <div className='logo-container'>
-                    <img src='./images/logos/logo_horizontal.svg' alt='SSI 2024 - Logo' />
+                    <img src='./images/logos/logo_horizontal.svg' alt='SSI 2025 - Logo' />
                 </div>
                 <div className='section-container'>
                     <h5>Login</h5>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <p> Acesso exclusivo para a Comissão Organizadora da SSI 2024</p>
+                            <p> Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
 
                             {!isLoading &&
                                 <>
@@ -79,7 +79,7 @@ const Login = () => {
 
                             {isLoading &&
                                 <Loading>
-                                    <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                                    <img src='./loading.svg' alt='SSI 2025 - Loading' />
                                 </Loading>
                             }
                         </form>

@@ -156,7 +156,7 @@ const Giveaway = () => {
                 }}
             />
 
-            <Meta title='CO SSI 2024 | Sorteio' />
+            <Meta title='CO SSI 2025 | Sorteio' />
 
             <NavBar />
             <GiveawayWrapper>
@@ -198,7 +198,7 @@ const Giveaway = () => {
                 <div className='section-container'>
                     {isLoading ?
                         <Loading>
-                            <img src='./loading.svg' alt='SSI 2024 - Loading' />
+                            <img src='./loading.svg' alt='SSI 2025 - Loading' />
                         </Loading>
                         :
                         <>
