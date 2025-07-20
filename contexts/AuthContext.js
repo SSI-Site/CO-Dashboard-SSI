@@ -7,7 +7,8 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    // SET TO FALSE TO AVOID AUTOMATICA AUTH
 
     useEffect(() => {
         const savedKey = cookie.get('co-auth');
