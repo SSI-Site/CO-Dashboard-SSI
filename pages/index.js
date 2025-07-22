@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
-
+import Image from 'next/image';
 import useAuth from '../hooks/useAuth';
 import Meta from '../src/infra/Meta';
 
@@ -39,17 +39,24 @@ const Login = () => {
 
     return (
         <>
-            <Meta title='CO SSI 2025 | Login' />
+            <Meta title='COSSI 2025 | Login' />
 
             <LoginWrapper>
                 <div className='logo-container'>
-                    <img src='./images/logos/logo_horizontal.svg' alt='SSI 2025 - Logo' />
+                    <Image 
+                    src='./images/logos/logo_horizontal.svg' 
+                    alt='SSI 2025 - Logo' 
+                    width = {198}
+                    height = {48}
+                    />
                 </div>
                 <div className='section-container'>
-                    <h5>Login</h5>
+                    <div className = 'section-header'>  
+                        <h2>Login</h2>
+                        <p>Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
+                    </div>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <p> Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
 
                             {!isLoading &&
                                 <>
@@ -108,13 +115,17 @@ const LoginWrapper = styled.section`
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--background-neutrals-primary);
+    border: 1px solid green;
+    padding-inline: 1rem;
+    gap: 3rem;
 
     .logo-container {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
-        padding-block: 4rem;
+        border: 1px solid yellow;
 
         img {
             height: 4rem;
@@ -127,13 +138,16 @@ const LoginWrapper = styled.section`
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
         background-color: var(--color-neutral-800); 
-        padding: 2rem 3.5rem;
-        gap: 1.5rem;
+        gap: 1rem;
+        //border: 1px solid red;
 
-        h5 {
+        .section-header{
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         @media (min-width: 480px) {
@@ -163,7 +177,7 @@ const FormWrapper = styled.div`
         gap: 1rem;
 
         p {
-            font: 700 1rem/1.5rem 'AT Aero Bold';
+            font: 400 0.875rem/1.5rem 'AT Hauss Aero';
             text-align: left;
             width: 100%;
         }
@@ -185,15 +199,13 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 4rem;
-        background-color: var(--color-neutral-50);
-        padding: 0.5rem;
-        margin-left: -4px;
+        padding: 0.75rem 1rem;
 
-        border: 2px solid white;
+        border: 2px solid;
+        border-color: var(--background-neutrals-inverse);
         background: transparent;
         background-clip: padding-box;
-        color: white;
+        color: var(--background-neutrals-inverse);
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -255,7 +267,7 @@ const InputBox = styled.div`
     width: 100%;
 
     label {
-        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        font: 700 0.875rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
     }

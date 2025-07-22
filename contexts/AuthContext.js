@@ -7,7 +7,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     // SET TO FALSE TO AVOID AUTOMATICA AUTH
 
     useEffect(() => {
