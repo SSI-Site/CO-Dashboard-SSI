@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
-
+import Image from 'next/image';
 import useAuth from '../hooks/useAuth';
 import Meta from '../src/infra/Meta';
 
@@ -17,6 +17,7 @@ const Login = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    
     const onSubmit = data => {
         setIsLoading(true);
         
@@ -37,18 +38,25 @@ const Login = () => {
     }, [isAuthenticated, router]);
 
     return (
-        <>
-            <Meta title='CO SSI 2025 | Login' />
-
+        <PageWrapper>
+            <Meta title='COSSI 2025 | Login' />
+            
             <LoginWrapper>
                 <div className='logo-container'>
-                    <img src='./images/logos/logo_horizontal.svg' alt='SSI 2025 - Logo' />
+                    <Image 
+                    src='./images/logos/logo_horizontal.svg' 
+                    alt='SSI 2025 - Logo' 
+                    width = {198}
+                    height = {48}
+                    />
                 </div>
                 <div className='section-container'>
-                    <h5>Login</h5>
+                    <div className = 'section-header'>  
+                        <h2>Login</h2>
+                        <p>Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
+                    </div>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <p> Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
 
                             {!isLoading &&
                                 <>
@@ -84,8 +92,22 @@ const Login = () => {
                         </form>
                     </FormWrapper>
                 </div>
+
+                <div className = "footer-warn">
+                    <p>Esqueceu a senha?</p>
+                    <p>Fale com alguém de Infra...</p>
+                </div>
             </LoginWrapper>
-        </>
+
+            <COSSIWraper>
+                <Image 
+                src = "./images/co/login.jpg"
+                width={1280}
+                height={960}
+                className='cossi-image'
+                />
+            </COSSIWraper>
+        </PageWrapper>
     )
 }
 
@@ -103,40 +125,87 @@ const Loading = styled.figure`
     }
 `
 
-const LoginWrapper = styled.section`
+const PageWrapper = styled.section`
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
+    width: 100%;
+    height: 100vh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
+`
+
+const LoginWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--background-neutrals-primary);
+    padding-inline: 1rem;
+    width: 100%;
+    gap: 3rem;
 
     .logo-container {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
-        padding-block: 4rem;
-
-        img {
-            height: 4rem;
+        max-width: 26.5rem;
+        
+        @media (min-width:1021px) {
+            justify-content: flex-start;
         }
     }
 
     .section-container {
-        width: fit-content;
-        height: fit-content;
+        width: 100%;
+        max-width: 26.5rem;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-        background-color: var(--color-neutral-800); 
-        padding: 2rem 3.5rem;
-        gap: 1.5rem;
+        align-items: flex-start;
+        gap: 1rem;
 
-        h5 {
+        .section-header{
             width: 100%;
+            text-align: justify;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
+    }
 
-        @media (min-width: 480px) {
-            width: 41rem;
+    .footer-warn{
+        width: 100%;
+        max-width: 26.5rem;
+        align-self: center;
+
+        p {
+            font: 700 1rem/1.5rem "AT Aero Bold";
+
+            &:first-of-type{
+                color: var(--brand-primary-light);
+            }
+        }
+    }
+`
+
+const COSSIWraper = styled.aside`
+    display: none;
+
+    @media (min-width:1021px) {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--background-neutrals-secondary);
+        padding-inline: 4rem;
+        height: 100%;
+
+        .cossi-image{
+            width: 100%;
+            object-fit: contain;
         }
     }
 `
@@ -162,7 +231,7 @@ const FormWrapper = styled.div`
         gap: 1rem;
 
         p {
-            font: 700 1rem/1.5rem 'AT Aero Bold';
+            font: 400 0.875rem/1.5rem 'AT Aero';
             text-align: left;
             width: 100%;
         }
@@ -184,15 +253,13 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 4rem;
-        background-color: var(--color-neutral-50);
-        padding: 0.5rem;
-        margin-left: -4px;
+        padding: 0.75rem 1rem;
 
-        border: 2px solid white;
+        border: 2px solid;
+        border-color: var(--background-neutrals-inverse);
         background: transparent;
         background-clip: padding-box;
-        color: white;
+        color: var(--background-neutrals-inverse);
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -254,7 +321,7 @@ const InputBox = styled.div`
     width: 100%;
 
     label {
-        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        font: 700 0.875rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
     }
