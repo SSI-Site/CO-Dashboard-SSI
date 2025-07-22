@@ -38,7 +38,7 @@ const Login = () => {
     }, [isAuthenticated, router]);
 
     return (
-        <>
+        <PageWrapper>
             <Meta title='COSSI 2025 | Login' />
             
             <LoginWrapper>
@@ -98,7 +98,16 @@ const Login = () => {
                     <p>Fale com alguém de Infra...</p>
                 </div>
             </LoginWrapper>
-        </>
+
+            <COSSIWraper>
+                <Image 
+                src = "./images/co/login.jpg"
+                width={1280}
+                height={960}
+                className='cossi-image'
+                />
+            </COSSIWraper>
+        </PageWrapper>
     )
 }
 
@@ -116,27 +125,40 @@ const Loading = styled.figure`
     }
 `
 
-const LoginWrapper = styled.section`
+const PageWrapper = styled.section`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 100%;
+    height: 100vh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
+`
+
+const LoginWrapper = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     background-color: var(--background-neutrals-primary);
     padding-inline: 1rem;
+    width: 100%;
     gap: 3rem;
-    margin-block: 25%;
 
     .logo-container {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
+        max-width: 26.5rem;
         
+        @media (min-width:1021px) {
+            justify-content: flex-start;
+        }
     }
 
     .section-container {
         width: 100%;
-        max-width: 41rem;
+        max-width: 26.5rem;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -150,12 +172,13 @@ const LoginWrapper = styled.section`
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            margin-bottom: 1rem;
         }
     }
 
     .footer-warn{
         width: 100%;
-        max-width: 41rem;
+        max-width: 26.5rem;
         align-self: center;
 
         p {
@@ -164,6 +187,25 @@ const LoginWrapper = styled.section`
             &:first-of-type{
                 color: var(--brand-primary-light);
             }
+        }
+    }
+`
+
+const COSSIWraper = styled.aside`
+    display: none;
+
+    @media (min-width:1021px) {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--background-neutrals-secondary);
+        padding-inline: 4rem;
+        height: 100%;
+
+        .cossi-image{
+            width: 100%;
+            object-fit: contain;
         }
     }
 `
