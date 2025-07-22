@@ -40,7 +40,7 @@ const Login = () => {
     return (
         <>
             <Meta title='COSSI 2025 | Login' />
-
+            
             <LoginWrapper>
                 <div className='logo-container'>
                     <Image 
@@ -92,6 +92,11 @@ const Login = () => {
                         </form>
                     </FormWrapper>
                 </div>
+
+                <div className = "footer-warn">
+                    <p>Esqueceu a senha?</p>
+                    <p>Fale com alguém de Infra...</p>
+                </div>
             </LoginWrapper>
         </>
     )
@@ -114,44 +119,51 @@ const Loading = styled.figure`
 const LoginWrapper = styled.section`
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
     background-color: var(--background-neutrals-primary);
-    border: 1px solid green;
     padding-inline: 1rem;
     gap: 3rem;
+    margin-block: 25%;
 
     .logo-container {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
-        border: 1px solid yellow;
-
-        img {
-            height: 4rem;
-        }
+        
     }
 
     .section-container {
-        width: fit-content;
-        height: fit-content;
+        width: 100%;
+        max-width: 41rem;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        background-color: var(--color-neutral-800); 
         gap: 1rem;
-        //border: 1px solid red;
 
         .section-header{
             width: 100%;
+            text-align: justify;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
+    }
 
-        @media (min-width: 480px) {
-            width: 41rem;
+    .footer-warn{
+        width: 100%;
+        max-width: 41rem;
+        align-self: center;
+
+        p {
+            font: 700 1rem/1.5rem "AT Aero Bold";
+
+            &:first-of-type{
+                color: var(--brand-primary-light);
+            }
         }
     }
 `
@@ -177,7 +189,7 @@ const FormWrapper = styled.div`
         gap: 1rem;
 
         p {
-            font: 400 0.875rem/1.5rem 'AT Hauss Aero';
+            font: 400 0.875rem/1.5rem 'AT Aero';
             text-align: left;
             width: 100%;
         }

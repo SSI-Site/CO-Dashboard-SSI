@@ -69,6 +69,7 @@ export default createGlobalStyle`
 
     html {
         scroll-behavior: smooth;
+        background-color: var(--background-neutrals-primary);
     }
 
     * {
@@ -83,22 +84,6 @@ export default createGlobalStyle`
         -webkit-tap-highlight-color:  transparent; // evita highlight ao toque para mobile
     }
 
-    section {
-        width: 100%;
-        height: fit-content;
-        padding-inline: 1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        > div {
-            width: 100%;
-            max-width: 1328px;
-            margin: 0;
-            padding: 0;
-        }
-    }
 
     h1 {
         font: 700 2.5rem/3rem 'AT Aero Bold';
