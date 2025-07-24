@@ -151,7 +151,7 @@ const LoginWrapper = styled.div`
         width: 100%;
         max-width: 26.5rem;
         
-        @media (min-width:1021px) {
+        @media (min-width:801px) {
             justify-content: flex-start;
         }
     }
