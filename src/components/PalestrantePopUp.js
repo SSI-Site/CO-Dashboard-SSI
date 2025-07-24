@@ -25,7 +25,6 @@ const PopUpContainer = styled.div`
     max-width: 62.5rem;
 
     padding: 2rem;
-    border-radius: 0.5rem;
     border: 0.063rem solid #444;
     box-shadow: 0 0.313rem 1rem rgba(0,0,0,0.3);
 
@@ -49,6 +48,27 @@ const PopUpHeader = styled.header`
         font-weight: 700;
         line-height: 2.5rem;
         flex: 1 0 0;
+    }
+
+    .close {
+        padding: 1rem 1rem 0.65rem 1rem;
+        cursor: pointer;   
+        background-image: linear-gradient(to right, transparent 50%, var(--background-neutrals-inverse) 50%);
+        background-size: 200%;
+        background-position-x: 200%;
+
+        svg path{
+            fill: var(--content-neutrals-primary)
+        }
+        transition: all 150ms ease-in-out;
+        
+        &:hover {
+            background-position-x: 100%;
+            
+            svg path{
+                fill: var(--content-neutrals-inverse);
+            }
+        }
     }
 `;
 
@@ -94,16 +114,13 @@ const FormGroup = styled.div`
 `;
 
 const StyledLabel = styled.label`
+    font: 700 1rem/1.5rem 'AT Aero Bold';
     color: var(--content-neutrals-primary, #FFF);
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 1.5rem;
 `;
 
 const InputStyle = css`
     background-color: var(--background-neutrals-secondary);
-    border: 0.125rem solid #ffffff !important; //no figma a cor ta como var(--outline-neutrals-inverse), porém não tem essa cor no style
+    border: 0.125rem solid var(--background-neutrals-inverse) !important; //no figma a cor ta como var(--outline-neutrals-inverse), porém não tem essa cor no style
     padding: 0.75rem 1rem;
     color: var(--content-neutrals-primary);
     font-size: 1rem;
@@ -125,11 +142,6 @@ const TextArea = styled.textarea`
     }
 `;
 
-const CloseButton = styled.button`
-    background: none;
-    border: none;
-    cursor: pointer;
-`;
 
 function FormSubit(event) {
     event.preventDefault();
@@ -145,7 +157,11 @@ export default function PalestrantePopUp ({isOpen, onClose}){
             <PopUpContainer onClick={(e) => e.stopPropagation()}>
                 <PopUpHeader>
                     <h5>Adicionar Palestrante</h5>
-                    <CloseButton onClick={onClose}>X</CloseButton>
+                    <div className = 'close' onClick={onClose}>
+                        <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
+                        </svg>
+                    </div>
                 </PopUpHeader>
                 <form action="" onSubmit={FormSubit}>
                     <MainPopUp>
@@ -166,7 +182,7 @@ export default function PalestrantePopUp ({isOpen, onClose}){
                                     <StyledInput id="pronomes" type="text" placeholder="Elu/Delu"/>
                                 </FormGroup>
                                 <FormGroup>
-                                    <StyledLabel htmlFor="instagram">instagram</StyledLabel>
+                                    <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
                                     <StyledInput id="instagram" type="text" placeholder="Insira o @ do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
