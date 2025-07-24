@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const SecondaryButton = styled.button`
     --padding: 0.75rem 1.5rem;
-    --transition-duration: 100ms;
-    --background: var(--color-primary);
+    --transition-duration: 0.15s;
+    --background: var(--brand-primary);
 
     display: flex;
     align-items: center;
@@ -13,35 +13,39 @@ const SecondaryButton = styled.button`
     padding: var(--padding);
     gap: 0.5rem;
     border-radius: 0;
-    border: 2px solid white;
+    border: 2px solid var(--background-neutrals-inverse);
     background-color: transparent;
     transition: var(--transition-duration);
     white-space: nowrap;
     text-align: center;
 
-    background-image: linear-gradient(white, white);
+    background-image: linear-gradient(var(--background-neutrals-inverse), var(--background-neutrals-inverse)); /* Coloca um background branco em cima do botão */
     background-size: 200%;
     background-position-x: 200%;
     background-repeat: no-repeat;
 
     &:disabled {
-        --background: var(--color-neutral-800);
-        color: var(--color-neutral-600);
+        --background: var(--background-neutrals-tertiary);
+        color: var(--background-neutrals-primary);
         cursor: unset;
         pointer-events: none;
+        border: 2px solid var(--outline-neutrals-secondary);
     }
 
     &:hover, &:focus-visible {
         background-position-x: 90%;
-        color: var(--color-primary);
+        color: var(--content-neutrals-inverse);
 
-        svg path {
-            fill: var(--color-primary);
-        }
+        ${(props) =>
+          !props.$noSvgColorChange && css`
+                svg path {
+                    fill: var(--content-neutrals-inverse);
+                }
+        `}
     }
 
     &:focus-visible {
-        outline: 2px solid var(--color-primary);
+        outline: 2px solid var(--background-neutrals-inverse);
         outline-offset: 2px;
     }
 `
