@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
 
@@ -21,7 +22,7 @@ const pages = {
     "/exterminate": 6
 }
 
-const Nav = () => {
+const Nav = ({name}) => {
 
     const { signOut } = useAuth();
     const router = useRouter();
@@ -46,119 +47,79 @@ const Nav = () => {
 
     return (
         <>
-            <NavWrapper>
-                <div>
-                    {/* Logo que redireciona para a home */}
-                    <Link legacyBehavior href='/' passHref>
-                        <a>
-                            <img
-                                src={LogoHorizontal}
-                                width={180}
-                                height={45}
-                                alt='Semana de Sistemas de Informação'
+        {/* Navbar para Mobile */}
+        <NavMobile $isOpen={isOpen}>
+            <div className = "infos">
+                <div className = "logo">
+                    <Image
+                    src = {LogoHorizontal}
+                    width = {180}
+                    height = {40}
+                    />
+                </div>
+
+                <div className='hamburguer-wrapper'>
+                    <button className='hamburguer-menu' type="button" aria-label='Menu' onClick={() => setIsOpen(!isOpen)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="white"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div className = "routeName">
+                <p>{name}</p>
+            </div>
+            
+
+        </NavMobile>
+        <Sidepanel>
+            <div className={isOpen ? 'click-out' : "click-out click-out-hidden"} onClick={() => setIsOpen(false)}>
+            </div>
+            <div className = {isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
+                <div className = "sidepanel-wrapper">
+                    <div className = 'header-nav'>
+                        <h6>Navegação rápida</h6>
+                        <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
+                            <img 
+                                src={CloseBtn}
+                                width={18}
+                                height={18}
+                                alt='Fechar'
                             />
-                        </a>
-
-                    </Link>
-
-                    {/* Navbar para Mobile */}
-                    <NavMobile $isOpen={isOpen}>
-
-                        <div className='hamburguer-wrapper'>
-                            <button className='hamburguer-menu' type="button" aria-label='Menu' onClick={() => setIsOpen(!isOpen)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="white"/>
-                                </svg>
-                            </button>
                         </div>
-
-                    </NavMobile>
-
-                    {/* Navbar para Desktop */}
-                    <NavDesktop $currentPage={router.pathname}>
-                        <NavigationList>
-                            <li className = {router.pathname == '/presential' ? 'active': ''}>
-                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/query' ? 'active': ''}>
-                                <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/token' ? 'active': ''}>
-                                <Link legacyBehavior href="/token"><a>Token</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/registered' ? 'active': ''}>
-                                <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/exterminate' ? 'active': ''}>
-                                <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
-                                <div></div>
-                            </li>
-                            <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
-                        </NavigationList>
-                    </NavDesktop>
-
-                </div>
-            </NavWrapper>
-            <Sidepanel>
-                <div className={isOpen ? 'click-out' : "click-out click-out-hidden"} onClick={() => setIsOpen(false)}>
-                </div>
-                <div className = {isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
-                    <div className = "sidepanel-wrapper">
-                        <div className = 'header-nav'>
-                            <h6>Navegação rápida</h6>
-                            <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
-                                <img 
-                                    src={CloseBtn}
-                                    width={18}
-                                    height={18}
-                                    alt='Fechar'
-                                />
-                            </div>
-                        </div>
-
-                        <NavigationList>
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
-                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
-                                <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
-                                <Link legacyBehavior href="/token"><a>Token</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
-                                <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
-                                <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
-                            </li>
-                        </NavigationList>
                     </div>
 
-                    <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+                    <NavigationList>
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
+                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        </li>
+
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
+                            <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                        </li>
+
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
+                            <Link legacyBehavior href="/token"><a>Token</a></Link>
+                        </li>
+
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                        </li>
+
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
+                            <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
+                        </li>
+
+                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
+                        </li>
+                    </NavigationList>
                 </div>
-            </Sidepanel>
+
+                <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+            </div>
+        </Sidepanel>
         </>
     )
 }
@@ -177,11 +138,11 @@ const NavWrapper = styled.div`
     margin: auto;
     z-index: 11;
     padding: 1.5rem 1rem; 
-    background-color: var(--color-neutral);
-    border-bottom: 1px solid var(--color-neutral-secondary);
+    background-color: var(--background-neutrals-secondary);
 
     > div {
         display: flex;
+        border: 1px solid red;
         align-items: center;
         justify-content: space-between;
         width: 100%;
@@ -210,6 +171,36 @@ const NavWrapper = styled.div`
 
 const NavMobile = styled.nav`
     overflow: hidden;   
+    display: flex;
+    flex-direction: column;
+
+    .infos {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--background-neutrals-secondary);
+    
+
+        .logo {
+            display: flex;
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    .routeName{
+        border-bottom: 1px solid var(--outline-neutrals-primary);
+        padding: 1rem;
+
+        p {
+            font: 700 1rem/1.5rem "At Aero Bold";
+        }   
+    }
+        
+
+    
 
     .hamburguer-wrapper {
         width: 3rem;

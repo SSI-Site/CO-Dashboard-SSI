@@ -81,7 +81,7 @@ const Presential = () => {
 
             <Meta title='CO SSI 2025 | Registrar presença' />
 
-            <NavBar />
+            <NavBar name={"Registrar Presença"} />
             <PresenceWrapper>
                 <div className='section-container'>
                     
