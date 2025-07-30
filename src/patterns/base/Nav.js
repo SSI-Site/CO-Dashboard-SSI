@@ -120,6 +120,23 @@ const Nav = ({name}) => {
                 <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
             </div>
         </Sidepanel>
+
+        <NavDesktop>
+            <div className = "toggle">
+                <button type='button' onClick = {() => setIsOpen(!isOpen)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.7274 2C22.3377 2.58328 21.7326 2 21.7326 2L21.7329 5.33351V21.9944L18.4441 22L2 22L2.0003 18.6667L2.00034 2.00021L5.28906 2.00021L21.7274 2ZM18.4441 4.22241H8.57782V19.7778L19.5401 19.7776V4.2222L18.4441 4.22241Z" fill="white"/>
+                        <path d="M15.9304 10.5635L14.514 12.0001L15.9304 13.4368L16.7052 14.2221L15.9349 15.0027L15.1551 15.7931L14.3803 15.0079L12.1878 12.7857L11.4127 12.0001L12.1878 11.2146L14.3803 8.99236L15.1553 8.20681L15.9304 8.99236L16.7052 9.7777L15.9336 10.5598L15.9304 10.5635Z" fill="white"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div className = "title">
+                <p>{name}</p>
+            </div>
+            
+            
+        </NavDesktop>
         </>
     )
 }
@@ -198,16 +215,13 @@ const NavMobile = styled.nav`
             font: 700 1rem/1.5rem "At Aero Bold";
         }   
     }
-        
-
-    
 
     .hamburguer-wrapper {
         width: 3rem;
         height: 3rem;
         background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
         background-position: right;
-        background-size: 202% 100%;
+        background-size: 200% 100%;
         transition: 0.15s all ease-out;
     }
 
@@ -285,7 +299,7 @@ const NavigationList = styled.ul`
     }
 `
 
-const Sidepanel = styled.div`
+const Sidepanel = styled.aside`
     /* position: fixed; */
     top: 0;
     width: 100%;
@@ -338,7 +352,7 @@ const Sidepanel = styled.div`
         z-index: 17;
         top: 0;
         right: 0;
-        background-color: var(--background-neutrals-primary);
+        background-color: var(--background-neutrals-secondary);
         transition: all ease-out 0.15s;
         padding: 1.5rem 1rem;
         gap: 1.5rem;
@@ -447,56 +461,51 @@ const Sidepanel = styled.div`
         display: none;
     }
 `
+const SidepanelDesktop = styled.aside`
+`
 
 const NavDesktop = styled.nav`
-    display: none;
-    margin-left: auto;
+    @media screen and (max-width: 994px) {
+        display: none;
+    }
 
-    @media (min-width:995px) {
-        display: flex;
-        
-        ul {
-            flex-direction: row;
-            align-items: center;
-            justify-content: unset;
-            gap: 1rem;
-        }
-        
-        .profile-container {
-            background-color: var(--color-neutral-800);
-
-            .profile-content {
-                gap: 0.5rem;
-                display: flex;
-                flex-direction: row;
-                padding: 0.25rem;
-
-                &:hover, &:focus-visible {
-                    p {
-                        color: var(--color-neutral);
-                    }
-                }
-            }
-
-            .user-pic-container {
-                width: 36px;
-                height: 36px;
-                padding: 0;
-                gap: 0.5rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
     
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
+    .title {
+        padding: 1rem;
+
+        p {
+            font: 700 1rem/1.5rem "At Aero Bold";
+            color: var(--brand-primary-light);
+        }
+    }
+
+    .toggle {
+        padding: 1rem;
+        border-right: 1px solid var(--outline-neutrals-secondary);
+
+        button {
+            padding: 0.75rem;
+            border: none;
+
+            background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
+            background-position: right;
+            background-size: 200% 100%;
+            transition: 0.15s all ease-out;
+
+            svg path {
+                fill: var(--content-neutrals-primary);
             }
 
-            &:hover, &:focus-visible {
-                background: var(--color-neutral-800);
+            &:hover{
+                background-position: left;
+
+                svg path {
+                    fill: var(--content-neutrals-inverse);
+                }
             }
-        }        
+        }
     }
 `
