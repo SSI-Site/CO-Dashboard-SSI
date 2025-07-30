@@ -205,7 +205,7 @@ const NavMobile = styled.nav`
     .hamburguer-wrapper {
         width: 3rem;
         height: 3rem;
-        background: linear-gradient(to right, var(--color-neutral-50) 50%, transparent 50%);
+        background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
         background-position: right;
         background-size: 202% 100%;
         transition: 0.15s all ease-out;
@@ -215,7 +215,7 @@ const NavMobile = styled.nav`
         background-position: left;
 
         svg path {
-            fill: var(--color-neutral);
+            fill: var(--content-neutrals-inverse);
         }
     }
 
@@ -246,8 +246,7 @@ const NavigationList = styled.ul`
     li a {
         display: block;
         padding: 0.125rem 0.5rem;
-        background-color: transparent;
-        background-image: linear-gradient(to right, var(--color-neutral-50), var(--color-neutral-50));
+        background: linear-gradient(to right, var(--background-neutrals-primary) 50%, var(--background-neutrals-inverse) 50%);
         background-size: 200%;
         background-position-x: 200%;
         transition: all 0.15s ease-out;
@@ -255,30 +254,33 @@ const NavigationList = styled.ul`
         white-space: nowrap;
         line-height: 1.5rem;
         font-weight: 400;
+        color: var(--content-neutrals-primary);
 
         &:hover, &:focus-visible {
-            color: var(--color-neutral);
+            color: var(--content-neutrals-inverse);
             background-position-x: 100%;
         }
 
         &:focus-visible {
-            outline: 2px solid var(--color-primary);
+            outline: 2px solid var(--brand-primary);
             outline-offset: 2px;
         }
             
     }
 
     .active {            
-        background: linear-gradient(to right, var(--color-neutral-50) 50%, var(--color-primary) 50%);
-        background-size: 250% 100%;
+        background: linear-gradient(to right, var(--background-neutrals-inverse)  50%, var(--brand-primary) 50%);
+        background-size: 250%;
         background-position: right;
+        color: var(--content-neutrals-fixed-white);
         
         a {
             font-family: 'At Aero Bold';
+            color: var(--content-neutrals-fixed-white);
         }
 
         &:hover a, a:focus-visible {
-            color: var(--color-primary);
+            color: var(--content-neutrals-inverse);
         }
     }
 `
@@ -336,7 +338,7 @@ const Sidepanel = styled.div`
         z-index: 17;
         top: 0;
         right: 0;
-        background-color: var(--color-neutral-800);
+        background-color: var(--background-neutrals-primary);
         transition: all ease-out 0.15s;
         padding: 1.5rem 1rem;
         gap: 1.5rem;
@@ -346,7 +348,7 @@ const Sidepanel = styled.div`
         }
 
         h6 {
-            color: #FFF;
+            color: var(--content-neutrals-primary);
         }
 
         .profile-side-bar {
@@ -364,20 +366,20 @@ const Sidepanel = styled.div`
                 padding: 0 0.25rem;
             
                 &:hover, &:focus-visible {
-                    color: var(--color-neutral);
+                    color: var(--content-neutrals-primary);
                     background-position-x: 100%;
 
                     p {
-                        color: var(--color-neutral);
+                        color: var(--content-neutrals-primary);
                     }
 
                     svg path {
-                        fill: var(--color-primary);
+                        fill: var(--brand-primary);
                     }
                 }
                 
                 &:focus-visible {
-                    outline: 2px solid var(--color-primary);
+                    outline: 2px solid var(--brand-primary);
                     outline-offset: 2px;
                 }
             }
@@ -393,7 +395,7 @@ const Sidepanel = styled.div`
             }
     
             .user-pic-container {
-                background: var(--color-primary);
+                background: var(--brand-primary);
                 width: 36px;
                 height: 36px;
                 padding: 0;
