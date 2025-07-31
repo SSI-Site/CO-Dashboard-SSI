@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
+import { Suspense } from 'react';
 
 // components
 import SecondaryButton from '../../components/SecondaryButton';
@@ -22,7 +23,7 @@ const pages = {
     "/exterminate": 6
 }
 
-const Nav = ({name}) => {
+const Nav = () => {
 
     const { signOut } = useAuth();
     const router = useRouter();
@@ -40,8 +41,10 @@ const Nav = ({name}) => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            document.body.style.paddingLeft = '16rem';
         } else {
             document.body.style.overflow = 'unset';
+            document.body.style.paddingLeft = '0';
         }
     }, [isOpen]);
 
@@ -68,7 +71,7 @@ const Nav = ({name}) => {
             </div>
 
             <div className = "routeName">
-                <p>{name}</p>
+                <p>Teste</p>
             </div>
             
 
@@ -121,7 +124,14 @@ const Nav = ({name}) => {
             </div>
         </Sidepanel>
 
-        <NavDesktop>
+
+        <SidepanelDesktop $isOpen = {isOpen}>
+            <div className = "teste">
+                <h1>TESTE</h1>
+            </div>
+        </SidepanelDesktop>
+
+        <NavDesktop $isOpen = {isOpen}>
             <div className = "toggle">
                 <button type='button' onClick = {() => setIsOpen(!isOpen)}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,10 +142,8 @@ const Nav = ({name}) => {
             </div>
 
             <div className = "title">
-                <p>{name}</p>
-            </div>
-            
-            
+                <p>Teste</p>
+            </div>     
         </NavDesktop>
         </>
     )
@@ -462,6 +470,20 @@ const Sidepanel = styled.aside`
     }
 `
 const SidepanelDesktop = styled.aside`
+    @media screen and (max-width: 994px) {
+        display: none;
+    }
+
+    left: -999px;
+    position: absolute;
+
+    ${props => props.$isOpen && css`
+        width: 16rem;
+        left: 0;
+        height: 100vh;
+        border-right: 1px solid var(--outline-neutrals-secondary);
+        background-color: var(--background-neutrals-secondary);
+    `}
 `
 
 const NavDesktop = styled.nav`
@@ -469,10 +491,15 @@ const NavDesktop = styled.nav`
         display: none;
     }
 
+    ${props => props.$isOpen && css`
+        margin-left: 16rem;
+    `}
+
     display: flex;
+    position: relative;
     align-items: center;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
-    
+
     .title {
         padding: 1rem;
 
