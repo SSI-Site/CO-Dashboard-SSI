@@ -1,32 +1,26 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
 
 // components
 import SecondaryButton from '../../components/SecondaryButton';
+import Accordion from '../../components/Accordion';
 
 // assets
 import CloseBtn from '../../../public/images/icons/close.svg';
 import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
-const pages = {
-    "/presential": 1,
-    "/query": 2,
-    "/token": 3,
-    "/giveaway": 4,
-    "/registered": 5,
-    "/exterminate": 6
-}
 
-const Nav = () => {
+const Nav = ({name}) => {
 
     const { signOut } = useAuth();
     const router = useRouter();
     
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); //Gambiarra para manter a navbar no desktop presente quando mudar de página
 
     const handleLogout = async () => {
         try {
@@ -39,184 +33,222 @@ const Nav = () => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            const width = document.documentElement.clientWidth;
+            const main = document.getElementsByTagName('main')[0];
+            main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
+            main.style.transition = 'margin 200ms ease-in-out';
         } else {
-            document.body.style.overflow = 'unset';
+            //document.body.style.overflow = 'unset';
+            document.getElementsByTagName('main')[0].style.marginLeft = '0rem';
         }
     }, [isOpen]);
 
     return (
         <>
-            <NavWrapper>
-                <div>
-                    {/* Logo que redireciona para a home */}
-                    <Link legacyBehavior href='/' passHref>
-                        <a>
-                            <img
-                                src={LogoHorizontal}
-                                width={180}
-                                height={45}
-                                alt='Semana de Sistemas de Informação'
+        {/* Navbar para Mobile */}
+        <NavMobile $isOpen={isOpen}>
+            <div className = "infos">
+                <div className = "logo">
+                    <Image
+                    src = {LogoHorizontal}
+                    width = {180}
+                    height = {40}
+                    />
+                </div>
+
+                <div className='hamburguer-wrapper'>
+                    <button className='hamburguer-menu' type="button" aria-label='Menu' onClick={() => setIsOpen(!isOpen)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="white"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div className = "routeName">
+                <p>{name}</p>
+            </div>
+            
+
+        </NavMobile>
+        <Sidepanel>
+            <div className={isOpen ? 'click-out' : "click-out click-out-hidden"} onClick={() => setIsOpen(false)}>
+            </div>
+            <div className = {isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
+                <div className = "sidepanel-wrapper">
+                    <div className = 'header-nav'>
+                        <h6>Navegação rápida</h6>
+                        <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
+                            <img 
+                                src={CloseBtn}
+                                width={18}
+                                height={18}
+                                alt='Fechar'
                             />
-                        </a>
-
-                    </Link>
-
-                    {/* Navbar para Mobile */}
-                    <NavMobile $isOpen={isOpen}>
-
-                        <div className='hamburguer-wrapper'>
-                            <button className='hamburguer-menu' type="button" aria-label='Menu' onClick={() => setIsOpen(!isOpen)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="white"/>
-                                </svg>
-                            </button>
                         </div>
-
-                    </NavMobile>
-
-                    {/* Navbar para Desktop */}
-                    <NavDesktop $currentPage={router.pathname}>
-                        <NavigationList>
-                            <li className = {router.pathname == '/presential' ? 'active': ''}>
-                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/query' ? 'active': ''}>
-                                <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/token' ? 'active': ''}>
-                                <Link legacyBehavior href="/token"><a>Token</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/registered' ? 'active': ''}>
-                                <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                                <div></div>
-                            </li>
-
-                            <li className = {router.pathname == '/exterminate' ? 'active': ''}>
-                                <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
-                                <div></div>
-                            </li>
-                            <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
-                        </NavigationList>
-                    </NavDesktop>
-
-                </div>
-            </NavWrapper>
-            <Sidepanel>
-                <div className={isOpen ? 'click-out' : "click-out click-out-hidden"} onClick={() => setIsOpen(false)}>
-                </div>
-                <div className = {isOpen ? "sidepanel" : "sidepanel sidepanel-hidden"}>
-                    <div className = "sidepanel-wrapper">
-                        <div className = 'header-nav'>
-                            <h6>Navegação rápida</h6>
-                            <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
-                                <img 
-                                    src={CloseBtn}
-                                    width={18}
-                                    height={18}
-                                    alt='Fechar'
-                                />
-                            </div>
-                        </div>
-
-                        <NavigationList>
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
-                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
-                                <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
-                                <Link legacyBehavior href="/token"><a>Token</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
-                                <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                            </li>
-
-                            <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
-                                <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
-                            </li>
-                        </NavigationList>
                     </div>
 
-                    <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+                    <NavigationList>
+                        <Accordion title = {"Presença"}>
+                            <li className = {router.pathname == '/presential' ? 'active': ''}>
+                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                                <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                            </li>
+                        </Accordion>
+
+                        <li className = {router.pathname == '/students' ? 'active': ''}>
+                            <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                        </li>
+                        
+                        <Accordion title = {"Sorteio"}>
+                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/winners' ? 'active': ''}>
+                                <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                            </li>
+                        </Accordion>
+                        
+
+                        <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                            <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/talks' ? 'active': ''}>
+                            <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                            <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                            <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
+                        </li>
+                    </NavigationList>
                 </div>
-            </Sidepanel>
+
+                <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+            </div>
+        </Sidepanel>
+
+        <SidepanelDesktop $isOpen = {isOpen}>
+            <SidepanelWrapper>
+                <div className = "logo">
+                    <Image
+                    src = {LogoHorizontal}
+                    width = {180}
+                    height = {40}
+                    />
+                </div>
+
+                <NavigationList>
+                    <Accordion title = {"Presença"}>
+                        <li className = {router.pathname == '/presential' ? 'active': ''}>
+                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                        </li>
+                    </Accordion>
+
+                    <li className = {router.pathname == '/students' ? 'active': ''}>
+                        <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                    </li>
+                    
+                    <Accordion title = {"Sorteio"}>
+                        <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/winners' ? 'active': ''}>
+                            <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                        </li>
+                    </Accordion>
+                    
+
+                    <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                        <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/talks' ? 'active': ''}>
+                        <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                        <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                        <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
+                    </li>
+                </NavigationList>
+            </SidepanelWrapper>
+            <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
+        </SidepanelDesktop>
+
+        <NavDesktop $isOpen = {isOpen}>
+            <div className = "toggle">
+                <button type='button' onClick = {() => setIsOpen(!isOpen)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.7274 2C22.3377 2.58328 21.7326 2 21.7326 2L21.7329 5.33351V21.9944L18.4441 22L2 22L2.0003 18.6667L2.00034 2.00021L5.28906 2.00021L21.7274 2ZM18.4441 4.22241H8.57782V19.7778L19.5401 19.7776V4.2222L18.4441 4.22241Z" fill="white"/>
+                        <path d="M15.9304 10.5635L14.514 12.0001L15.9304 13.4368L16.7052 14.2221L15.9349 15.0027L15.1551 15.7931L14.3803 15.0079L12.1878 12.7857L11.4127 12.0001L12.1878 11.2146L14.3803 8.99236L15.1553 8.20681L15.9304 8.99236L16.7052 9.7777L15.9336 10.5598L15.9304 10.5635Z" fill="white"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div className = "title">
+                <p>{name}</p>
+            </div>
+            
+        </NavDesktop>
         </>
     )
 }
 
 export default Nav;
 
-
-const NavWrapper = styled.div`
-    position: sticky;
-    top: 0;
+const NavMobile = styled.nav`
+    overflow: hidden;   
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /*max-width: 1576px;*/
-    max-height: 5rem;
-    margin: auto;
-    z-index: 11;
-    padding: 1.5rem 1rem; 
-    background-color: var(--color-neutral);
-    border-bottom: 1px solid var(--color-neutral-secondary);
+    flex-direction: column;
 
-    > div {
+    .infos {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        width: 100%;
-        max-width: 1328px; // 1920px - (344px * 2)
-        height: 100%;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--background-neutrals-secondary);
+    
 
-        a {
+        .logo {
             display: flex;
-            align-items: center;
-            justify-content: center;
-
-            &:focus-visible {
-                outline: 2px solid var(--color-primary);
-                outline-offset: 2px;
+            img {
+                width: 100%;
             }
         }
     }
 
-    @media (min-width:1300px) {
-        padding-block: 1rem;
-        justify-content: center;
-        box-shadow: unset;
-        padding-inline: 6.75rem;
-    }
-`
+    .routeName{
+        border-bottom: 1px solid var(--outline-neutrals-primary);
+        padding: 1rem;
 
-const NavMobile = styled.nav`
-    overflow: hidden;   
+        p {
+            font: 700 1rem/1.5rem "At Aero Bold";
+        }   
+    }
 
     .hamburguer-wrapper {
         width: 3rem;
         height: 3rem;
-        background: linear-gradient(to right, var(--color-neutral-50) 50%, transparent 50%);
+        background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
         background-position: right;
-        background-size: 202% 100%;
+        background-size: 200% 100%;
         transition: 0.15s all ease-out;
     }
 
@@ -224,7 +256,7 @@ const NavMobile = styled.nav`
         background-position: left;
 
         svg path {
-            fill: var(--color-neutral);
+            fill: var(--content-neutrals-inverse);
         }
     }
 
@@ -255,8 +287,7 @@ const NavigationList = styled.ul`
     li a {
         display: block;
         padding: 0.125rem 0.5rem;
-        background-color: transparent;
-        background-image: linear-gradient(to right, var(--color-neutral-50), var(--color-neutral-50));
+        background: linear-gradient(to right, var(--background-neutrals-primary) 50%, var(--background-neutrals-inverse) 50%);
         background-size: 200%;
         background-position-x: 200%;
         transition: all 0.15s ease-out;
@@ -264,35 +295,38 @@ const NavigationList = styled.ul`
         white-space: nowrap;
         line-height: 1.5rem;
         font-weight: 400;
+        color: var(--content-neutrals-primary);
 
         &:hover, &:focus-visible {
-            color: var(--color-neutral);
+            color: var(--content-neutrals-inverse);
             background-position-x: 100%;
         }
 
         &:focus-visible {
-            outline: 2px solid var(--color-primary);
+            outline: 2px solid var(--brand-primary);
             outline-offset: 2px;
         }
             
     }
 
     .active {            
-        background: linear-gradient(to right, var(--color-neutral-50) 50%, var(--color-primary) 50%);
-        background-size: 250% 100%;
+        background: linear-gradient(to right, var(--background-neutrals-inverse)  50%, var(--brand-primary) 50%);
+        background-size: 250%;
         background-position: right;
+        color: var(--content-neutrals-fixed-white);
         
         a {
             font-family: 'At Aero Bold';
+            color: var(--content-neutrals-fixed-white);
         }
 
         &:hover a, a:focus-visible {
-            color: var(--color-primary);
+            color: var(--content-neutrals-inverse);
         }
     }
 `
 
-const Sidepanel = styled.div`
+const Sidepanel = styled.aside`
     /* position: fixed; */
     top: 0;
     width: 100%;
@@ -345,7 +379,7 @@ const Sidepanel = styled.div`
         z-index: 17;
         top: 0;
         right: 0;
-        background-color: var(--color-neutral-800);
+        background-color: var(--background-neutrals-secondary);
         transition: all ease-out 0.15s;
         padding: 1.5rem 1rem;
         gap: 1.5rem;
@@ -355,7 +389,7 @@ const Sidepanel = styled.div`
         }
 
         h6 {
-            color: #FFF;
+            color: var(--content-neutrals-primary);
         }
 
         .profile-side-bar {
@@ -373,20 +407,20 @@ const Sidepanel = styled.div`
                 padding: 0 0.25rem;
             
                 &:hover, &:focus-visible {
-                    color: var(--color-neutral);
+                    color: var(--content-neutrals-primary);
                     background-position-x: 100%;
 
                     p {
-                        color: var(--color-neutral);
+                        color: var(--content-neutrals-primary);
                     }
 
                     svg path {
-                        fill: var(--color-primary);
+                        fill: var(--brand-primary);
                     }
                 }
                 
                 &:focus-visible {
-                    outline: 2px solid var(--color-primary);
+                    outline: 2px solid var(--brand-primary);
                     outline-offset: 2px;
                 }
             }
@@ -402,7 +436,7 @@ const Sidepanel = styled.div`
             }
     
             .user-pic-container {
-                background: var(--color-primary);
+                background: var(--brand-primary);
                 width: 36px;
                 height: 36px;
                 padding: 0;
@@ -454,56 +488,83 @@ const Sidepanel = styled.div`
         display: none;
     }
 `
+const SidepanelDesktop = styled.aside`
+    @media screen and (max-width: 994px) {
+        display: none;
+    }
+
+    position: fixed;
+    height: 100%;
+    display: flex;
+    padding: 1.5rem 1rem;
+    justify-content: space-between;
+    flex-direction: column;
+    left: 0;
+    top: 0;
+    width: 16rem;
+    background-color: var(--background-neutrals-secondary);
+    border-right: 1px solid var(--outline-neutrals-secondary);
+    transition: all 200ms ease-in-out;
+
+    ${props => !props.$isOpen && css`
+        left: -260px;
+    `}
+`
+
+const SidepanelWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+`
 
 const NavDesktop = styled.nav`
-    display: none;
-    margin-left: auto;
+    @media screen and (max-width: 994px) {
+        display: none;
+    }
 
-    @media (min-width:995px) {
-        display: flex;
-        
-        ul {
-            flex-direction: row;
-            align-items: center;
-            justify-content: unset;
-            gap: 1rem;
+    display: flex;
+    position: sticky;
+    align-items: center;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
+    transition: all 200ms ease-in-out;
+
+    ${props => props.$isOpen && css`
+        margin-left: 8rem;
+    `}
+
+    .title {
+        padding: 1rem;
+
+        p {
+            font: 700 1rem/1.5rem "At Aero Bold";
+            color: var(--brand-primary-light);
         }
-        
-        .profile-container {
-            background-color: var(--color-neutral-800);
+    }
 
-            .profile-content {
-                gap: 0.5rem;
-                display: flex;
-                flex-direction: row;
-                padding: 0.25rem;
+    .toggle {
+        padding: 1rem;
+        border-right: 1px solid var(--outline-neutrals-secondary);
 
-                &:hover, &:focus-visible {
-                    p {
-                        color: var(--color-neutral);
-                    }
+        button {
+            padding: 0.75rem;
+            border: none;
+
+            background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
+            background-position: right;
+            background-size: 250% 100%;
+            transition: 0.15s all ease-out;
+
+            svg path {
+                fill: var(--content-neutrals-primary);
+            }
+
+            &:hover{
+                background-position: left;
+
+                svg path {
+                    fill: var(--content-neutrals-inverse);
                 }
             }
-
-            .user-pic-container {
-                width: 36px;
-                height: 36px;
-                padding: 0;
-                gap: 0.5rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-    
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-            }
-
-            &:hover, &:focus-visible {
-                background: var(--color-neutral-800);
-            }
-        }        
+        }
     }
 `
