@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
@@ -9,26 +9,19 @@ import { Suspense } from 'react';
 
 // components
 import SecondaryButton from '../../components/SecondaryButton';
+import Accordion from '../../components/Accordion';
 
 // assets
 import CloseBtn from '../../../public/images/icons/close.svg';
 import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
-const pages = {
-    "/presential": 1,
-    "/query": 2,
-    "/token": 3,
-    "/giveaway": 4,
-    "/registered": 5,
-    "/exterminate": 6
-}
 
 const Nav = () => {
 
     const { signOut } = useAuth();
     const router = useRouter();
     
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); //Gambiarra para manter a navbar no desktop presente quando mudar de página
 
     const handleLogout = async () => {
         try {
@@ -41,10 +34,13 @@ const Nav = () => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
-            document.body.style.paddingLeft = '16rem';
+            const width = document.documentElement.clientWidth;
+            const main = document.getElementsByTagName('main')[0];
+            main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
+            main.style.transition = 'margin 200ms ease-in-out';
         } else {
-            document.body.style.overflow = 'unset';
-            document.body.style.paddingLeft = '0';
+            //document.body.style.overflow = 'unset';
+            document.getElementsByTagName('main')[0].style.marginLeft = '0rem';
         }
     }, [isOpen]);
 
@@ -94,28 +90,45 @@ const Nav = () => {
                     </div>
 
                     <NavigationList>
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
-                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        <Accordion title = {"Presença"}>
+                            <li className = {router.pathname == '/presential' ? 'active': ''}>
+                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                                <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                            </li>
+                        </Accordion>
+
+                        <li className = {router.pathname == '/students' ? 'active': ''}>
+                            <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                        </li>
+                        
+                        <Accordion title = {"Sorteio"}>
+                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/winners' ? 'active': ''}>
+                                <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                            </li>
+                        </Accordion>
+                        
+
+                        <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                            <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
-                            <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                        <li className = {router.pathname == '/talks' ? 'active': ''}>
+                            <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
-                            <Link legacyBehavior href="/token"><a>Token</a></Link>
+                        <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                            <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
-                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                        </li>
-
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
-                            <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                        </li>
-
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
-                            <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
+                        <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                            <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
                         </li>
                     </NavigationList>
                 </div>
@@ -124,11 +137,60 @@ const Nav = () => {
             </div>
         </Sidepanel>
 
-
         <SidepanelDesktop $isOpen = {isOpen}>
-            <div className = "teste">
-                <h1>TESTE</h1>
-            </div>
+            <SidepanelWrapper>
+                <div className = "logo">
+                    <Image
+                    src = {LogoHorizontal}
+                    width = {180}
+                    height = {40}
+                    />
+                </div>
+
+                <NavigationList>
+                    <Accordion title = {"Presença"}>
+                        <li className = {router.pathname == '/presential' ? 'active': ''}>
+                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                        </li>
+                    </Accordion>
+
+                    <li className = {router.pathname == '/students' ? 'active': ''}>
+                        <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                    </li>
+                    
+                    <Accordion title = {"Sorteio"}>
+                        <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/winners' ? 'active': ''}>
+                            <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                        </li>
+                    </Accordion>
+                    
+
+                    <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                        <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/talks' ? 'active': ''}>
+                        <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                        <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
+                    </li>
+
+                    <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                        <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
+                    </li>
+                </NavigationList>
+            </SidepanelWrapper>
+            <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
         </SidepanelDesktop>
 
         <NavDesktop $isOpen = {isOpen}>
@@ -142,57 +204,15 @@ const Nav = () => {
             </div>
 
             <div className = "title">
-                <p>Teste</p>
-            </div>     
+                <p>{name}</p>
+            </div>
+            
         </NavDesktop>
         </>
     )
 }
 
 export default Nav;
-
-
-const NavWrapper = styled.div`
-    position: sticky;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /*max-width: 1576px;*/
-    max-height: 5rem;
-    margin: auto;
-    z-index: 11;
-    padding: 1.5rem 1rem; 
-    background-color: var(--background-neutrals-secondary);
-
-    > div {
-        display: flex;
-        border: 1px solid red;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 1328px; // 1920px - (344px * 2)
-        height: 100%;
-
-        a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            &:focus-visible {
-                outline: 2px solid var(--color-primary);
-                outline-offset: 2px;
-            }
-        }
-    }
-
-    @media (min-width:1300px) {
-        padding-block: 1rem;
-        justify-content: center;
-        box-shadow: unset;
-        padding-inline: 6.75rem;
-    }
-`
 
 const NavMobile = styled.nav`
     overflow: hidden;   
@@ -473,17 +493,28 @@ const SidepanelDesktop = styled.aside`
     @media screen and (max-width: 994px) {
         display: none;
     }
+    position: fixed;
+    height: 100%;
+    display: flex;
+    padding: 1.5rem 1rem;
+    justify-content: space-between;
+    flex-direction: column;
+    left: 0;
+    top: 0;
+    width: 16rem;
+    background-color: var(--background-neutrals-secondary);
+    border-right: 1px solid var(--outline-neutrals-secondary);
+    transition: all 200ms ease-in-out;
 
-    left: -999px;
-    position: absolute;
-
-    ${props => props.$isOpen && css`
-        width: 16rem;
-        left: 0;
-        height: 100vh;
-        border-right: 1px solid var(--outline-neutrals-secondary);
-        background-color: var(--background-neutrals-secondary);
+    ${props => !props.$isOpen && css`
+        left: -260px;
     `}
+`
+
+const SidepanelWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 `
 
 const NavDesktop = styled.nav`
@@ -496,9 +527,14 @@ const NavDesktop = styled.nav`
     `}
 
     display: flex;
-    position: relative;
+    position: sticky;
     align-items: center;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
+    transition: all 200ms ease-in-out;
+
+    ${props => props.$isOpen && css`
+        margin-left: 8rem;
+    `}
 
     .title {
         padding: 1rem;
@@ -519,7 +555,7 @@ const NavDesktop = styled.nav`
 
             background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
             background-position: right;
-            background-size: 200% 100%;
+            background-size: 250% 100%;
             transition: 0.15s all ease-out;
 
             svg path {
