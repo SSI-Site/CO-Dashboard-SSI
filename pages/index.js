@@ -49,10 +49,10 @@ const Login = () => {
             <LoginWrapper>
                 <div className='logo-container'>
                     <Image 
-                    src='./images/logos/logo_horizontal.svg' 
-                    alt='SSI 2025 - Logo' 
-                    width = {198}
-                    height = {48}
+                        src='./images/logos/logo_horizontal.svg' 
+                        alt='SSI 2025 - Logo' 
+                        width = {198}
+                        height = {48}
                     />
                 </div>
                 <div className='section-container'>
