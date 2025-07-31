@@ -5,3 +5,5 @@ const Sponsors = () => {
         <NavBar name = {"Empresas"}/>
     )
 }
+
+export default Sponsors

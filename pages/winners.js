@@ -5,3 +5,5 @@ const Winners = () => {
         <NavBar name = {"Lista de ganhadores"}/>
     )
 }
+
+export default Winners

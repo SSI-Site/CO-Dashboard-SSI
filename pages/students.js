@@ -5,3 +5,5 @@ const Students = () => {
         <NavBar name = {"Inscritos"}/>
     )
 }
+
+export default Students

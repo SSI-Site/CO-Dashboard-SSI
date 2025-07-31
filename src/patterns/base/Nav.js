@@ -212,7 +212,7 @@ const NavBar = ({name}) => {
     )
 }
 
-export default Nav;
+export default NavBar;
 
 const NavMobile = styled.nav`
     overflow: hidden;   

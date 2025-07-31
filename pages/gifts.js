@@ -5,3 +5,5 @@ const Gifts = () => {
         <NavBar name = {"Controle de brindes"}/>
     )
 }
+
+export default Gifts

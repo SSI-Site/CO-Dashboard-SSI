@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
-import Nav from '../src/patterns/base/Nav';
+import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';

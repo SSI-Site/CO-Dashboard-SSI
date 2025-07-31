@@ -5,3 +5,5 @@ const Speakers = () => {
         <NavBar name = {"Palestrantes"}/>
     )
 }
+
+export default Speakers
