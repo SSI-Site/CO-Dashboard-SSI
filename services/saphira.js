@@ -5,6 +5,7 @@ import cookie from 'js-cookie';
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.baseURL = BASE_URL
 
 axios.interceptors.request.use((config) => {
     const csrfToken = cookie.get('csrftoken');
@@ -19,7 +20,7 @@ axios.interceptors.request.use((config) => {
 const saphira = {
 
     adminLogIn : async (username, password) => {
-        const requestUrl = `${BASE_URL}/admin/login`
+        const requestUrl = "/admin/login";
         const params = new URLSearchParams();
         params.append('username', username);
         params.append('password', password);
@@ -35,12 +36,12 @@ const saphira = {
     },
 
     adminLogOut: async () => {
-        const requestUrl = `${BASE_URL}/admin/logout`
+        const requestUrl = "/admin/logout";
         return await axios.post(requestUrl);
     },
 
     addPresenceToUser: async (lectureId, document, isOnline) => {
-        const requestUrl = `${BASE_URL}/admin/presences`
+        const requestUrl = "/admin/presences"
         const params = new URLSearchParams();
         params.append('talk', lectureId);
         params.append('student_document', document);
@@ -60,26 +61,26 @@ const saphira = {
     },
 
     getGivawayResult: async (lectureId) => {
-        const requestUrl = `${BASE_URL}/admin/${lectureId}/draw`
+        const requestUrl = `/admin/${lectureId}/draw`
         return await axios.get(requestUrl);
     },
 
     getPresencialOnlyGivawayResult: async (lectureId) => {
-        const requestUrl = `${BASE_URL}/admin/${lectureId}/in-person-draw`
+        const requestUrl = `/admin/${lectureId}/in-person-draw`
         return await axios.get(requestUrl);
     },
 
     getLectures: async () => {
-        return await axios.get(`${BASE_URL}/admin/talks`);
+        return await axios.get(`/admin/talks`);
     },
 
     getStudentInfo: async (document) => {
-        const requestUrl = `${BASE_URL}/admin/student/${document}`
+        const requestUrl = `/admin/student/${document}`
         return await axios.get(requestUrl);
     },
 
     generateOnlineToken: async (lectureId, currentTime) => {
-        const requestUrl = `${BASE_URL}/admin/tokens`
+        const requestUrl = `/admin/tokens`
         const params = new URLSearchParams();
         params.append('talk', lectureId);
         params.append('duration', '5');
@@ -95,12 +96,12 @@ const saphira = {
     },
 
     searchStudentByName: async (name) => {
-        const requestUrl = `${BASE_URL}/admin/students/search/${name}`
+        const requestUrl = `/admin/students/search/${name}`
         return await axios.get(requestUrl);
     },
 
     removePresenceFromUser: async (lectureId, document) => {
-        const requestUrl = `${BASE_URL}/admin/presence/${lectureId}/${document}`
+        const requestUrl = `/admin/presence/${lectureId}/${document}`
         return await axios.delete(requestUrl);
     },
 }

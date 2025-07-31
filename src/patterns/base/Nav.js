@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
+import { Suspense } from 'react';
 
 // components
 import SecondaryButton from '../../components/SecondaryButton';
@@ -15,7 +16,7 @@ import CloseBtn from '../../../public/images/icons/close.svg';
 import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
 
-const Nav = ({name}) => {
+const Nav = () => {
 
     const { signOut } = useAuth();
     const router = useRouter();
@@ -66,7 +67,7 @@ const Nav = ({name}) => {
             </div>
 
             <div className = "routeName">
-                <p>{name}</p>
+                <p>Teste</p>
             </div>
             
 
@@ -492,7 +493,6 @@ const SidepanelDesktop = styled.aside`
     @media screen and (max-width: 994px) {
         display: none;
     }
-
     position: fixed;
     height: 100%;
     display: flex;
@@ -521,6 +521,10 @@ const NavDesktop = styled.nav`
     @media screen and (max-width: 994px) {
         display: none;
     }
+
+    ${props => props.$isOpen && css`
+        margin-left: 16rem;
+    `}
 
     display: flex;
     position: sticky;
