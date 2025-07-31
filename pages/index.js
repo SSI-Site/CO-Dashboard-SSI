@@ -6,8 +6,13 @@ import Image from 'next/image';
 import useAuth from '../hooks/useAuth';
 import Meta from '../src/infra/Meta';
 
+
+// assets
+import LoadingSVG from '../public/loading.svg'
+
 // components
 import Button from '../src/components/Button';
+
 
 const Login = () => {
 
@@ -86,7 +91,11 @@ const Login = () => {
 
                             {isLoading &&
                                 <Loading>
-                                    <img src='./loading.svg' alt='SSI 2025 - Loading' />
+                                    <Image 
+                                    width={120}
+                                    height={120}
+                                    src={LoadingSVG} 
+                                    alt='SSI 2025 - Loading' />
                                 </Loading>
                             }
                         </form>
@@ -118,6 +127,7 @@ const Loading = styled.figure`
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid red;
 
     img {
         width: 50%;
