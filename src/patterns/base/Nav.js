@@ -89,28 +89,45 @@ const Nav = ({name}) => {
                     </div>
 
                     <NavigationList>
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
-                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        <Accordion title = {"Presença"}>
+                            <li className = {router.pathname == '/presential' ? 'active': ''}>
+                                <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                                <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                            </li>
+                        </Accordion>
+
+                        <li className = {router.pathname == '/students' ? 'active': ''}>
+                            <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                        </li>
+                        
+                        <Accordion title = {"Sorteio"}>
+                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                            </li>
+
+                            <li className = {router.pathname == '/winners' ? 'active': ''}>
+                                <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                            </li>
+                        </Accordion>
+                        
+
+                        <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                            <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
-                            <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                        <li className = {router.pathname == '/talks' ? 'active': ''}>
+                            <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
-                            <Link legacyBehavior href="/token"><a>Token</a></Link>
+                        <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                            <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
                         </li>
 
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
-                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                        </li>
-
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
-                            <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
-                        </li>
-
-                        <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
-                            <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
+                        <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                            <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
                         </li>
                     </NavigationList>
                 </div>
