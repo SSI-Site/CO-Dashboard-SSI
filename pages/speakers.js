@@ -2,15 +2,21 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
 
+// saphira
+import saphira from "../services/saphira";
+ 
 // Componenets
 import SecondaryButton from "../src/components/SecondaryButton";
-import Button from '../src/components/Button'
+import Button from '../src/components/Button';
+import PalestrantePopUp from '../src/components/PalestrantePopUp'
+import PalestranteRow from '../src/components/PalestranteRow'
 
 const Speakers = () => {
     return (
         <>
             <Meta title = "COSSI 2025 | Palestrantes"/>
             <NavBar name = {"Palestrantes"}/>
+
             <PalestrantesContainer>
                 <PalestrantesTitle>
                     <h5>Palestrantes</h5>
@@ -18,7 +24,7 @@ const Speakers = () => {
                     <PalestrantesInteractions>
                         <PalestrantesFilter>
                             <input 
-                            placeholder = "Buscar por nome, id, palestrante...">
+                                placeholder = "Buscar por nome, id, palestrante...">
                             </input>
                             <Button>Consultar</Button>
                         </PalestrantesFilter>
@@ -31,8 +37,17 @@ const Speakers = () => {
                 </PalestrantesTitle>
 
                 <PalestrantesGrid>
-
+                    <label>Código SSI</label>
+                    <label>Nome</label>
+                    <label>Pronomes</label>
+                    <label>Cargo</label>
+                    <label>Instagram</label>
+                    <label>Linkedin</label>
                 </PalestrantesGrid>
+                
+                <PalestrantesWrapper>
+                    <PalestranteRow id = {2} name = "a" instagram={"a"} linkedin={"a"} pronouns={"a"} role={"a"}/>
+                </PalestrantesWrapper>
             </PalestrantesContainer>
         </>
     )   
@@ -49,7 +64,6 @@ const PalestrantesContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid red;
 `
 
 const PalestrantesTitle = styled.div`
@@ -57,6 +71,7 @@ const PalestrantesTitle = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    margin-bottom: 1.5rem;
 `
 
 const PalestrantesFilter = styled.div`
@@ -65,6 +80,7 @@ const PalestrantesFilter = styled.div`
     width: 100%;
     align-items: center;
     justify-content: flex-end;
+    margin-left: 1.5rem;
 
     input {
         font: 400 1rem/1.5rem 'At Aero';
@@ -108,4 +124,24 @@ const PalestrantesInteractions = styled.div`
 
 
 const PalestrantesGrid = styled.div`
+    width: 100%;
+    border-block: 1px solid var(--outline-neutrals-secondary);
+    padding: 1.5rem 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 3fr repeat(4, 1fr); 
+    grid-column-gap: 3rem;
+    grid-row-gap: 0.75rem; 
+    margin-bottom: 0.75rem;
+
+    label {
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+`
+
+const PalestrantesWrapper = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(11, 1fr);
+    grid-column-gap: 3rem;
+    grid-row-gap: 0.75rem; 
 `
