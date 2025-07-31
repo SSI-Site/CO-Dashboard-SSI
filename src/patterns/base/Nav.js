@@ -137,56 +137,59 @@ const Nav = ({name}) => {
         </Sidepanel>
 
         <SidepanelDesktop $isOpen = {isOpen}>
-            <div className = "logo">
-                <Image
-                src = {LogoHorizontal}
-                width = {180}
-                height = {40}
-                />
-            </div>
+            <SidepanelWrapper>
+                <div className = "logo">
+                    <Image
+                    src = {LogoHorizontal}
+                    width = {180}
+                    height = {40}
+                    />
+                </div>
 
-            <NavigationList>
-                <Accordion title = {"Presença"}>
-                    <li className = {router.pathname == '/presential' ? 'active': ''}>
-                        <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                <NavigationList>
+                    <Accordion title = {"Presença"}>
+                        <li className = {router.pathname == '/presential' ? 'active': ''}>
+                            <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                        </li>
+                    </Accordion>
+
+                    <li className = {router.pathname == '/students' ? 'active': ''}>
+                        <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
+                    </li>
+                    
+                    <Accordion title = {"Sorteio"}>
+                        <li className = {router.pathname == '/giveaway' ? 'active': ''}>
+                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                        </li>
+
+                        <li className = {router.pathname == '/winners' ? 'active': ''}>
+                            <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                        </li>
+                    </Accordion>
+                    
+
+                    <li className = {router.pathname == '/speakers' ? 'active': ''}>
+                        <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
                     </li>
 
-                    <li className = {router.pathname == '/xterminate' ? 'active': ''}>
-                        <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
-                    </li>
-                </Accordion>
-
-                <li className = {router.pathname == '/students' ? 'active': ''}>
-                    <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
-                </li>
-                
-                <Accordion title = {"Sorteio"}>
-                    <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                        <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                    <li className = {router.pathname == '/talks' ? 'active': ''}>
+                        <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
                     </li>
 
-                    <li className = {router.pathname == '/winners' ? 'active': ''}>
-                        <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
+                    <li className = {router.pathname == '/gifts' ? 'active': ''}>
+                        <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
                     </li>
-                </Accordion>
-                
 
-                <li className = {router.pathname == '/speakers' ? 'active': ''}>
-                    <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
-                </li>
-
-                <li className = {router.pathname == '/talks' ? 'active': ''}>
-                    <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
-                </li>
-
-                <li className = {router.pathname == '/gifts' ? 'active': ''}>
-                    <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
-                </li>
-
-                <li className = {router.pathname == '/sponsors' ? 'active': ''}>
-                    <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
-                </li>
-            </NavigationList>
+                    <li className = {router.pathname == '/sponsors' ? 'active': ''}>
+                        <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
+                    </li>
+                </NavigationList>
+            </SidepanelWrapper>
+            <SecondaryButton onClick={handleLogout} className='user-button'>Sair</SecondaryButton>
         </SidepanelDesktop>
 
         <NavDesktop $isOpen = {isOpen}>
@@ -494,9 +497,10 @@ const SidepanelDesktop = styled.aside`
     height: 100%;
     display: flex;
     padding: 1.5rem 1rem;
-    gap: 1.5rem;
+    justify-content: space-between;
     flex-direction: column;
     left: 0;
+    top: 0;
     width: 16rem;
     background-color: var(--background-neutrals-secondary);
     border-right: 1px solid var(--outline-neutrals-secondary);
@@ -505,6 +509,12 @@ const SidepanelDesktop = styled.aside`
     ${props => !props.$isOpen && css`
         left: -260px;
     `}
+`
+
+const SidepanelWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 `
 
 const NavDesktop = styled.nav`
