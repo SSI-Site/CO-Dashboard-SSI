@@ -158,7 +158,7 @@ const Giveaway = () => {
 
             <Meta title='CO SSI 2025 | Sorteio' />
 
-            <NavBar />
+            <NavBar name = {"Sorteio"}/>
             <GiveawayWrapper>
                 <div className='section-container'>
                     <h5>Sorteio</h5>
