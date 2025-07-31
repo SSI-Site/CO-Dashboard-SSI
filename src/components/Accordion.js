@@ -35,6 +35,7 @@ const AccordionToggle = styled.div`
     width: 100%;
     justify-content: space-between;
     cursor: pointer;
+    padding-right: 1.25rem;
 
     svg {
         transition: transform 200ms ease-in-out;

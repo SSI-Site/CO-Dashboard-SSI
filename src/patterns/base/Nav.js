@@ -36,7 +36,7 @@ const Nav = ({name}) => {
             const width = document.documentElement.clientWidth;
             const main = document.getElementsByTagName('main')[0];
             main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
-            main.style.transition = 'all 200ms ease-in-out';
+            main.style.transition = 'margin 200ms ease-in-out';
         } else {
             //document.body.style.overflow = 'unset';
             document.getElementsByTagName('main')[0].style.marginLeft = '0rem';
@@ -203,56 +203,12 @@ const Nav = ({name}) => {
                 <p>{name}</p>
             </div>
             
-            
         </NavDesktop>
         </>
     )
 }
 
 export default Nav;
-
-
-const NavWrapper = styled.div`
-    position: sticky;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /*max-width: 1576px;*/
-    max-height: 5rem;
-    margin: auto;
-    z-index: 11;
-    padding: 1.5rem 1rem; 
-    background-color: var(--background-neutrals-secondary);
-
-    > div {
-        display: flex;
-        border: 1px solid red;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 1328px; // 1920px - (344px * 2)
-        height: 100%;
-
-        a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            &:focus-visible {
-                outline: 2px solid var(--color-primary);
-                outline-offset: 2px;
-            }
-        }
-    }
-
-    @media (min-width:1300px) {
-        padding-block: 1rem;
-        justify-content: center;
-        box-shadow: unset;
-        padding-inline: 6.75rem;
-    }
-`
 
 const NavMobile = styled.nav`
     overflow: hidden;   
