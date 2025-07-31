@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Image from 'next/image';
 
 import useAuth from '../../../hooks/useAuth';
@@ -13,14 +13,6 @@ import SecondaryButton from '../../components/SecondaryButton';
 import CloseBtn from '../../../public/images/icons/close.svg';
 import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
-const pages = {
-    "/presential": 1,
-    "/query": 2,
-    "/token": 3,
-    "/giveaway": 4,
-    "/registered": 5,
-    "/exterminate": 6
-}
 
 const Nav = ({name}) => {
 
@@ -40,8 +32,13 @@ const Nav = ({name}) => {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            const width = document.documentElement.clientWidth;
+            const main = document.getElementsByTagName('main')[0];
+            main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
+            main.style.transition = 'all 200ms ease-in-out';
         } else {
-            document.body.style.overflow = 'unset';
+            //document.body.style.overflow = 'unset';
+            document.getElementsByTagName('main')[0].style.marginLeft = '0rem';
         }
     }, [isOpen]);
 
@@ -121,7 +118,42 @@ const Nav = ({name}) => {
             </div>
         </Sidepanel>
 
-        <NavDesktop>
+        <SidepanelDesktop $isOpen = {isOpen}>
+            <div className = "logo">
+                <Image
+                src = {LogoHorizontal}
+                width = {180}
+                height = {40}
+                />
+            </div>
+
+            <NavigationList>
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/presential' ? 'active': ''}>
+                    <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
+                </li>
+
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/query' ? 'active': ''}>
+                    <Link legacyBehavior href="/query"><a>Consultar presença</a></Link>
+                </li>
+
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/token' ? 'active': ''}>
+                    <Link legacyBehavior href="/token"><a>Token</a></Link>
+                </li>
+
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/giveaway' ? 'active': ''}>
+                    <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                </li>
+
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/registered' ? 'active': ''}>
+                    <Link legacyBehavior href="/registered"><a>Lista de inscritos</a></Link>
+                </li>
+
+                <li onClick={() => setIsOpen(false)} className = {router.pathname == '/exterminate' ? 'active': ''}>
+                    <Link legacyBehavior href="/exterminate"><a>Xterminate</a></Link>
+                </li>
+            </NavigationList>
+        </SidepanelDesktop>
+        <NavDesktop $isOpen = {isOpen}>
             <div className = "toggle">
                 <button type='button' onClick = {() => setIsOpen(!isOpen)}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -462,6 +494,25 @@ const Sidepanel = styled.aside`
     }
 `
 const SidepanelDesktop = styled.aside`
+    @media screen and (max-width: 994px) {
+        display: none;
+    }
+
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+    flex-direction: column;
+    left: 0;
+    width: 16rem;
+    background-color: var(--background-neutrals-secondary);
+    border-right: 1px solid var(--outline-neutrals-secondary);
+    transition: all 200ms ease-in-out;
+
+    ${props => !props.$isOpen && css`
+        left: -260px;
+    `}
 `
 
 const NavDesktop = styled.nav`
@@ -470,9 +521,15 @@ const NavDesktop = styled.nav`
     }
 
     display: flex;
+    position: sticky;
     align-items: center;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
-    
+    transition: all 200ms ease-in-out;
+
+    ${props => props.$isOpen && css`
+        margin-left: 8rem;
+    `}
+
     .title {
         padding: 1rem;
 
@@ -492,7 +549,7 @@ const NavDesktop = styled.nav`
 
             background: linear-gradient(to right, var(--background-neutrals-inverse) 50%, transparent 50%);
             background-position: right;
-            background-size: 200% 100%;
+            background-size: 250% 100%;
             transition: 0.15s all ease-out;
 
             svg path {
