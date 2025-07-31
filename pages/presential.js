@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
-import NavBar from '../src/patterns/base/Nav';
+import Nav from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
@@ -81,7 +81,7 @@ const Presential = () => {
 
             <Meta title='CO SSI 2025 | Registrar presença' />
 
-            <NavBar />
+            <NavBar name = {"Registrar Presença"}/>
 
             <PresenceWrapper>
                 <div className='section-container'>

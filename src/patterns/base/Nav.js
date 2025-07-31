@@ -16,7 +16,7 @@ import CloseBtn from '../../../public/images/icons/close.svg';
 import LogoHorizontal from '../../../public/images/logos/logo_horizontal.svg';
 
 
-const Nav = () => {
+const NavBar = ({name}) => {
 
     const { signOut } = useAuth();
     const router = useRouter();
@@ -67,7 +67,7 @@ const Nav = () => {
             </div>
 
             <div className = "routeName">
-                <p>Teste</p>
+                <p>{name}</p>
             </div>
             
 
@@ -153,8 +153,8 @@ const Nav = () => {
                             <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
                         </li>
 
-                        <li className = {router.pathname == '/xterminate' ? 'active': ''}>
-                            <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
+                        <li className = {router.pathname == '/exterminate' ? 'active': ''}>
+                            <Link legacyBehavior href="/exterminate"><a>Remover presença</a></Link>
                         </li>
                     </Accordion>
 
