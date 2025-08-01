@@ -1,6 +1,7 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
+import { useState, useEffect } from "react";
 
 // saphira
 import saphira from "../services/saphira";
@@ -12,6 +13,23 @@ import PalestrantePopUp from '../src/components/PalestrantePopUp'
 import PalestranteRow from '../src/components/PalestranteRow'
 
 const Speakers = () => {
+    
+    const [speakers, setSpeakers] = useState([])
+    const [isOpen, setisOpen] = useState(false)
+
+    const getPalestrantes = () => {
+        saphira.getSpeakers()
+            .then(res => setSpeakers(res))
+    }
+
+    const submitSpeaker = () => {
+        saphira.postSpeaker()
+    }
+
+    useEffect(() => {
+        getPalestrantes();
+    }, [])
+
     return (
         <>
             <Meta title = "COSSI 2025 | Palestrantes"/>
@@ -29,9 +47,11 @@ const Speakers = () => {
                             <Button>Consultar</Button>
                         </PalestrantesFilter>
                         <span/>
-                        <SecondaryButton>
+                        <SecondaryButton onClick = {() => setisOpen(true)}>
                             + Adicionar
                         </SecondaryButton> 
+
+                        <PalestrantePopUp isOpen={isOpen} onClose={() => setisOpen(false)}/>
                     </PalestrantesInteractions>
 
                 </PalestrantesTitle>
@@ -44,9 +64,21 @@ const Speakers = () => {
                     <label>Instagram</label>
                     <label>Linkedin</label>
                 </PalestrantesGrid>
-                
+
                 <PalestrantesWrapper>
-                    <PalestranteRow id = {2} name = "a" instagram={"a"} linkedin={"a"} pronouns={"a"} role={"a"}/>
+                    {
+                        speakers.map((speaker) => {
+                            <PalestranteRow
+                                key = {speaker.id}
+                                id = {speaker.id}
+                                name = {speaker.name}
+                                pronouns = {speaker.pronouns}
+                                role = {speaker.role}
+                                instagram = {speaker.social_media}
+                                linkedin = "Null"
+                            />
+                        })
+                    }
                 </PalestrantesWrapper>
             </PalestrantesContainer>
         </>

@@ -33,15 +33,17 @@ const NavBar = ({name}) => {
     }
 
     useEffect(() => {
+        const main = document.getElementsByTagName('main')[0];
         if (isOpen) {
             document.body.style.overflow = 'hidden';
             const width = document.documentElement.clientWidth;
-            const main = document.getElementsByTagName('main')[0];
-            main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
-            main.style.transition = 'margin 200ms ease-in-out';
+            //main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
+            main.style.paddingLeft = '16rem';
+            main.style.transition = 'padding 200ms ease-in-out';
         } else {
             //document.body.style.overflow = 'unset';
-            document.getElementsByTagName('main')[0].style.marginLeft = '0rem';
+            main.style.marginLeft = '0rem';
+            main.style.paddingLeft = '0';
         }
     }, [isOpen]);
 
@@ -523,19 +525,11 @@ const NavDesktop = styled.nav`
         display: none;
     }
 
-    ${props => props.$isOpen && css`
-        margin-left: 16rem;
-    `}
-
     display: flex;
     position: sticky;
     align-items: center;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
     transition: all 200ms ease-in-out;
-
-    ${props => props.$isOpen && css`
-        margin-left: 8rem;
-    `}
 
     .title {
         padding: 1rem;
