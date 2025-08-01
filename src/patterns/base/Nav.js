@@ -21,7 +21,7 @@ const NavBar = ({name}) => {
     const { signOut } = useAuth();
     const router = useRouter();
     
-    const [isOpen, setIsOpen] = useState(false); //Gambiarra para manter a navbar no desktop presente quando mudar de página
+    const [isOpen, setIsOpen] = useState(true); //Gambiarra para manter a navbar no desktop presente quando mudar de página
 
     const handleLogout = async () => {
         setIsOpen(false);
