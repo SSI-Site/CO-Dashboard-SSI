@@ -21,7 +21,7 @@ const NavBar = ({name}) => {
     const { signOut } = useAuth();
     const router = useRouter();
     
-    const [isOpen, setIsOpen] = useState(false); //Gambiarra para manter a navbar no desktop presente quando mudar de página
+    const [isOpen, setIsOpen] = useState(true); //Gambiarra para manter a navbar no desktop presente quando mudar de página
 
     const handleLogout = async () => {
         setIsOpen(false);
@@ -38,7 +38,7 @@ const NavBar = ({name}) => {
             document.body.style.overflow = 'hidden';
             const width = document.documentElement.clientWidth;
             //main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
-            main.style.paddingLeft = '16rem';
+            main.style.paddingLeft = width > 994 ? '16rem' : '0';
             main.style.transition = 'padding 200ms ease-in-out';
         } else {
             //document.body.style.overflow = 'unset';
@@ -102,37 +102,6 @@ const NavBar = ({name}) => {
                                 <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
                             </li>
                         </Accordion>
-
-                        <li className = {router.pathname == '/students' ? 'active': ''}>
-                            <Link legacyBehavior href="/students"><a>Inscritos</a></Link>
-                        </li>
-                        
-                        <Accordion title = {"Sorteio"}>
-                            <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                                <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
-                            </li>
-
-                            <li className = {router.pathname == '/winners' ? 'active': ''}>
-                                <Link legacyBehavior href="/winners"><a>Lista de ganhadores</a></Link>
-                            </li>
-                        </Accordion>
-                        
-
-                        <li className = {router.pathname == '/speakers' ? 'active': ''}>
-                            <Link legacyBehavior href="/speakers"><a>Palestrantes</a></Link>
-                        </li>
-
-                        <li className = {router.pathname == '/talks' ? 'active': ''}>
-                            <Link legacyBehavior href="/talks"><a>Palestras</a></Link>
-                        </li>
-
-                        <li className = {router.pathname == '/gifts' ? 'active': ''}>
-                            <Link legacyBehavior href="/gifts"><a>Controle de brindes</a></Link>
-                        </li>
-
-                        <li className = {router.pathname == '/sponsors' ? 'active': ''}>
-                            <Link legacyBehavior href="/sponsors"><a>Empresas</a></Link>
-                        </li>
                     </NavigationList>
                 </div>
 
