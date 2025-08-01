@@ -22,12 +22,14 @@ const Speakers = () => {
             .then(res => setSpeakers(res))
     }
 
-    const submitSpeaker = () => {
-        saphira.postSpeaker()
-    }
-
     useEffect(() => {
-        getPalestrantes();
+        try{
+            getPalestrantes();
+        }
+        catch(error){
+            setSpeakers([]);
+        }
+        
     }, [])
 
     return (
@@ -67,6 +69,7 @@ const Speakers = () => {
 
                 <PalestrantesWrapper>
                     {
+                        speakers != [] ? 
                         speakers.map((speaker) => {
                             <PalestranteRow
                                 key = {speaker.id}
@@ -77,7 +80,10 @@ const Speakers = () => {
                                 instagram = {speaker.social_media}
                                 linkedin = "Null"
                             />
-                        })
+                            })
+
+                        : 
+                        <h5>Nenhum palestrante registrado</h5>
                     }
                 </PalestrantesWrapper>
             </PalestrantesContainer>
