@@ -26,6 +26,7 @@ const Speakers = () => {
             .then(res => {
                 setisLoading(false);
                 setSpeakers(res.data);
+                console.log(speakers);
             })
         }
 
@@ -75,7 +76,7 @@ const Speakers = () => {
                 </PalestrantesGrid>
 
                 <PalestrantesWrapper>
-                    {
+                    {!isLoading &&
                         speakers.forEach((speaker) => {
                             <PalestranteRow
                                 key = {speaker.id}
@@ -88,14 +89,7 @@ const Speakers = () => {
                             />
                         })
                     }
-                    <PalestranteRow
-                                id = 'ABC'
-                                name = "TRESTE"
-                                pronouns = "SKAL"
-                                role = "SAKL"
-                                instagram ="SSA"
-                                linkedin = "NULL"
-                            />
+
                     {isLoading &&
                         <h5>Nenhum palestrante encontrado</h5>
                     }
