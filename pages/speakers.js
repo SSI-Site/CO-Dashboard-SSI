@@ -20,21 +20,22 @@ const Speakers = () => {
 
     const getPalestrantes = () => {
         setisLoading(true);
-        
-        saphira.getSpeakers()
+        try{
+            saphira.getSpeakers()
             .then(res => {
                 setSpeakers(res);
                 setisLoading(false);
             })
+        }
+        
+        catch(error){
+            console.log(error)
+        }
+       
     }
 
     useEffect(() => {
-        try{
-            getPalestrantes();
-        }
-        catch(error){
-            console.log(error);
-        }
+        getPalestrantes()
     }, [])
 
     return (
@@ -86,6 +87,7 @@ const Speakers = () => {
                             />
                             })
                     }
+
                     {isLoading &&
                         <h5>Nenhum palestrante encontrado</h5>
                     }
