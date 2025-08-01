@@ -16,10 +16,16 @@ const Speakers = () => {
     
     const [speakers, setSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
+    const [isLoading, setisLoading] = useState(false)
 
     const getPalestrantes = () => {
+        setisLoading(true);
+        
         saphira.getSpeakers()
-            .then(res => setSpeakers(res))
+            .then(res => {
+                setSpeakers(res);
+                setisLoading(false);
+            })
     }
 
     useEffect(() => {
@@ -27,9 +33,8 @@ const Speakers = () => {
             getPalestrantes();
         }
         catch(error){
-            setSpeakers([]);
+            console.log(error);
         }
-        
     }, [])
 
     return (
@@ -68,8 +73,7 @@ const Speakers = () => {
                 </PalestrantesGrid>
 
                 <PalestrantesWrapper>
-                    {
-                        speakers != [] ? 
+                    {!isLoading &&
                         speakers.map((speaker) => {
                             <PalestranteRow
                                 key = {speaker.id}
@@ -78,12 +82,12 @@ const Speakers = () => {
                                 pronouns = {speaker.pronouns}
                                 role = {speaker.role}
                                 instagram = {speaker.social_media}
-                                linkedin = "Null"
+                                linkedin = "NULL"
                             />
                             })
-
-                        : 
-                        <h5>Nenhum palestrante registrado</h5>
+                    }
+                    {isLoading &&
+                        <h5>Nenhum palestrante encontrado</h5>
                     }
                 </PalestrantesWrapper>
             </PalestrantesContainer>
