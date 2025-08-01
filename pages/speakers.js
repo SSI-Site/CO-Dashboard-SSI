@@ -20,7 +20,7 @@ const Speakers = () => {
 
     const getPalestrantes = () => {
         setisLoading(true);
-        
+
         try{
             saphira.getSpeakers()
             .then(res => {
@@ -75,8 +75,8 @@ const Speakers = () => {
                 </PalestrantesGrid>
 
                 <PalestrantesWrapper>
-                    {!isLoading &&
-                        speakers.map((speaker) => {
+                    {
+                        speakers.forEach((speaker) => {
                             <PalestranteRow
                                 key = {speaker.id}
                                 id = {speaker.id}
