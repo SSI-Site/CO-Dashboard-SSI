@@ -3,6 +3,9 @@ import styled, { css } from 'styled-components';
 import Button from './Button';
 import SecondaryButton from './SecondaryButton';
 
+import saphira from '../../services/saphira';
+import { useForm } from 'react-hook-form';
+
 const PopUpOverlay = styled.div`
     position: fixed;
     top: 0;
@@ -105,7 +108,7 @@ const FormContainer = styled.div`
 const FormRow = styled.div`
   display: grid;
   gap: 1rem; 
-  grid-template-columns: ${(props) => props.columns || '1fr'};
+  grid-template-columns: ${(props) => props.$columns || '1fr'};
 `;
 
 const FormGroup = styled.div`
@@ -143,13 +146,23 @@ const TextArea = styled.textarea`
 `;
 
 
-function FormSubit(event) {
-    event.preventDefault();
-}
-
 export default function PalestrantePopUp ({isOpen, onClose}){
     if (!isOpen){
         return null;
+    }
+
+    const {register, handleSubmit, watch, formState: {erros}} = useForm()
+
+    const postSpeaker = (speaker) => {
+        onClose();
+        saphira.postSpeaker(
+            speaker.name,
+            speaker.description,
+            speaker.social_media,
+            speaker.pronouns,
+            speaker.role,
+        )
+            .then(res => console.log(res))
     }
 
     return (
@@ -163,38 +176,50 @@ export default function PalestrantePopUp ({isOpen, onClose}){
                         </svg>
                     </div>
                 </PopUpHeader>
-                <form action="" onSubmit={FormSubit}>
+                <form action="" onSubmit={handleSubmit(postSpeaker)}>
                     <MainPopUp>
                         <FormContainer>
-                            <FormRow columns="1fr 1fr">
+                            <FormRow $columns="1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="nome">Nome</StyledLabel>
-                                    <StyledInput id="nome" type="text" placeholder="Insira o nome do Palestrante"/>
+                                    <StyledInput id="nome" type="text" 
+                                    {...register('name')}
+                                    placeholder="Insira o nome do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
-                                    <StyledInput id="cargo" type="text" placeholder="Insira o cargo do Palestrante"/>
+                                    <StyledInput id="cargo" type="text" 
+                                    {...register('role')}
+                                    placeholder="Insira o cargo do Palestrante"/>
                                 </FormGroup>
                             </FormRow>
-                            <FormRow columns="auto 1fr 1fr">
+                            <FormRow $columns="auto 1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
-                                    <StyledInput id="pronomes" type="text" placeholder="Elu/Delu"/>
+                                    <StyledInput id="pronomes" type="text" 
+                                    {...register('pronouns')}
+                                    placeholder="Elu/Delu"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
-                                    <StyledInput id="instagram" type="text" placeholder="Insira o @ do Palestrante"/>
+                                    <StyledInput id="instagram" type="text" 
+                                    {...register('social_media')}
+                                    placeholder="Insira o @ do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
-                                    <StyledInput id="linkedin" type="text" placeholder="Insira o @ do palestrante"/>
+                                    <StyledInput id="linkedin" type="text" 
+                                    {...register('linkedin')}
+                                    placeholder="Insira o @ do palestrante"/>
                                 </FormGroup>
                             </FormRow>
                         </FormContainer>
                     
                         <FormGroup>
                             <StyledLabel>Sobre</StyledLabel>
-                            <TextArea id="sobre" placeholder="Escreva sobre quem é o palestrante"/>
+                            <TextArea id="sobre" 
+                            {...register('description')}
+                            placeholder="Escreva sobre quem é o palestrante"/>
                         </FormGroup>
                     
                     </MainPopUp>

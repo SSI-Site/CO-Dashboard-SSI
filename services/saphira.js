@@ -104,6 +104,34 @@ const saphira = {
         const requestUrl = `/admin/presence/${lectureId}/${document}`
         return await axios.delete(requestUrl);
     },
+
+    getSpeakers: async() => {
+        const requestUrl = '/speakers/'
+        return await axios.get(
+            requestUrl
+        )
+    },
+
+    postSpeaker: async(name, description, social_media, pronouns, role) => {
+        const requestUrl = '/admin/speakers/'
+        const params = new URLSearchParams()
+        
+        params.append('name', name)
+        params.append('description', description)
+        params.append('social_media', social_media)
+        params.append('pronouns', pronouns)
+        params.append('role', role)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+    }
 }
 
 export default saphira;

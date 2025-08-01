@@ -112,12 +112,6 @@ const Presential = () => {
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
                                         </InputBox>
 
-                                        <CheckboxBox>
-                                            <input id='onlinePresence' type='checkbox' defaultChecked={false}
-                                                {...register('onlinePresence')} />
-                                            <label htmlFor='onlinePresence'> Presença online? </label>
-                                        </CheckboxBox>
-
                                         <Button> Registrar </Button>
                                     </>
                                 }

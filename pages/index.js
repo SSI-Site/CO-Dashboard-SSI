@@ -44,7 +44,7 @@ const Login = () => {
 
     return (
         <PageWrapper>
-            <Meta title='COSSI 2025 | Login' />
+            <Meta title = 'COSSI 2025 | Login' />
             
             <LoginWrapper>
                 <div className='logo-container'>

@@ -86,7 +86,7 @@ const Exterminate = () => {
 
             <Meta title='CO SSI 2025 | Remover presença' />
 
-            <NavBar />
+            <NavBar name = {"Remover presença"}/>
             <ExterminateWrapper>
                 <div className='section-container'>
                     
