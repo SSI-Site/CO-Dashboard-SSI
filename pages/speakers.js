@@ -20,12 +20,9 @@ const Speakers = () => {
 
     const getPalestrantes = async() => {
         setisLoading(true);
-
         try{
             const data = await saphira.getSpeakers()
-            console.log(data)
-            setSpeakers(data)
-            console.log(speakers)
+            setSpeakers(data.data)
         }
 
         catch(error){
@@ -33,6 +30,10 @@ const Speakers = () => {
         }
        
     }
+
+    useEffect(() => {
+        setisLoading(false)
+    }, [speakers])
 
     useEffect(() => {
         getPalestrantes()
