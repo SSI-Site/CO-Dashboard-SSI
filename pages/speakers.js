@@ -20,11 +20,12 @@ const Speakers = () => {
 
     const getPalestrantes = () => {
         setisLoading(true);
+        
         try{
             saphira.getSpeakers()
             .then(res => {
-                setSpeakers(res.data);
                 setisLoading(false);
+                setSpeakers(res.data);
             })
         }
 
@@ -87,7 +88,14 @@ const Speakers = () => {
                             />
                         })
                     }
-
+                    <PalestranteRow
+                                id = 'ABC'
+                                name = "TRESTE"
+                                pronouns = "SKAL"
+                                role = "SAKL"
+                                instagram ="SSA"
+                                linkedin = "NULL"
+                            />
                     {isLoading &&
                         <h5>Nenhum palestrante encontrado</h5>
                     }
