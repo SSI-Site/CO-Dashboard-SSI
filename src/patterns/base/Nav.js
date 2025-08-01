@@ -136,7 +136,7 @@ const NavBar = ({name}) => {
                     
                     <Accordion title = {"Sorteio"}>
                         <li className = {router.pathname == '/giveaway' ? 'active': ''}>
-                            <Link legacyBehavior href="/giveaway"><a>Sorteio</a></Link>
+                            <Link legacyBehavior href="/giveaway"><a>Realizar sorteio</a></Link>
                         </li>
 
                         <li className = {router.pathname == '/winners' ? 'active': ''}>
