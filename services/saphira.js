@@ -104,6 +104,13 @@ const saphira = {
         const requestUrl = `/admin/presence/${lectureId}/${document}`
         return await axios.delete(requestUrl);
     },
+
+    getSpeakers: async() => {
+        const requestUrl = '/speakers/'
+        return await axios.get(
+            requestUrl
+        )
+    },
 }
 
 export default saphira;
