@@ -18,16 +18,14 @@ const Speakers = () => {
     const [isOpen, setisOpen] = useState(false)
     const [isLoading, setisLoading] = useState(false)
 
-    const getPalestrantes = () => {
+    const getPalestrantes = async() => {
         setisLoading(true);
 
         try{
-            saphira.getSpeakers()
-            .then(res => {
-                setisLoading(false);
-                setSpeakers(res.data);
-                console.log(speakers);
-            })
+            const data = await saphira.getSpeakers()
+            console.log(data)
+            setSpeakers(data)
+            console.log(speakers)
         }
 
         catch(error){
