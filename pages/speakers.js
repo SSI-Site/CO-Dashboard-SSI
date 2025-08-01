@@ -23,11 +23,11 @@ const Speakers = () => {
         try{
             saphira.getSpeakers()
             .then(res => {
-                setSpeakers(res);
+                setSpeakers(res.data);
                 setisLoading(false);
             })
         }
-        
+
         catch(error){
             console.log(error)
         }
@@ -85,7 +85,7 @@ const Speakers = () => {
                                 instagram = {speaker.social_media}
                                 linkedin = "NULL"
                             />
-                            })
+                        })
                     }
 
                     {isLoading &&
