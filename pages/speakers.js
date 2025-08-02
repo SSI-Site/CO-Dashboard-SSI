@@ -2,9 +2,11 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // saphira
 import saphira from "../services/saphira";
+import LoadingSVG from '../public/loading.svg'
  
 // Componenets
 import SecondaryButton from "../src/components/SecondaryButton";
@@ -20,24 +22,27 @@ const Speakers = () => {
 
     const getPalestrantes = async() => {
         setisLoading(true);
+
         try{
-            const data = await saphira.getSpeakers()
-            setSpeakers(data.data)
+            const { data } = await saphira.getSpeakers()
+            if (data) {
+                setSpeakers(data);
+            }
         }
 
         catch(error){
             console.log(error)
         }
-       
-    }
 
-    useEffect(() => {
-        setisLoading(false)
-    }, [speakers])
+        finally{
+            setisLoading(false)
+        }
+    }
 
     useEffect(() => {
         getPalestrantes()
     }, [])
+
 
     return (
         <>
@@ -76,22 +81,29 @@ const Speakers = () => {
 
                 <PalestrantesWrapper>
                     {!isLoading &&
-                        speakers.forEach((speaker) => {
-                            <PalestranteRow
-                                key = {speaker.id}
-                                id = {speaker.id}
-                                name = {speaker.name}
-                                pronouns = {speaker.pronouns}
-                                role = {speaker.role}
-                                instagram = {speaker.social_media}
-                                linkedin = "NULL"
-                            />
+                        speakers.map((speaker) => {
+                            return (
+                                <PalestranteRow
+                                    key = {speaker.id}
+                                    id = {speaker.id}
+                                    name = {speaker.name}
+                                    pronouns = {speaker.pronouns}
+                                    role = {speaker.role}
+                                    instagram = {speaker.social_media}
+                                    linkedin = "NULL"
+                                /> 
+                            )
                         })
                     }
 
                     {isLoading &&
-                        <h5>Nenhum palestrante encontrado</h5>
+                        <Image
+                        src = {LoadingSVG}
+                        width={120}
+                        height={50}
+                        />
                     }
+
                 </PalestrantesWrapper>
             </PalestrantesContainer>
         </>
