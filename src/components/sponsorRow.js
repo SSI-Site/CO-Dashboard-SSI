@@ -14,8 +14,8 @@ const SponsorRow = ({id, name, url}) => {
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const updateSponsor = async () => {
-        await saphira.updateSponsor(id)
+    const updateSponsor = async (sponsor) => {
+        await saphira.updateSponsor(id, sponsor.name, sponsor.url)
         setisModalOpen(false)
     }
 

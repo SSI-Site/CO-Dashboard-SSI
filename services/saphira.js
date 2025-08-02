@@ -1,7 +1,6 @@
 import axios from 'axios';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 import cookie from 'js-cookie';
-import { headers } from 'next/headers';
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -187,7 +186,7 @@ const saphira = {
         return await axios.get(requestUrl)
     },
 
-    updateSponsors: async(id, name, url) => {
+    updateSponsor: async(id, name, url) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         const params = new URLSearchParams()
         params.add(name)
@@ -202,6 +201,11 @@ const saphira = {
                 }
             }
         )
+    },
+
+    deleteSponsor: async(id) => {
+        const requestUrl = `/admin/talks/sponsors/${id}`
+        return axios.delete(requestUrl)
     }
 }
 
