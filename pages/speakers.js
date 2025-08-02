@@ -85,12 +85,12 @@ const Speakers = () => {
                             return (
                                 <PalestranteRow
                                     key = {speaker.id}
-                                    id = {speaker.id}
+                                    id = {speaker.id.slice(0,3).toUpperCase()}
                                     name = {speaker.name}
                                     pronouns = {speaker.pronouns}
                                     role = {speaker.role}
-                                    instagram = {speaker.social_media}
-                                    linkedin = "NULL"
+                                    instagram = {speaker.instagram_link}
+                                    linkedin = {speaker.linkedin_link}
                                 /> 
                             )
                         })
