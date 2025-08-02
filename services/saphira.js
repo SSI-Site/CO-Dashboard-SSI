@@ -1,6 +1,7 @@
 import axios from 'axios';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 import cookie from 'js-cookie';
+import { headers } from 'next/headers';
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -142,6 +143,65 @@ const saphira = {
     getGifts: async() => {
         const requestUrl = '/admin/gifts/'
         return await axios.get(requestUrl)
+    },
+
+    createGifts: async(name, description, min_presence, total_amount) => {
+        const requestUrl = '/admin/gifts/'
+        const params = new URLSearchParams()
+        params.append('name', name)
+        params.append('description', description)
+        params.append("min_presence", min_presence)
+        params.append("total_amount", total_amount)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+        
+    },
+
+    createSponsor: async(name, url) => {
+        const requestUrl = '/admin/talks/sponsors/'
+        const params = new URLSearchParams()
+        params.append("name", name)
+        params.append("url", url)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+    },
+
+    getSponsors: async() => {
+        const requestUrl = '/admin/talks/sponsors/'
+        return await axios.get(requestUrl)
+    },
+
+    updateSponsors: async(id, name, url) => {
+        const requestUrl = `/admin/talks/sponsors/${id}`
+        const params = new URLSearchParams()
+        params.add(name)
+        params.add(url)
+
+        return await axios.put(
+            requestUrl,
+            params.toString(),
+            { 
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
     }
 }
 
