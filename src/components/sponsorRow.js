@@ -205,4 +205,8 @@ const Sponsor = styled.div`
     height: 4rem;
     align-items: center;
     cursor: pointer;
+
+    p {
+        font: 700 1rem/1.5rem 'AT Aero Bold';
+    }
 `
