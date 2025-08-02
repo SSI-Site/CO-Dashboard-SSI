@@ -189,8 +189,8 @@ const saphira = {
     updateSponsor: async(id, name, url) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         const params = new URLSearchParams()
-        params.add(name)
-        params.add(url)
+        params.append(name)
+        params.append(url)
 
         return await axios.put(
             requestUrl,
