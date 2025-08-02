@@ -1,11 +1,26 @@
 import styled, { css } from "styled-components";
+import { useState, useEffect } from "react";
 
 const Alert = ({mode, children}) => {
 
+    const [isOpen, setIsOpen] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsOpen(false);
+        }, 2000)
+    })
+   
+
     return (
-        <AlertContainer $mode = {mode}>
-            {children}
-        </AlertContainer>
+        <>
+        {
+        isOpen && 
+            <AlertContainer $mode = {mode}>
+                {children}
+            </AlertContainer>
+        }
+        </>
     )
 }
 
@@ -16,7 +31,9 @@ const AlertContainer = styled.div`
     padding: 0.75rem 1rem;
     display: flex;
     gap: 1rem;
-    border: 1px solid red;
+    position: fixed;
+    bottom: 0;
+    right: 0;
 
     ${(props) => {
         switch(props.$mode){
