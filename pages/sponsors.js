@@ -12,6 +12,7 @@ import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
 import LoadingSVG from '../public/loading.svg'
 import SponsorRow from "../src/components/sponsorRow";
+import SponsorPopUp from "../src/components/SponsorPopUp";
 
 const Sponsors = () => {
 
@@ -62,6 +63,8 @@ const Sponsors = () => {
                             <SecondaryButton onClick = {() => setisOpen(true)}>
                                 + Adicionar
                             </SecondaryButton> 
+
+                            <SponsorPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
                         </SponsorsFilter>
                     </SponsorsInteractions>
                 </SponsorsTitle>
