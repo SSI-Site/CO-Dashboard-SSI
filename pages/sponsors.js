@@ -74,7 +74,7 @@ const Sponsors = () => {
                     <label>URL do site</label>
                 </SponsorsGrid>
                 <SponsorsWrapper>
-                    {!isLoading && sponsors.forEach((sponsor) => {
+                    {!isLoading && sponsors.map((sponsor) => {
                         return(
                             <SponsorRow
                             id = {sponsor.id}
