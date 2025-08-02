@@ -153,16 +153,28 @@ export default function PalestrantePopUp ({isOpen, onClose}){
 
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const postSpeaker = (speaker) => {
+    const postSpeaker = async (speaker) => {
         onClose();
-        saphira.postSpeaker(
-            speaker.name,
-            speaker.description,
-            speaker.social_media,
-            speaker.pronouns,
-            speaker.role,
-        )
-            .then(res => console.log(res))
+
+        try{
+            const { status } =  await saphira.postSpeaker(
+                speaker.name,
+                speaker.description,
+                speaker.linkedin_link,
+                speaker.instagram_link,
+                speaker.pronouns,
+                speaker.role,
+            )
+
+            if (status == 200){
+
+            }
+        }
+
+        catch(err){
+        }
+        
+
     }
 
     return (
@@ -203,14 +215,14 @@ export default function PalestrantePopUp ({isOpen, onClose}){
                                 <FormGroup>
                                     <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
                                     <StyledInput id="instagram" type="text" 
-                                    {...register('social_media')}
-                                    placeholder="Insira o @ do Palestrante"/>
+                                    {...register('instagram_link')}
+                                    placeholder="Insira o link do Instagram"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
                                     <StyledInput id="linkedin" type="text" 
-                                    {...register('linkedin')}
-                                    placeholder="Insira o @ do palestrante"/>
+                                    {...register('linkedin_link')}
+                                    placeholder="Insira o link do Linkedin"/>
                                 </FormGroup>
                             </FormRow>
                         </FormContainer>
