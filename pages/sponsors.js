@@ -1,12 +1,48 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+
+// Saphira
+import saphira from "../services/saphira";
 
 // Components
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
+import LoadingSVG from '../public/loading.svg'
+import SponsorRow from "../src/components/sponsorRow";
 
 const Sponsors = () => {
+
+    const [isOpen, setisOpen] = useState(false)
+    const [sponsors, setSponsors] = useState([])
+    const [isLoading, setisLoading] = useState(true)
+
+    const getSponsors = async() => {
+        if (!isLoading) setisLoading(true)
+
+        try{
+            const { data } = await saphira.getSponsors()
+            if (!data) setSponsors(data)
+        }
+        catch(err){
+            console.log(err)
+        }
+        finally{
+            setisLoading(false)
+        }
+
+    }
+
+    useEffect(() => {
+        getSponsors()
+    }, [])
+
+    useEffect(() => {
+        if (isOpen) getSponsors()
+    }, [isOpen])
+
     return (
         <>
             <Meta title = "COSSI 2025 | Empresas"/>
@@ -19,7 +55,7 @@ const Sponsors = () => {
                     <SponsorsInteractions>
                         <SponsorsFilter>
                             <input 
-                                placeholder = "Buscar por nome, id, código...">
+                                placeholder = "Buscar por nome...">
                             </input>
                             <Button>Consultar</Button>
                             <span/>
@@ -35,10 +71,35 @@ const Sponsors = () => {
                     <label>URL do site</label>
                 </SponsorsGrid>
                 <SponsorsWrapper>
-                    <Sponsor>
-                        <p>A</p><p>A</p>
-                    </Sponsor>
+                    {!isLoading && sponsors.forEach((sponsor) => {
+                        return(
+                            <SponsorRow
+                            id = {sponsor.id}
+                            name={sponsor.name}
+                            url={sponsor.url}
+                            />
+                        )
+                        })
+                    }
+
+                    {!isLoading &&
+                        sponsors.length == 0 &&
+                            <p className = 'allRow noSpeakers'>Sem empresas cadastradas :(</p>
+                           
+                    }
+
+                    {isLoading &&
+                        <Image
+                            src = {LoadingSVG}
+                            width={120}
+                            height={50}
+                            className = "allRow"
+                        />
+                    }
                 </SponsorsWrapper>   
+                <SponsorsFooter>
+                    <p>{sponsors.length} Parceiro/Apoiador encontrado</p>
+                </SponsorsFooter>
             </SponsorsContainer>
         </>
     )
@@ -131,20 +192,34 @@ const SponsorsGrid = styled.div`
 const SponsorsWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-rows: repeat(11, 1fr);
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
+
+    .noSpeakers{
+        text-align: center;
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+
+    .allRow{
+        grid-row-start: 1;
+        grid-row-end: 11;
+        align-self: center;
+        width: 100%;
+    }
 `
 
-const Sponsor = styled.div`
+const SponsorsFooter = styled.footer`
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
-    height: 4rem;
+    display: flex;
     align-items: center;
+    justify-content: flex-start;
+
+    P {
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
 `
 
 export default Sponsors

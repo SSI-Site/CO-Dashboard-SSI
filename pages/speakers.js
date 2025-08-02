@@ -22,7 +22,7 @@ const Speakers = () => {
     const [isLoading, setisLoading] = useState(true)
 
     const getPalestrantes = async() => {
-        setisLoading(true);
+        if (!isLoading) setisLoading(true);
 
         try{
             const { data } = await saphira.getSpeakers()
@@ -45,7 +45,7 @@ const Speakers = () => {
     }, [])
 
     useEffect(() => {
-        getPalestrantes()
+        if(isOpen) getPalestrantes()
     }, [isOpen])
 
 

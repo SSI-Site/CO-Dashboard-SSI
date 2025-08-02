@@ -11,7 +11,6 @@ import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
-import LectureList from '../src/components/LectureList';
 
 const Presential = () => {
     const router = useRouter();
@@ -20,34 +19,20 @@ const Presential = () => {
 
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [talks, setTalks] = useState([])
 
     const onSubmit = data => {
         setIsLoading(true);
     
-        // setTimeout(() => {
-            saphira.addPresenceToUser(data.lectureId, data.document, data.onlinePresence)
-                .then((res) => {
-                    setIsLoading(false);
-                    Swal.fire({
-                        icon: 'info',
-                        title: `Presença ${data.onlinePresence ? 'online' : 'presencial'} registrada para ${data.document}`,
-                        showConfirmButton: true,
-                        confirmButtonText: "Ok!",
-                        confirmButtonColor: "#151023"
-                    });
-                }, (err) => {
-                    setIsLoading(false);
-                    console.error(err);
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Falha no registro!',
-                        text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
-                        showConfirmButton: true,
-                        confirmButtonText: "Ok",
-                        confirmButtonColor: "#151023"
-                    });
-                });
-        // }, 1000);
+        saphira.addPresenceToUser(data.lectureId, data.document)
+            .then((res) => {
+                setIsLoading(false);
+
+            }, (err) => {
+                setIsLoading(false);
+
+            });
+  
     };
 
     const checkAuthentication = () => {
@@ -61,6 +46,12 @@ const Presential = () => {
             setAccessAllowed(false);
             router.push("/");
         }
+    }
+
+    const getTalks = async () => {
+        const { data } = await saphira.getLectures()
+        // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
+        setTalks(data)
     }
 
     useEffect(() => {
@@ -94,17 +85,17 @@ const Presential = () => {
                                 <p> Registro de presenças presenciais :)</p>
                                 {!isLoading &&
                                     <>
-                                        <InputBox>
+                                        <SelectBox>
                                             <label htmlFor='lectureId'> ID da palestra: </label>
                                             <div className='form-input'>
                                                 <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
                                                     {...register("lectureId", { required: true, minLength: 1, })} />
                                             </div>
                                             {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                        </InputBox>
+                                        </SelectBox>
 
                                         <InputBox>
-                                            <label htmlFor='document'> Documento do inscrito:</label>
+                                            <label htmlFor='document'>Código do inscrito:</label>
                                             <div className='form-input'>
                                                 <input id='document' type='text' placeholder='Insira o documento' className={`${errors.document && 'error-border'}`}
                                                     {...register("document", { required: true, minLength: 3 })} />
@@ -127,7 +118,6 @@ const Presential = () => {
 
                 </div>
             </PresenceWrapper>
-            <LectureList />
         </>
     )
 }
@@ -159,7 +149,7 @@ const PresenceWrapper = styled.section`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: var(--color-neutral-800); 
+        background-color: var(--background-neutrals-secondary); 
         padding: 2rem 3.5rem;
         gap: 1.5rem;
 
@@ -211,7 +201,6 @@ const FormWrapper = styled.div`
         justify-content: center;
         width: 100%;
         height: 4rem;
-        background-color: var(--color-neutral-50);
         padding: 0.5rem;
         margin-left: -4px;
 
@@ -221,11 +210,11 @@ const FormWrapper = styled.div`
         color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
-            border-color: var(--color-primary);
+            border-color: var(--brand-primary);
         }
 
         &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
-            border-color: var(--color-primary);
+            border-color: var(--brand-primary);
         }
 
         &:has(.error-border) {
@@ -286,25 +275,9 @@ const InputBox = styled.div`
     }
 `
 
-const CheckboxBox = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+const SelectBox = styled.select`
     width: 100%;
-    padding: .5rem;
-    background-color: var(--color-neutral-800);
-
-    label {
-        margin-left: 15px;
-        color: var(--color-text);
-        font: 700 0.875rem/1rem 'AT Aero';
-
-        cursor: pointer;
-    }
-
-    input[type=checkbox] {
-        transform: scale(1.5);
-        padding: 20px;
-        cursor: pointer;
-    }
+    border: 1px solid var(--content-neutrals-primary);
+    height: 4rem;
+    
 `

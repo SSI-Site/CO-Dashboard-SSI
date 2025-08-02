@@ -110,9 +110,11 @@ const GiftsGrid = styled.div`
 const GiftsWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-rows: repeat(11, 1fr);
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
 `
 
 const Gift = styled.div`
