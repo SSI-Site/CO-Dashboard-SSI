@@ -164,7 +164,7 @@ const saphira = {
         
     },
 
-    createSponsor: async(name, url) => {
+    postSponsor: async(name, url) => {
         const requestUrl = '/admin/talks/sponsors/'
         const params = new URLSearchParams()
         params.append("name", name)

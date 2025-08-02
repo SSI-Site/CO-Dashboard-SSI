@@ -26,10 +26,6 @@ export default function PalestrantePopUp ({isOpen, onClose}){
                 speaker.pronouns,
                 speaker.role,
             )
-
-            if (status == 200){
-
-            }
         }
 
         catch(err){
