@@ -40,15 +40,11 @@ const saphira = {
         return await axios.post(requestUrl);
     },
 
-    addPresenceToUser: async (lectureId, document, isOnline) => {
-        const requestUrl = "/admin/presences"
+    addPresenceToUser: async (lectureId, studentId) => {
+        const requestUrl = "/admin/presences/"
         const params = new URLSearchParams();
         params.append('talk', lectureId);
-        params.append('student_document', document);
-
-        if (isOnline) {
-            params.append('online', 'true');
-        }
+        params.append('student_document', studentId);
 
         return await axios.post(
             requestUrl,
@@ -71,7 +67,7 @@ const saphira = {
     },
 
     getLectures: async () => {
-        return await axios.get(`/admin/talks`);
+        return await axios.get(`/admin/talks/`);
     },
 
     getStudentInfo: async (document) => {
@@ -141,6 +137,75 @@ const saphira = {
     deleteSpeaker: async(id) => {
         const requestUrl = `admin/speakers/${id}`
         axios.delete(requestUrl)
+    },
+
+    getGifts: async() => {
+        const requestUrl = '/admin/gifts/'
+        return await axios.get(requestUrl)
+    },
+
+    createGifts: async(name, description, min_presence, total_amount) => {
+        const requestUrl = '/admin/gifts/'
+        const params = new URLSearchParams()
+        params.append('name', name)
+        params.append('description', description)
+        params.append("min_presence", min_presence)
+        params.append("total_amount", total_amount)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+        
+    },
+
+    createSponsor: async(name, url) => {
+        const requestUrl = '/admin/talks/sponsors/'
+        const params = new URLSearchParams()
+        params.append("name", name)
+        params.append("url", url)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+    },
+
+    getSponsors: async() => {
+        const requestUrl = '/admin/talks/sponsors/'
+        return await axios.get(requestUrl)
+    },
+
+    updateSponsor: async(id, name, url) => {
+        const requestUrl = `/admin/talks/sponsors/${id}`
+        const params = new URLSearchParams()
+        params.add(name)
+        params.add(url)
+
+        return await axios.put(
+            requestUrl,
+            params.toString(),
+            { 
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+    },
+
+    deleteSponsor: async(id) => {
+        const requestUrl = `/admin/talks/sponsors/${id}`
+        return axios.delete(requestUrl)
     }
 }
 

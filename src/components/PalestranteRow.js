@@ -126,9 +126,8 @@ const ModalContainer = styled.div`
     background-color: var(--background-neutrals-secondary);
     width: 90%;
     max-width: 62.5rem;
-
     padding: 2rem;
-    border: 0.063rem solid #444;
+    border: 0.063rem;
     box-shadow: 0 0.313rem 1rem rgba(0,0,0,0.3);
 
     color: var(--content-neutrals-primary);
@@ -139,7 +138,6 @@ const ModalHeader = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    align-self: stretch;
     padding-bottom: 1rem;
     border-bottom: 0.063rem solid var(--outline-neutrals-secondary);
 
