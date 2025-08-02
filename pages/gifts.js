@@ -1,10 +1,40 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 
+// saphira
 import saphira from "../services/saphira";
 
+// Components
+import LoadingSVG from '../public/loading.svg'
+import Alert from '../src/components/Alert'
+
 const Gifts = () => {
+
+    const [gifts, setGifts] = useState([])
+    const [isLoading, setisLoading] = useState(false);
+
+    const getGifts = () => {  
+        setisLoading(true)
+        try {
+            const { data } = saphira.getGifts()
+            if (data) {
+                setGifts(data);
+            }
+        }
+        catch(err){
+            console.log(err)
+        }
+        finally{
+            setisLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getGifts()
+    }, [])
+
     return (
         <>
             <Meta title = "COSSI 2025 | Controle de brindes"/>
@@ -16,14 +46,24 @@ const Gifts = () => {
                 </GiftsTitle>
 
                 <GiftsGrid>
-                    <label>Código SSI</label>
-                    <label>Nome</label>
-                    <label>Email</label>
+                    <label>Brinde</label>
+                    <label>Total</label>
+                    <label>Disponível para retirada</label>
+                    <label>Retirados</label>
                 </GiftsGrid>
                 <GiftsWrapper>
-                    <Gift>
-                        <p>A</p><p>A</p><p>A</p><p>A</p>
-                    </Gift>
+                    {!isLoading && 
+                        gifts.forEach((gift) => {
+                            return(
+                                <Gift>
+                                    <p>{gift.name}</p>
+                                    <p>{gift.total_amount}</p>
+                                    <p>{gift.balance}</p>
+                                </Gift>
+                            )
+                        })
+                    }
+                    
                 </GiftsWrapper>   
             </GiftsContainer>
         </>
