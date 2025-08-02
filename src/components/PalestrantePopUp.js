@@ -5,6 +5,111 @@ import SecondaryButton from './SecondaryButton';
 
 import saphira from '../../services/saphira';
 import { useForm } from 'react-hook-form';
+import Alert from './Alert';
+
+export default function PalestrantePopUp ({isOpen, onClose}){
+    if (!isOpen){
+        return null;
+    }
+
+    const {register, handleSubmit, watch, formState: {erros}} = useForm()
+
+    const postSpeaker = async (speaker) => {
+        onClose();
+
+        try{
+            const { status } =  await saphira.postSpeaker(
+                speaker.name,
+                speaker.description,
+                speaker.linkedin_link,
+                speaker.instagram_link,
+                speaker.pronouns,
+                speaker.role,
+            )
+
+            if (status == 200){
+
+            }
+        }
+
+        catch(err){
+        }
+        
+
+    }
+
+    return (
+        <PopUpOverlay onClick={onClose}>
+            <PopUpContainer onClick={(e) => e.stopPropagation()}>
+                <PopUpHeader>
+                    <h5>{mode ? 'Informações Palestrantes': 'Adicionar Palestrante'}</h5>
+                    <div className = 'close' onClick={onClose}>
+                        <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
+                        </svg>
+                    </div>
+                </PopUpHeader>
+                <form action="" onSubmit={handleSubmit(postSpeaker)}>
+                    <MainPopUp>
+                        <FormContainer>
+                            <FormRow $columns="1fr 1fr">
+                                <FormGroup>
+                                    <StyledLabel htmlFor="nome">Nome</StyledLabel>
+                                    <StyledInput id="nome" type="text"
+                                    {...register('name')}
+                                    placeholder="Insira o nome do Palestrante"/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
+                                    <StyledInput id="cargo" type="text" 
+                                    {...register('role')}
+                                    placeholder="Insira o cargo do Palestrante"/>
+                                </FormGroup>
+                            </FormRow>
+                            <FormRow $columns="auto 1fr 1fr">
+                                <FormGroup>
+                                    <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
+                                    <StyledInput id="pronomes" type="text" 
+                                    {...register('pronouns')}
+                                    placeholder="Elu/Delu"/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
+                                    <StyledInput id="instagram" type="text" 
+                                    {...register('instagram_link')}
+                                    placeholder="Insira o link do Instagram"/>
+                                </FormGroup>
+                                <FormGroup>
+                                    <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
+                                    <StyledInput id="linkedin" type="text" 
+                                    {...register('linkedin_link')}
+                                    placeholder="Insira o link do Linkedin"/>
+                                </FormGroup>
+                            </FormRow>
+                        </FormContainer>
+                    
+                        <FormGroup>
+                            <StyledLabel>Sobre</StyledLabel>
+                            <TextArea id="sobre" 
+                            {...register('description')}
+                            placeholder="Escreva sobre quem é o palestrante"/>
+                        </FormGroup>
+                    
+                    </MainPopUp>
+                    <PopUpFooter>
+                        <SecondaryButtonEsticado onClick={onClose} type="button">Cancelar</SecondaryButtonEsticado>
+                        <ButtonEsticado type="submit">Adicionar</ButtonEsticado>
+                    </PopUpFooter>
+                </form>
+
+            </PopUpContainer>
+
+            <Alert>
+                <p>TESTE</p>
+            </Alert>
+        </PopUpOverlay>
+    );
+}
 
 const PopUpOverlay = styled.div`
     position: fixed;
@@ -144,93 +249,3 @@ const TextArea = styled.textarea`
         min-height: 6.25rem;
     }
 `;
-
-
-export default function PalestrantePopUp ({isOpen, onClose}){
-    if (!isOpen){
-        return null;
-    }
-
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
-
-    const postSpeaker = (speaker) => {
-        onClose();
-        saphira.postSpeaker(
-            speaker.name,
-            speaker.description,
-            speaker.social_media,
-            speaker.pronouns,
-            speaker.role,
-        )
-            .then(res => console.log(res))
-    }
-
-    return (
-        <PopUpOverlay onClick={onClose}>
-            <PopUpContainer onClick={(e) => e.stopPropagation()}>
-                <PopUpHeader>
-                    <h5>Adicionar Palestrante</h5>
-                    <div className = 'close' onClick={onClose}>
-                        <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
-                        </svg>
-                    </div>
-                </PopUpHeader>
-                <form action="" onSubmit={handleSubmit(postSpeaker)}>
-                    <MainPopUp>
-                        <FormContainer>
-                            <FormRow $columns="1fr 1fr">
-                                <FormGroup>
-                                    <StyledLabel htmlFor="nome">Nome</StyledLabel>
-                                    <StyledInput id="nome" type="text" 
-                                    {...register('name')}
-                                    placeholder="Insira o nome do Palestrante"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
-                                    <StyledInput id="cargo" type="text" 
-                                    {...register('role')}
-                                    placeholder="Insira o cargo do Palestrante"/>
-                                </FormGroup>
-                            </FormRow>
-                            <FormRow $columns="auto 1fr 1fr">
-                                <FormGroup>
-                                    <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
-                                    <StyledInput id="pronomes" type="text" 
-                                    {...register('pronouns')}
-                                    placeholder="Elu/Delu"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
-                                    <StyledInput id="instagram" type="text" 
-                                    {...register('social_media')}
-                                    placeholder="Insira o @ do Palestrante"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
-                                    <StyledInput id="linkedin" type="text" 
-                                    {...register('linkedin')}
-                                    placeholder="Insira o @ do palestrante"/>
-                                </FormGroup>
-                            </FormRow>
-                        </FormContainer>
-                    
-                        <FormGroup>
-                            <StyledLabel>Sobre</StyledLabel>
-                            <TextArea id="sobre" 
-                            {...register('description')}
-                            placeholder="Escreva sobre quem é o palestrante"/>
-                        </FormGroup>
-                    
-                    </MainPopUp>
-                    <PopUpFooter>
-                        <SecondaryButtonEsticado onClick={onClose} type="button">Cancelar</SecondaryButtonEsticado>
-                        <ButtonEsticado type="submit">Adicionar</ButtonEsticado>
-                    </PopUpFooter>
-                </form>
-
-            </PopUpContainer>
-        </PopUpOverlay>
-    );
-}
-

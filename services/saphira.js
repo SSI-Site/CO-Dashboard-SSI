@@ -112,15 +112,16 @@ const saphira = {
         )
     },
 
-    postSpeaker: async(name, description, social_media, pronouns, role) => {
+    postSpeaker: async(name, description, linkedin_link, instagram_link, pronouns, role) => {
         const requestUrl = '/admin/speakers/'
         const params = new URLSearchParams()
         
-        params.append('name', name)
-        params.append('description', description)
-        params.append('social_media', social_media)
-        params.append('pronouns', pronouns)
-        params.append('role', role)
+        params.append('name', name);
+        params.append('description', description);
+        params.append('linkedin_link', linkedin_link);
+        params.append('instagram_link', instagram_link);
+        params.append('pronouns', pronouns);
+        params.append('role', role);
 
         return await axios.post(
             requestUrl,
@@ -131,6 +132,15 @@ const saphira = {
                 }
             }
         )
+    },
+
+    updateSpeaker: async(id) => {
+        const requestUrl = `/admin/speakers/${id}`
+    },
+
+    deleteSpeaker: async(id) => {
+        const requestUrl = `admin/speakers/${id}`
+        axios.delete(requestUrl)
     }
 }
 

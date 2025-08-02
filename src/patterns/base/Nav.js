@@ -37,7 +37,6 @@ const NavBar = ({name}) => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
             const width = document.documentElement.clientWidth;
-            //main.style.marginLeft = width > 994 ? '16rem' : '0'; // Faz o visualização principal deslocar para a direita com a abertura da sidebar
             main.style.paddingLeft = width > 994 ? '16rem' : '0';
             main.style.transition = 'padding 200ms ease-in-out';
         } else {

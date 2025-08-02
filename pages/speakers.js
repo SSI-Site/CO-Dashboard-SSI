@@ -13,12 +13,13 @@ import SecondaryButton from "../src/components/SecondaryButton";
 import Button from '../src/components/Button';
 import PalestrantePopUp from '../src/components/PalestrantePopUp'
 import PalestranteRow from '../src/components/PalestranteRow'
+import Alert from "../src/components/Alert";
 
 const Speakers = () => {
-    
+
     const [speakers, setSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
-    const [isLoading, setisLoading] = useState(false)
+    const [isLoading, setisLoading] = useState(true)
 
     const getPalestrantes = async() => {
         setisLoading(true);
@@ -43,9 +44,23 @@ const Speakers = () => {
         getPalestrantes()
     }, [])
 
+    useEffect(() => {
+        getPalestrantes()
+    }, [isOpen])
+
 
     return (
         <>
+            <script
+                dangerouslySetInnerHTML={{
+                    __html: `
+                    if (!document.cookie || !document.cookie.includes('co-auth')) {
+                        window.location.href = "/"
+                    }
+                `
+                }} 
+            />
+
             <Meta title = "COSSI 2025 | Palestrantes"/>
             <NavBar name = {"Palestrantes"}/>
 
@@ -79,7 +94,7 @@ const Speakers = () => {
                     <label>Linkedin</label>
                 </PalestrantesGrid>
 
-                <PalestrantesWrapper>
+                <PalestrantesWrapper $speakersCount = {speakers.length}>
                     {!isLoading &&
                         speakers.map((speaker) => {
                             return (
@@ -89,23 +104,42 @@ const Speakers = () => {
                                     name = {speaker.name}
                                     pronouns = {speaker.pronouns}
                                     role = {speaker.role}
-                                    instagram = {speaker.social_media}
-                                    linkedin = "NULL"
+                                    instagram = {speaker.instagram_link}
+                                    linkedin = {speaker.linkedin_link}
+                                    description = {speaker.description}
                                 /> 
                             )
                         })
                     }
 
+                    {!isLoading &&
+                        speakers.length == 0 &&
+                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>
+                           
+                    }
+
                     {isLoading &&
                         <Image
-                        src = {LoadingSVG}
-                        width={120}
-                        height={50}
+                            src = {LoadingSVG}
+                            width={120}
+                            height={50}
+                            className = "allRow"
                         />
                     }
 
                 </PalestrantesWrapper>
+
+                <PalestrantesFooter>
+                    <p>{speakers.length} palestrantes encontrados</p>
+                    <Pagination></Pagination>
+                </PalestrantesFooter>
             </PalestrantesContainer>
+            <Alert>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.5501 18L3.8501 12.3L5.2751 10.875L9.5501 15.15L18.7251 5.97498L20.1501 7.39998L9.5501 18Z" fill="#046502"/>
+                </svg>
+                <p>Palestrante adicionado com sucesso!</p>
+            </Alert>
         </>
     )   
 }
@@ -198,7 +232,34 @@ const PalestrantesGrid = styled.div`
 const PalestrantesWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-rows: repeat(11, 1fr);
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
+
+    .noSpeakers{
+        text-align: center;
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+
+    .allRow{
+        grid-row-start: 1;
+        grid-row-end: 11;
+        align-self: center;
+        width: 100%;
+    }
+`
+
+const PalestrantesFooter = styled.footer`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    
+    p {
+        font: 700 1rem/1.5rem 'At Aero Bold';
+    }
+`
+
+const Pagination = styled.div`
 `
