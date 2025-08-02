@@ -3,7 +3,6 @@ import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Swal from 'sweetalert2';
 
 // saphira
 import saphira from "../services/saphira";
@@ -101,12 +100,13 @@ const Speakers = () => {
                             return (
                                 <PalestranteRow
                                     key = {speaker.id}
-                                    id = {speaker.id.slice(0,3).toUpperCase()}
+                                    id = {speaker.id}
                                     name = {speaker.name}
                                     pronouns = {speaker.pronouns}
                                     role = {speaker.role}
                                     instagram = {speaker.instagram_link}
                                     linkedin = {speaker.linkedin_link}
+                                    description = {speaker.description}
                                 /> 
                             )
                         })
