@@ -96,11 +96,18 @@ const Speakers = () => {
                         })
                     }
 
+                    {!isLoading &&
+                        speakers.length == 0 &&
+                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>
+                           
+                    }
+
                     {isLoading &&
                         <Image
-                        src = {LoadingSVG}
-                        width={120}
-                        height={50}
+                            src = {LoadingSVG}
+                            width={120}
+                            height={50}
+                            className = "allRow"
                         />
                     }
 
@@ -201,4 +208,17 @@ const PalestrantesWrapper = styled.div`
     grid-template-rows: repeat(11, 1fr);
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
+
+    .noSpeakers{
+        text-align: center;
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+
+    .allRow{
+        grid-row-start: 1;
+        grid-row-end: 11;
+        align-self: center;
+        width: 100%;
+    }
 `
