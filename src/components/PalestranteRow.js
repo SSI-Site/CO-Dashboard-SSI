@@ -13,8 +13,16 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const updateSpeaker = async () => {
-        await saphira.updateSpeaker()
+    const updateSpeaker = async (updatedSpeaker) => {
+        await saphira.updateSpeaker(
+            id,
+            updatedSpeaker.name,
+            updatedSpeaker.description,
+            updatedSpeaker.linkedin_link,
+            updatedSpeaker.instagram_link,
+            updatedSpeaker.pronouns,
+            updatedSpeaker.role
+        )
         setisModalOpen(false)
     }
 
