@@ -35,59 +35,55 @@ const GiftsPopUp = ({isOpen, onClose}) => {
 
 
     return(
-        <>
-        {
-            <PopUpOverlay onClick = {onClose}>
-                <PopUpContainer onClick={(e) => e.stopPropagation()}>
-                    <PopUpHeader>
-                        <h5>Adicionar Brinde</h5>
-                        <div className = 'close' onClick={onClose}>
-                            <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
-                            </svg>
-                        </div>
-                    </PopUpHeader>
-                    <form action = "" onSubmit = {handleSubmit(postGift)}>
-                        <MainPopUp>
-                            <FormGroup>
-                                <label htmlFor="name">Nome</label>
-                                <input id="name" type="text"
-                                {...register('name')}
-                                placeholder="Digite o nome do brinde..."/>
-                            </FormGroup>
+        <PopUpOverlay onClick = {onClose}>
+            <PopUpContainer onClick={(e) => e.stopPropagation()}>
+                <PopUpHeader>
+                    <h5>Adicionar Brinde</h5>
+                    <div className = 'close' onClick={onClose}>
+                        <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
+                        </svg>
+                    </div>
+                </PopUpHeader>
+                <form action = "" onSubmit = {handleSubmit(postGift)}>
+                    <MainPopUp>
+                        <FormGroup>
+                            <label htmlFor="name">Nome</label>
+                            <input id="name" type="text"
+                            {...register('name')}
+                            placeholder="Digite o nome do brinde..."/>
+                        </FormGroup>
 
-                            <FormGroup>
-                                <label htmlFor="description">Descrição</label>
-                                <input id="description" type="text"
-                                {...register('description')}
-                                placeholder="Digite a descrição do brinde..."/>
-                            </FormGroup>
+                        <FormGroup>
+                            <label htmlFor="description">Descrição</label>
+                            <input id="description" type="text"
+                            {...register('description')}
+                            placeholder="Digite a descrição do brinde..."/>
+                        </FormGroup>
 
-                            <FormGroup>
-                                <label htmlFor="total_amount">Quantidade total disponível</label>
-                                <input id="total_amount" type="number"
-                                {...register('total_amount')}
-                                placeholder="Digite a quantidade disponível"/>
-                            </FormGroup>
+                        <FormGroup>
+                            <label htmlFor="total_amount">Quantidade total disponível</label>
+                            <input id="total_amount" type="number"
+                            {...register('total_amount')}
+                            placeholder="Digite a quantidade disponível"/>
+                        </FormGroup>
 
-                            <FormGroup>
-                                <label htmlFor="min_presence">Quantidade mínima de presença</label>
-                                <input id="min_presence" type="number"
-                                {...register('min_presence')}
-                                placeholder="Digite a quantidade mínima de presenças..."/>
-                            </FormGroup>
-                        </MainPopUp>
+                        <FormGroup>
+                            <label htmlFor="min_presence">Quantidade mínima de presença</label>
+                            <input id="min_presence" type="number"
+                            {...register('min_presence')}
+                            placeholder="Digite a quantidade mínima de presenças..."/>
+                        </FormGroup>
+                    </MainPopUp>
 
-                        <PopUpFooter>
-                            <SecondaryButton onClick={onClose} type = "button">Cancelar</SecondaryButton>
-                            <Button type = "submit">Confirmar</Button>
-                        </PopUpFooter>
-                    </form>
+                    <PopUpFooter>
+                        <SecondaryButton onClick={onClose} type = "button">Cancelar</SecondaryButton>
+                        <Button type = "submit">Confirmar</Button>
+                    </PopUpFooter>
+                </form>
 
-                </PopUpContainer>
-            </PopUpOverlay>
-        }
-        </>
+            </PopUpContainer>
+        </PopUpOverlay>
     )
 }
 

@@ -18,6 +18,7 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
 
     const deleteGift = async(id) => {
         await saphira.deleteGift(id)
+        setisModalOpen(false)
     }
 
 

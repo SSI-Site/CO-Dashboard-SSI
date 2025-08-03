@@ -220,7 +220,7 @@ const SponsorsFooter = styled.footer`
     align-items: center;
     justify-content: flex-start;
 
-    P {
+    p {
         font: 700 1rem/1.5rem 'At Aero Bold';
     }
 `
