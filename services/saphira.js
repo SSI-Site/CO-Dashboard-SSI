@@ -130,8 +130,26 @@ const saphira = {
         )
     },
 
-    updateSpeaker: async(id) => {
+    updateSpeaker: async(id, name, description, linkedin_link, instagram_link, pronouns, role) => {
         const requestUrl = `/admin/speakers/${id}`
+        const params = new URLSearchParams()
+        params.append("name", name)
+        params.append("description", description)
+        params.append("linkedin_link", linkedin_link)
+        params.append("instagram_link", instagram_link)
+        params.append("pronouns", pronouns)
+        params.append("role", role)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+
+        )
     },
 
     deleteSpeaker: async(id) => {
@@ -194,9 +212,9 @@ const saphira = {
     updateSponsor: async(id, name, url) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         const params = new URLSearchParams()
-        params.append(id, "id")
-        params.append(name, "name")
-        params.append(url, "url")
+        params.append("id", 5)
+        params.append("name", name)
+        params.append("url", url)
 
         return await axios.put(
             requestUrl,

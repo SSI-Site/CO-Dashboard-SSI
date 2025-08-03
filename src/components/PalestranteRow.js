@@ -13,13 +13,22 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const updateSpeaker = async () => {
-        await saphira.updateSpeaker()
+    const updateSpeaker = async (updatedSpeaker) => {
+        await saphira.updateSpeaker(
+            id,
+            updatedSpeaker.name,
+            updatedSpeaker.description,
+            updatedSpeaker.linkedin_link,
+            updatedSpeaker.instagram_link,
+            updatedSpeaker.pronouns,
+            updatedSpeaker.role
+        )
+        setisModalOpen(false)
     }
 
     const deleteSpeaker = async (id) => {
-        setisModalOpen(false);
         await saphira.deleteSpeaker(id);
+        setisModalOpen(false);
         /// NAO DEIXAR REMOVER SE ESTIVER EM UMA PALESTRA!!!!!
     }
 
@@ -42,13 +51,13 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                             <FormRow $columns="1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="nome">Nome</StyledLabel>
-                                    <StyledInput id="nome" type="text" value = {name}
+                                    <StyledInput id="nome" type="text" defaultValue = {name}
                                     {...register('name')}
                                     placeholder="Insira o nome do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
-                                    <StyledInput id="cargo" type="text" value = {role}
+                                    <StyledInput id="cargo" type="text" defaultValue = {role}
                                     {...register('role')}
                                     placeholder="Insira o cargo do Palestrante"/>
                                 </FormGroup>
@@ -56,19 +65,19 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                             <FormRow $columns="auto 1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
-                                    <StyledInput id="pronomes" type="text" value = {pronouns}
+                                    <StyledInput id="pronomes" type="text" defaultValue = {pronouns}
                                     {...register('pronouns')}
                                     placeholder="Elu/Delu"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
-                                    <StyledInput id="instagram" type="text" value = {instagram}
+                                    <StyledInput id="instagram" type="text" defaultValue = {instagram}
                                     {...register('instagram_link')}
                                     placeholder="Insira o link do Instagram"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
-                                    <StyledInput id="linkedin" type="text" value = {linkedin}
+                                    <StyledInput id="linkedin" type="text" defaultValue = {linkedin}
                                     {...register('linkedin_link')}
                                     placeholder="Insira o link do Linkedin"/>
                                 </FormGroup>
@@ -77,7 +86,7 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                     
                         <FormGroup>
                             <StyledLabel>Sobre</StyledLabel>
-                            <TextArea id="sobre" value = {description}
+                            <TextArea id="sobre" defaultValue = {description}
                             {...register('description')}
                             placeholder="Escreva sobre quem é o palestrante"/>
                         </FormGroup>
