@@ -28,11 +28,14 @@ const TalkPopUp = ({isOpen, onClose}) => {
         const end_time = new Date()
         end_time.setHours(talk.end_time.split(':')[0], talk.end_time.split(':')[1])
         start_time.setFullYear(2025, talk.date.split('-')[1], talk.date.split('-')[2])
+        
+        const speakers = []
+        speakers.push(talk.speakers)
 
         await saphira.postTalk(
             start_time,
             end_time,
-            [talk.speaker],
+            speakers,
             talk.activity_type,
             "PR",
             talk.sponsor,
