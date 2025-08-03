@@ -45,7 +45,7 @@ const Speakers = () => {
     }, [])
 
     useEffect(() => {
-        if(isOpen) getPalestrantes()
+        getPalestrantes()
     }, [isOpen])
 
 

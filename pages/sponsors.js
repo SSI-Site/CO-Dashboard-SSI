@@ -41,7 +41,7 @@ const Sponsors = () => {
     }, [])
 
     useEffect(() => {
-        if (isOpen) getSponsors()
+        getSponsors()
     }, [isOpen])
 
     return (

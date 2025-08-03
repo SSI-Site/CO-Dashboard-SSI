@@ -144,7 +144,7 @@ const saphira = {
         return await axios.get(requestUrl)
     },
 
-    createGifts: async(name, description, min_presence, total_amount) => {
+    postGift: async(name, description, min_presence, total_amount) => {
         const requestUrl = '/admin/gifts/'
         const params = new URLSearchParams()
         params.append('name', name)
@@ -162,6 +162,11 @@ const saphira = {
             }
         )
         
+    },
+    
+    deleteGift: async(id) => {
+        const requestUrl = `/admin/gifts/${id}`
+        return await axios.delete(requestUrl);
     },
 
     postSponsor: async(name, url) => {
@@ -189,8 +194,8 @@ const saphira = {
     updateSponsor: async(id, name, url) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         const params = new URLSearchParams()
-        params.add(name)
-        params.add(url)
+        params.append(name)
+        params.append(url)
 
         return await axios.put(
             requestUrl,
