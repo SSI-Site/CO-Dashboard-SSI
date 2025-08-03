@@ -192,7 +192,15 @@ const PopUpFooter = styled.footer`
     justify-content: flex-end;
     gap: 1.5rem;
     width: 100%;
-    margin-top: 0.938rem;
+    margin-top: 1rem;
+
+    button{
+        max-width: none;
+
+        &:first-of-type{
+            background-color: #F82122;
+        }
+    }
 `;
 
 const Sponsor = styled.div`
