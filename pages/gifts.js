@@ -91,7 +91,10 @@ const Gifts = () => {
                         />
                     }
                     
-                </GiftsWrapper>   
+                </GiftsWrapper> 
+                <GiftsFooter>
+                    <p>{gifts.length} brindes encontrados</p>
+                </GiftsFooter>  
             </GiftsContainer>
         </>
     )
@@ -171,5 +174,15 @@ const GiftsWrapper = styled.div`
         grid-row-end: 11;
         align-self: center;
         width: 100%;
+    }
+`
+
+const GiftsFooter = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    
+    p {
+        font: 700 1rem/1.5rem 'At Aero Bold';
     }
 `

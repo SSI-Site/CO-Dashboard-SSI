@@ -221,7 +221,7 @@ const SponsorsFooter = styled.footer`
     justify-content: flex-start;
 
     P {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
+        font: 700 1rem/1.5rem 'At Aero Bold';
     }
 `
 
