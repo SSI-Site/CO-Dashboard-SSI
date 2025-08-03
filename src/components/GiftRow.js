@@ -77,9 +77,8 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
 
             <Gift onClick = {() => setisModalOpen(true)}>
                 <p>{name}</p>
-                <p>{description}</p>
-                <p>{min_presence}</p>
                 <p>{total_amount}</p>
+                <p>{total_amount - balance}</p>
                 <p>{balance}</p>
             </Gift>
         </>

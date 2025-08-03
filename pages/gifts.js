@@ -65,7 +65,7 @@ const Gifts = () => {
                 </GiftsGrid>
                 <GiftsWrapper>
                     {!isLoading && 
-                        gifts.forEach((gift) => {
+                        gifts.map((gift) => {
                             return(
                                 <GiftRow
                                     key = {gift.id}
@@ -78,6 +78,7 @@ const Gifts = () => {
                             )
                         })
                     }
+
 
                     {!isLoading &&
                         gifts.length == 0 &&
