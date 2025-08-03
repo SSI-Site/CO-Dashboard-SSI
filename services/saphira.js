@@ -259,14 +259,14 @@ const saphira = {
     postTalk: async(start_time, end_time, speakers = [], activity_type, mode, sponsor_id = 0, title, description) => {
         const requestUrl = '/admin/talks/'
         const params = new URLSearchParams()
-        params.append(start_time)
-        params.append(end_time)
-        params.append(speakers)
-        params.append(activity_type)
-        params.append(mode)
-        params.append(sponsor_id)
-        params.append(title)
-        params.append(description)
+        params.append("start_time", start_time)
+        params.append("end_time", end_time)
+        params.append("speakers", speakers)
+        params.append("activity_type", activity_type)
+        params.append("mode", mode)
+        params.append("sponsor_id", sponsor_id)
+        params.append("title", title)
+        params.append("description", description)
 
         return await axios.post(
             requestUrl,
