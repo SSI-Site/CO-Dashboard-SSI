@@ -20,7 +20,7 @@ const Talks = () => {
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
 
-    const getTalk =  async()=> {
+    const getTalks =  async()=> {
         setisLoading(true)
 
         try{
@@ -36,7 +36,7 @@ const Talks = () => {
     }
 
     useEffect(() => {
-        getTalk()
+        getTalks()
     }, [])
 
     return (
@@ -93,11 +93,13 @@ const Talks = () => {
                                 <TalkRow
                                     key = {talk.id}
                                     id = {talk.id}
-                                    name = {talk.name}
-                                    pronouns = {talk.pronouns}
-                                    role = {talk.role}
-                                    instagram = {talk.instagram_link}
-                                    linkedin = {talk.linkedin_link}
+                                    title = {talk.title}
+                                    start_time={talk.start_time}
+                                    end_time={talk.end_time}
+                                    mode={talk.mode}
+                                    speakers={talk.speakers}
+                                    sponsor={talk.sponsor}
+                                    activity_type={talk.activity_type}
                                     description = {talk.description}
                                 /> 
                             )
