@@ -20,12 +20,15 @@ const TalkPopUp = ({isOpen, onClose}) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const postTalk = async(talk) => {
+        console.log(talk.date)
         const start_time = new Date()
         start_time.setHours(talk.start_time.split(':')[0], talk.start_time.split(':')[1])
+        start_time.setFullYear(2025, talk.date.split('-')[1], talk.date.split('-')[2])
 
         const end_time = new Date()
         end_time.setHours(talk.end_time.split(':')[0], talk.end_time.split(':')[1])
-        
+        start_time.setFullYear(2025, talk.date.split('-')[1], talk.date.split('-')[2])
+
         await saphira.postTalk(
             start_time,
             end_time,
