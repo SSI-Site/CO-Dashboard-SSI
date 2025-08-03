@@ -194,7 +194,7 @@ const saphira = {
         params.append("description", description)
         params.append("min_presence", min_presence)
         params.append("total_amount", total_amount)
-
+        console.log('teste')
         return await axios.put(
             requestUrl,
             params.toString(),
