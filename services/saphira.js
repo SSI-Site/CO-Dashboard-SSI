@@ -256,6 +256,29 @@ const saphira = {
         return await axios.get(requestUrl)
     },
 
+    postTalk: async(start_time, end_time, speakers = [], activity_type, mode, sponsor_id = 0, title, description) => {
+        const requestUrl = '/admin/talks/'
+        const params = new URLSearchParams()
+        params.append(start_time)
+        params.append(end_time)
+        params.append(speakers)
+        params.append(activity_type)
+        params.append(mode)
+        params.append(sponsor_id)
+        params.append(title)
+        params.append(description)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        )
+    },
+
     getPresences: async() => {
         const requestUrl = '/admin/presences/'
         return axios.get(requestUrl)
