@@ -8,11 +8,11 @@ import saphira from "../../services/saphira";
 // components
 import Button from "./Button";
 
-const GiftRow = ({id, name, total, total_amount, min_presence, description, balance}) => {
+const GiftRow = ({id, name, total_amount, min_presence, description, balance}) => {
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const updateGift = async(id, nome, total, total_amount) => {
+    const updateGift = async(id, nome, total_amount, min_presence, description) => {
         
     }
 
