@@ -42,7 +42,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
             saphira.getSpeakers(),
             saphira.getSponsors()
         ])
-
+        
         setSpeakers(speakerRes.data)
         setSponsors(sponsorRes.data)
     }

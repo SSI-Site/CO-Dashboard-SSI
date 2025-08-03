@@ -76,7 +76,7 @@ const Talks = () => {
                 </TalksTitle>
 
                 <TalksGrid>
-                    <label>Código SSI</label>
+                    <label>ID</label>
                     <label>Palestra</label>
                     <label>Palestrantes</label>
                     <label>Presentes</label>

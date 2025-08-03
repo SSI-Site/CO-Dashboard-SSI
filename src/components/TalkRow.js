@@ -46,7 +46,7 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
     return (
         <>
             <Talk>
-                <p>{id.slice(0, 3).toUpperCase()}</p>
+                <p>{id}</p>
                 <p>{title}</p>
                 <p>{speakers.join(', ')}</p>
                 <p>{presences}</p>
