@@ -9,24 +9,34 @@ import Button from "./Button";
 import SecondaryButton from "./SecondaryButton";
 
 const GiftsPopUp = ({isOpen, onClose}) => {
+    if (!isOpen){ // ESVAZIA OS CAMPOS
+        return null;
+    }
 
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
     
     const postGift = async(gift) => {
-        await saphira.postGift(
-            gift.name,
-            gift.description,
-            gift.min_presence,
-            gift.total_amount
-        )
+        try{
+            await saphira.postGift(
+                gift.name,
+                gift.description,
+                gift.min_presence,
+                gift.total_amount
+            )
+        }
+        catch(err){
+            console.log(err)
+        }
+        finally{
+            onClose()
+        }
 
-        onClose()
     }
 
 
     return(
         <>
-        {isOpen &&
+        {
             <PopUpOverlay onClick = {onClose}>
                 <PopUpContainer onClick={(e) => e.stopPropagation()}>
                     <PopUpHeader>
@@ -37,7 +47,7 @@ const GiftsPopUp = ({isOpen, onClose}) => {
                             </svg>
                         </div>
                     </PopUpHeader>
-                    <form onSubmit = {handleSubmit(postGift)}>
+                    <form action = "" onSubmit = {handleSubmit(postGift)}>
                         <MainPopUp>
                             <FormGroup>
                                 <label htmlFor="name">Nome</label>
@@ -55,24 +65,24 @@ const GiftsPopUp = ({isOpen, onClose}) => {
 
                             <FormGroup>
                                 <label htmlFor="total_amount">Quantidade total disponível</label>
-                                <input id="total_amount" type="text"
+                                <input id="total_amount" type="number"
                                 {...register('total_amount')}
                                 placeholder="Digite a quantidade disponível"/>
                             </FormGroup>
 
                             <FormGroup>
                                 <label htmlFor="min_presence">Quantidade mínima de presença</label>
-                                <input id="min_presence" type="text"
+                                <input id="min_presence" type="number"
                                 {...register('min_presence')}
                                 placeholder="Digite a quantidade mínima de presenças..."/>
                             </FormGroup>
                         </MainPopUp>
-                    </form>
 
-                    <PopUpFooter>
-                        <SecondaryButton onClick={onClose} type = "button">Cancelar</SecondaryButton>
-                        <Button type = "submit">Confirmar</Button>
-                    </PopUpFooter>
+                        <PopUpFooter>
+                            <SecondaryButton onClick={onClose} type = "button">Cancelar</SecondaryButton>
+                            <Button type = "submit">Confirmar</Button>
+                        </PopUpFooter>
+                    </form>
 
                 </PopUpContainer>
             </PopUpOverlay>

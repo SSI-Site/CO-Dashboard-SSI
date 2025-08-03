@@ -9,6 +9,9 @@ import Button from './Button';
 import SecondaryButton from './SecondaryButton';
 
 const SponsorPopUp = ({isOpen, onClose}) => {
+    if (!isOpen){ // EMPTY INPUT FIELDS ON SUBMIT
+        return null;
+    }
 
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
     
@@ -25,7 +28,6 @@ const SponsorPopUp = ({isOpen, onClose}) => {
 
     return (
         <>
-        {isOpen &&
             <PopUpOverlay onClick={onClose}>
                 <PopUpContainer onClick={(e) => e.stopPropagation()}>
                     <PopUpHeader>
@@ -68,7 +70,6 @@ const SponsorPopUp = ({isOpen, onClose}) => {
                 </PopUpContainer>
 
             </PopUpOverlay>
-            }
         </>
     )
 }
