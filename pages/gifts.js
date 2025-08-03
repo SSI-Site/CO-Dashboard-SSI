@@ -67,11 +67,14 @@ const Gifts = () => {
                     {!isLoading && 
                         gifts.forEach((gift) => {
                             return(
-                                <GiftRow>
-                                    <p>{gift.name}</p>
-                                    <p>{gift.total_amount}</p>
-                                    <p>{gift.balance}</p>
-                                </GiftRow>
+                                <GiftRow
+                                    key = {gift.id}
+                                    id = {gift.id}
+                                    name = {gift.name}
+                                    min_presence = {gift.min_presence}
+                                    description = {gift.description}
+                                    total_amount = {gift.total_amount}
+                                />
                             )
                         })
                     }
