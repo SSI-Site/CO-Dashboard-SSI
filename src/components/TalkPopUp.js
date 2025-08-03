@@ -20,7 +20,6 @@ const TalkPopUp = ({isOpen, onClose}) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const postTalk = async(talk) => {
-        console.log(talk.date)
         const start_time = new Date()
         start_time.setHours(talk.start_time.split(':')[0], talk.start_time.split(':')[1])
         start_time.setFullYear(2025, talk.date.split('-')[1], talk.date.split('-')[2])
@@ -31,13 +30,14 @@ const TalkPopUp = ({isOpen, onClose}) => {
         
         const speakers = []
         speakers.push(talk.speakers)
+        speakers.push('e41f901b-03be-4604-8ca4-155383fd5dba')
 
         await saphira.postTalk(
-            start_time,
-            end_time,
+            start_time.toISOString(),
+            end_time.toISOString(),
             speakers,
             talk.activity_type,
-            "PR",
+            "IP",
             talk.sponsor,
             talk.title,
             talk.description
@@ -114,7 +114,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
                                         {
                                             sponsors.map((sponsor) => {
                                                 return(
-                                                    <option value = {sponsor.id}>{sponsor.name}</option>
+                                                    <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
                                                 )
                                             })
                                         }
@@ -169,6 +169,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
                         src = {LoadingSVG}
                         width={120}
                         height={50}
+                        alt = "loading"
                         className = "loading"
                     />
                 }
