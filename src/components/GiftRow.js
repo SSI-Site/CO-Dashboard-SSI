@@ -13,15 +13,21 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const updateGift = async(updatedGift) => {
-        const { response } = await saphira.updateGift(
-            id,
-            updatedGift.name,
-            updatedGift.total_amount,
-            updatedGift.min_presence,
-            updatedGift.description
-        )
-
-        setisModalOpen(false)
+        try{
+            const { response } = await saphira.updateGift(
+                id,
+                updatedGift.name,
+                updatedGift.total_amount,
+                updatedGift.min_presence,
+                updatedGift.description
+            )
+        }
+        catch(err){
+            console.log(err)
+        }
+        finally{
+            setisModalOpen(false)
+        }
     }
 
     const deleteGift = async(id) => {
@@ -73,12 +79,12 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
                                     placeholder="Digite a quantidade mínima de presenças..."/>
                                 </FormGroup>
                             </MainPopUp>
+                            <PopUpFooter>
+                                <Button onClick={() => deleteGift(id)} type = "button">Remover</Button>
+                                <Button type = "submit">Confirmar</Button>
+                            </PopUpFooter>
                         </form>
 
-                        <PopUpFooter>
-                            <Button onClick={() => deleteGift(id)} type = "button">Remover</Button>
-                            <Button type = "submit">Confirmar</Button>
-                        </PopUpFooter>
 
                     </PopUpContainer>
                 </ModalOverlay>
