@@ -13,7 +13,9 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const updateGift = async(id, nome, total_amount, min_presence, description) => {
-        
+        const { response } = await saphira.updateGift(
+            
+        )
     }
 
     const deleteGift = async(id) => {
