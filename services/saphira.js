@@ -249,6 +249,16 @@ const saphira = {
     deleteSponsor: async(id) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         return axios.delete(requestUrl)
+    },
+
+    getTalks: async() => {
+        const requestUrl = '/admin/talks'
+        return await axios.get(requestUrl)
+    },
+
+    getPresences: async() => {
+        const requestUrl = '/admin/presences/'
+        return axios.get(requestUrl)
     }
 }
 

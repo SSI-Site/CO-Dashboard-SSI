@@ -16,14 +16,15 @@ const SponsorPopUp = ({isOpen, onClose}) => {
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
     
     const postSponsor = async(sponsor) => {
-        onClose()
         try{
             const { response } = await saphira.postSponsor(sponsor.name, sponsor.url)
         }
         catch(err){
             console.log(err)
         }
-        
+        finally{
+            onClose()
+        }
     }
 
     return (
@@ -151,7 +152,11 @@ const PopUpFooter = styled.footer`
     justify-content: flex-end;
     gap: 1.5rem;
     width: 100%;
-    margin-top: 0.938rem;
+    margin-top: 1rem;
+    
+    button{
+        max-width: none;
+    }
 `;
 
 const MainPopUp = styled.main`

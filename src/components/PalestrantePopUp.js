@@ -15,8 +15,6 @@ export default function PalestrantePopUp ({isOpen, onClose}){
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const postSpeaker = async (speaker) => {
-        onClose();
-
         try{
             const { status } =  await saphira.postSpeaker(
                 speaker.name,
@@ -29,8 +27,11 @@ export default function PalestrantePopUp ({isOpen, onClose}){
         }
 
         catch(err){
+            console.log(err)
         }
-        
+        finally{
+            onClose();
+        }
 
     }
 
@@ -183,7 +184,11 @@ const PopUpFooter = styled.footer`
     justify-content: flex-end;
     gap: 1.5rem;
     width: 100%;
-    margin-top: 0.938rem;
+    margin-top: 1rem;
+
+    button {
+        max-width: none;
+    }
 `;
 
 const MainPopUp = styled.main`
