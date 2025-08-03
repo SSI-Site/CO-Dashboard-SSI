@@ -20,7 +20,22 @@ const TalkPopUp = ({isOpen, onClose}) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const postTalk = async(talk) => {
-        return
+        const start_time = new Date()
+        start_time.setHours(talk.start_time.split(':')[0], talk.start_time.split(':')[1])
+
+        const end_time = new Date()
+        end_time.setHours(talk.end_time.split(':')[0], talk.end_time.split(':')[1])
+        
+        await saphira.postTalk(
+            start_time,
+            end_time,
+            [talk.speaker],
+            talk.activity_type,
+            "PR",
+            talk.sponsor,
+            talk.title,
+            talk.description
+        )   
     }
 
     const fetchData = async() => {
@@ -72,7 +87,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
                         <form action = "" onSubmit={handleSubmit(postTalk)}>
                             <MainPopUp>
                                 <FormGroup>
-                                    <label htmlFor="name">Nome da palestra</label>
+                                    <label htmlFor="title">Nome da palestra</label>
                                     <input id = "title" type = "text"
                                     {...register('title')}
                                     placeholder = "Nome da palestra..."/>
@@ -113,17 +128,23 @@ const TalkPopUp = ({isOpen, onClose}) => {
                                 <FormColumn>
                                     <FormGroup>
                                         <label html = "start_time">Início</label>
-                                        <input id = "start_time" type = "time"/>
+                                        <input id = "start_time" type = "time"
+                                        {...register('start_time')}
+                                        />
                                     </FormGroup>
 
                                     <FormGroup>
                                         <label html = "end_time">Fim</label>
-                                        <input id = "end_time" type = "time"/>
+                                        <input id = "end_time" type = "time"
+                                        {...register('end_time')}
+                                        />
                                     </FormGroup>
 
                                     <FormGroup>
                                         <label html = "date">Data</label>
-                                        <input id = "date" type = "date"/>
+                                        <input id = "date" type = "date"
+                                        {...register('date')}
+                                        />
                                     </FormGroup>
 
                                 </FormColumn>
