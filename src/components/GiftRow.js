@@ -12,8 +12,16 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
-    const updateGift = async(id, nome, total_amount, min_presence, description) => {
-        
+    const updateGift = async(updatedGift) => {
+        const { response } = await saphira.updateGift(
+            id,
+            updatedGift.name,
+            updatedGift.total_amount,
+            updatedGift.min_presence,
+            updatedGift.description
+        )
+
+        setisModalOpen(false)
     }
 
     const deleteGift = async(id) => {
