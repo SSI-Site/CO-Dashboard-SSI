@@ -266,7 +266,7 @@ const saphira = {
             "mode": mode,
             "sponsor_id": sponsor_id,
             "title": title,
-            "description": description
+            "description": description,
         }
 
         return await axios.post(

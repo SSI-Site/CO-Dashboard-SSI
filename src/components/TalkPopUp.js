@@ -40,7 +40,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
             "IP",
             talk.sponsor,
             talk.title,
-            talk.description
+            "talk.description"
         )   
     }
 
@@ -118,7 +118,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
                                                 )
                                             })
                                         }
-                                        <option selected value = {null}>Nenhuma</option>
+                                        <option selected value = {0}>Nenhuma</option>
 
                                     </select>
                                 </FormGroup>
