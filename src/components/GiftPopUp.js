@@ -180,10 +180,10 @@ const FormGroup = styled.div`
     }
 `;
 
-const PopUpFooter = styled.footer`
+const PopUpFooter = styled.div`
     margin-top: 1rem;
-    display: flex;
     gap: 1.5rem;
+    display: flex;
 
     button{
         max-width: none;

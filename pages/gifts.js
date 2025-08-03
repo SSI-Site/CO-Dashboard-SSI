@@ -2,6 +2,7 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // saphira
 import saphira from "../services/saphira";
@@ -9,16 +10,20 @@ import saphira from "../services/saphira";
 // Components
 import LoadingSVG from '../public/loading.svg'
 import Alert from '../src/components/Alert'
+import SecondaryButton from "../src/components/SecondaryButton";
+import GiftsPopUp from "../src/components/GiftPopUp";
+import GiftRow from "../src/components/GiftRow";
 
 const Gifts = () => {
 
     const [gifts, setGifts] = useState([])
     const [isLoading, setisLoading] = useState(false);
+    const [isOpen, setisOpen] = useState(false)
 
-    const getGifts = () => {  
+    const getGifts = async() => {  
         setisLoading(true)
         try {
-            const { data } = saphira.getGifts()
+            const { data } = await saphira.getGifts()
             if (data) {
                 setGifts(data);
             }
@@ -43,6 +48,13 @@ const Gifts = () => {
             <GiftsContainer>
                 <GiftsTitle>
                     <h5>Controle de brindes</h5>
+                    <GiftsInteraction>
+                        <SecondaryButton onClick = {() => setisOpen(true)}>
+                            + Adicionar
+                        </SecondaryButton> 
+
+                        <GiftsPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
+                    </GiftsInteraction>
                 </GiftsTitle>
 
                 <GiftsGrid>
@@ -55,13 +67,28 @@ const Gifts = () => {
                     {!isLoading && 
                         gifts.forEach((gift) => {
                             return(
-                                <Gift>
+                                <GiftRow>
                                     <p>{gift.name}</p>
                                     <p>{gift.total_amount}</p>
                                     <p>{gift.balance}</p>
-                                </Gift>
+                                </GiftRow>
                             )
                         })
+                    }
+
+                    {!isLoading &&
+                        gifts.length == 0 &&
+                            <p className = 'allRow noSpeakers'>Sem brindes cadastrados :(</p>
+                           
+                    }
+
+                    {isLoading &&
+                        <Image
+                            src = {LoadingSVG}
+                            width={120}
+                            height={50}
+                            className = "allRow"
+                        />
                     }
                     
                 </GiftsWrapper>   
@@ -91,6 +118,24 @@ const GiftsTitle = styled.div`
     margin-bottom: 1.5rem;
 `
 
+const GiftsInteraction = styled.div`
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    height: 100%;
+
+    span {
+        height: 3rem;
+        border-left: 1px solid var(--outline-neutrals-secondary);
+    }
+
+    button {
+        max-width: 8rem;
+    }
+`
+
 
 const GiftsGrid = styled.div`
     width: 100%;
@@ -115,15 +160,16 @@ const GiftsWrapper = styled.div`
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
-`
 
-const Gift = styled.div`
-    width: 100%;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr; 
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
-    height: 4rem;
-    align-items: center;
+    .noSpeakers{
+        text-align: center;
+        font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+
+    .allRow{
+        grid-row-start: 1;
+        grid-row-end: 11;
+        align-self: center;
+        width: 100%;
+    }
 `
