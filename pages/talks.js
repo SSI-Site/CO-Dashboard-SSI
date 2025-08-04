@@ -3,6 +3,7 @@ import Meta from "../src/infra/Meta";
 import styled, { css } from "styled-components";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import {useRouter} from "next/router";
 
 // saphira
 import saphira from "../services/saphira";
@@ -15,7 +16,7 @@ import TalkPopUp from "../src/components/TalkPopUp";
 import TalkRow from "../src/components/TalkRow";
 
 const Talks = () => {
-
+    const router = useRouter()
     const [isOpen, setisOpen] = useState(false);
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
@@ -71,7 +72,12 @@ const Talks = () => {
                             <Button>Consultar</Button>
                         </TalksFilter>
                         <span/>
-                        <SecondaryButton onClick = {() => setisOpen(true)}>
+                        <SecondaryButton onClick = {() => router.push({
+                            pathname: '/talkForm',
+                            query: {
+                                data: "Eduardo"
+                            }
+                        })}>
                             + Adicionar
                         </SecondaryButton> 
 
