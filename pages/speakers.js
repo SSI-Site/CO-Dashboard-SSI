@@ -40,18 +40,14 @@ const Speakers = () => {
         }
     }
 
-    const OnClosePopUp = async() => {
+    const OnClosePopUp = async(event) => {
         setisOpen(false)
-        await getPalestrantes()
+        if (event) await getPalestrantes()
     }
 
     useEffect(() => {
         getPalestrantes()
     }, [])
-
-    useEffect(() => {
-        getPalestrantes()
-    }, [isOpen])
 
 
     return (
