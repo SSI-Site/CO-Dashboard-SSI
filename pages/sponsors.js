@@ -36,13 +36,14 @@ const Sponsors = () => {
 
     }
 
-    useEffect(() => {
-        getSponsors()
-    }, [])
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getSponsors()
+    }
 
     useEffect(() => {
         getSponsors()
-    }, [isOpen])
+    }, [])
 
     return (
         <>
@@ -64,7 +65,7 @@ const Sponsors = () => {
                                 + Adicionar
                             </SecondaryButton> 
 
-                            <SponsorPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
+                            <SponsorPopUp isOpen = {isOpen} onClose={OnClosePopUp}/>
                         </SponsorsFilter>
                     </SponsorsInteractions>
                 </SponsorsTitle>

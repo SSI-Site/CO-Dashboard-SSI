@@ -36,6 +36,11 @@ const Gifts = () => {
         }
     }
 
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getGifts()
+    }
+
     useEffect(() => {
         getGifts()
     }, [])
@@ -53,7 +58,7 @@ const Gifts = () => {
                             + Adicionar
                         </SecondaryButton> 
 
-                        <GiftsPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
+                        <GiftsPopUp isOpen = {isOpen} onClose={OnClosePopUp}/>
                     </GiftsInteraction>
                 </GiftsTitle>
 

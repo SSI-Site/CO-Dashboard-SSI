@@ -40,6 +40,11 @@ const Speakers = () => {
         }
     }
 
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getPalestrantes()
+    }
+
     useEffect(() => {
         getPalestrantes()
     }, [])
@@ -80,7 +85,7 @@ const Speakers = () => {
                             + Adicionar
                         </SecondaryButton> 
 
-                        <PalestrantePopUp isOpen={isOpen} onClose={() => setisOpen(false)}/>
+                        <PalestrantePopUp isOpen={isOpen} onClose={OnClosePopUp}/>
                     </PalestrantesInteractions>
 
                 </PalestrantesTitle>
@@ -94,7 +99,7 @@ const Speakers = () => {
                     <label>Linkedin</label>
                 </PalestrantesGrid>
 
-                <PalestrantesWrapper $speakersCount = {speakers.length}>
+                <PalestrantesWrapper>
                     {!isLoading &&
                         speakers.map((speaker, index) => {
                             return (
