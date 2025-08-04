@@ -8,7 +8,7 @@ import saphira from "../../services/saphira";
 // components
 import Button from "./Button";
 
-const GiftRow = ({id, name, total_amount, min_presence, description, balance}) => {
+const GiftRow = ({id, name, total_amount, min_presence, description, balance, isEven}) => {
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
@@ -90,7 +90,7 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance}) =
                 </ModalOverlay>
             }
 
-            <Gift onClick = {() => setisModalOpen(true)}>
+            <Gift onClick = {() => setisModalOpen(true)} $isEven = {isEven}>
                 <p>{name}</p>
                 <p>{total_amount}</p>
                 <p>{total_amount - balance}</p>
@@ -221,10 +221,15 @@ const Gift = styled.div`
     display: grid;
     grid-template-columns: 2fr repeat(3, 1fr); 
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
+    padding: 0.75rem 0.5rem; 
     height: 4rem;
     align-items: center;
+    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
+    transition: background-color 200ms ease-in-out;
+    
+    &:hover{
+        background-color: var(--state-layers-neutrals-primary-008);
+    }
 
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';

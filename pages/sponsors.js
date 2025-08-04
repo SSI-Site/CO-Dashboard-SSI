@@ -36,13 +36,14 @@ const Sponsors = () => {
 
     }
 
-    useEffect(() => {
-        getSponsors()
-    }, [])
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getSponsors()
+    }
 
     useEffect(() => {
         getSponsors()
-    }, [isOpen])
+    }, [])
 
     return (
         <>
@@ -64,7 +65,7 @@ const Sponsors = () => {
                                 + Adicionar
                             </SecondaryButton> 
 
-                            <SponsorPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
+                            <SponsorPopUp isOpen = {isOpen} onClose={OnClosePopUp}/>
                         </SponsorsFilter>
                     </SponsorsInteractions>
                 </SponsorsTitle>
@@ -74,9 +75,10 @@ const Sponsors = () => {
                     <label>URL do site</label>
                 </SponsorsGrid>
                 <SponsorsWrapper>
-                    {!isLoading && sponsors.map((sponsor) => {
+                    {!isLoading && sponsors.map((sponsor, index) => {
                         return(
                             <SponsorRow
+                            isEven = {index % 2}
                             id = {sponsor.id}
                             name={sponsor.name}
                             url={sponsor.url}
@@ -196,7 +198,6 @@ const SponsorsWrapper = styled.div`
     width: 100%;
     display: grid;
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);

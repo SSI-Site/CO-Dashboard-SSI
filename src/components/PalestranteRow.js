@@ -8,8 +8,7 @@ import saphira from "../../services/saphira";
 // componenets
 import Button from "./Button";
 
-const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, description}) => {
-
+const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, description, isEven}) => {
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
@@ -101,7 +100,7 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
             </ModalOverlay>
         }
 
-        <PalestranteWrapper onClick = {() => setisModalOpen(true)}>
+        <PalestranteWrapper onClick = {() => setisModalOpen(true)} $isEven = {isEven}>
             <p>{id.slice(0,3).toUpperCase()}</p>
             <p>{name}</p>
             <p>{pronouns}</p>
@@ -116,7 +115,7 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
 export default PalestranteRow;
 
 const ModalOverlay = styled.div`
- position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -258,10 +257,16 @@ const PalestranteWrapper = styled.div`
     grid-template-columns: 1fr 3fr repeat(4, 1fr); 
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
+    padding: 0.75rem 0.5rem; 
     height: 4rem;
     align-items: center;
-
+    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
+    transition: background-color 200ms ease-in-out;
+    
+    &:hover{
+        background-color: var(--state-layers-neutrals-primary-008);
+    }
+    
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
     }

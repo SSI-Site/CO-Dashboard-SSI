@@ -42,7 +42,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
             saphira.getSpeakers(),
             saphira.getSponsors()
         ])
-        
+
         setSpeakers(speakerRes.data)
         setSponsors(sponsorRes.data)
     }
@@ -71,7 +71,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
 
     return (
         <PopUpOverlay onClick = {onClose}>
-            <PopUpContainer onClick={(e) => e.stopPropagation()}>
+            <PopUpContainer $isOpen = {isOpen} onClick={(e) => e.stopPropagation()}>
                 <PopUpHeader>
                     <h5>Adicionar Palestra</h5>
                     <div className = 'close' onClick={onClose}>
@@ -175,12 +175,10 @@ export default TalkPopUp;
 
 const PopUpOverlay = styled.div`
     position: fixed;
-    top: 0;
+    top: 5rem;
     left: 0;
-    width: 100%;
-    height: 100%;
-
-    background-color: rgba(0, 0, 0, 0.7);
+    bottom: 0;
+    right: 0;
 
     display: flex;
     justify-content: center;
@@ -194,9 +192,11 @@ const PopUpContainer = styled.div`
     flex-direction: column;
     background-color: var(--background-neutrals-secondary);
     width: 100%;
-    max-width: 62.5rem;
+    height: 100%;
     padding: 2rem;
+    transform: ${props => !props.$isOpen ? 'translateX(200%)' : 'translateX(0)'};
     color: var(--content-neutrals-primary);
+    transition: transform 200ms ease-in-out;
 
     .loading{
         width: 100%;

@@ -35,6 +35,11 @@ const Talks = () => {
         }
     }
 
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getTalks()
+    }
+
     useEffect(() => {
         getTalks()
     }, [])
@@ -70,7 +75,7 @@ const Talks = () => {
                             + Adicionar
                         </SecondaryButton> 
 
-                        <TalkPopUp isOpen={isOpen} onClose={() => setisOpen(false)}/>
+                        <TalkPopUp isOpen={isOpen} onClose={OnClosePopUp}/>
                     </TalksInteractions>
 
                 </TalksTitle>
@@ -109,7 +114,6 @@ const Talks = () => {
                     {!isLoading &&
                         talks.length == 0 &&
                             <p className = 'allRow noSpeakers'>Sem palestras cadastradas :(</p>
-                        
                     }
 
                     {isLoading &&

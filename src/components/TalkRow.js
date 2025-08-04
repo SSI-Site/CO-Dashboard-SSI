@@ -13,6 +13,8 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
     const [presences, setPresences] = useState(0)
+    const [speakersNames, setSpeakersNames] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const formatedTime = (isoDate) => {
         const date = new Date(isoDate)
@@ -39,22 +41,35 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         }
     }
 
+    const getSpeakerNames = async() => {
+        const requests = speakers.map(id => saphira.getSpeaker(id))
+        const response = await Promise.all(requests)
+        const names = response.map(res => res.data.name)
+
+        setSpeakersNames(names)
+    }
+
     useEffect(() => {
         getPresences()
+        getSpeakerNames()
+
+        setIsLoading(false)
     }, [])
 
     return (
         <>
+        {!isLoading &&
             <Talk>
                 <p>{id}</p>
                 <p>{title}</p>
-                <p>{speakers.join(', ')}</p>
+                <p>{speakersNames.join(', ')}</p>
                 <p>{presences}</p>
                 <p>{formatedTime(start_time)}</p>
                 <p>{formatedTime(end_time)}</p>
                 <p>{formatedDate(end_time)}</p>
                 <p>Não realizado</p>
             </Talk>
+        }
         </>
     )
 }

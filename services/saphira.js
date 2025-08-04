@@ -108,6 +108,11 @@ const saphira = {
         )
     },
 
+    getSpeaker: async(id) => {
+        const requestUrl = `/admin/speakers/${id}`
+        return await axios.get(requestUrl)
+    },
+
     postSpeaker: async(name, description, linkedin_link, instagram_link, pronouns, role) => {
         const requestUrl = '/admin/speakers/'
         const params = new URLSearchParams()

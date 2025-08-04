@@ -36,6 +36,11 @@ const Gifts = () => {
         }
     }
 
+    const OnClosePopUp = async() => {
+        setisOpen(false)
+        await getGifts()
+    }
+
     useEffect(() => {
         getGifts()
     }, [])
@@ -53,7 +58,7 @@ const Gifts = () => {
                             + Adicionar
                         </SecondaryButton> 
 
-                        <GiftsPopUp isOpen = {isOpen} onClose={() => setisOpen(false)}/>
+                        <GiftsPopUp isOpen = {isOpen} onClose={OnClosePopUp}/>
                     </GiftsInteraction>
                 </GiftsTitle>
 
@@ -65,9 +70,10 @@ const Gifts = () => {
                 </GiftsGrid>
                 <GiftsWrapper>
                     {!isLoading && 
-                        gifts.map((gift) => {
+                        gifts.map((gift, index) => {
                             return(
                                 <GiftRow
+                                    isEven = {index % 2}
                                     key = {gift.id}
                                     id = {gift.id}
                                     name = {gift.name}
@@ -163,7 +169,6 @@ const GiftsWrapper = styled.div`
     width: 100%;
     display: grid;
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
