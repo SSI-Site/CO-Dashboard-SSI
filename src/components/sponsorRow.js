@@ -8,7 +8,7 @@ import saphira from "../../services/saphira";
 // componenets
 import Button from "./Button";
 
-const SponsorRow = ({id, name, url}) => {
+const SponsorRow = ({id, name, url, isEven}) => {
 
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
@@ -68,7 +68,7 @@ const SponsorRow = ({id, name, url}) => {
             </ModalOverlay>
         }
 
-        <Sponsor onClick = {() => setisModalOpen(true)}>
+        <Sponsor onClick = {() => setisModalOpen(true)} $isEven = {isEven}>
             <p>{name}</p>
             <p>{url}</p>
         </Sponsor>
@@ -213,6 +213,12 @@ const Sponsor = styled.div`
     height: 4rem;
     align-items: center;
     cursor: pointer;
+    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
+    transition: background-color 200ms ease-in-out;
+    
+    &:hover{
+        background-color: var(--state-layers-neutrals-primary-008);
+    }
 
     p {
         font: 700 1rem/1.5rem 'AT Aero Bold';
