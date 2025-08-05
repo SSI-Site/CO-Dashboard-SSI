@@ -15,13 +15,11 @@ import SpeakerInput from "../src/components/SpeakerInput";
 
 const TalkForm = () => {
     const router = useRouter();
-    const { id, title, start_time, end_time, activity_type, description, mode, date } = router.query
+    const { id, title, start_time, end_time, activity_type, description, mode, date, sponsor_id, speakersIds = []} = router.query
     const [sponsors, setSponsors] = useState([])
     const [speakers, setSpeakers] = useState([])
     const [selectedSpeakers, setSelectedSpeakers] = useState([])
-    const [isLoading, setisLoading] = useState(true)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
-
 
     const postTalk = async(talk) => {
 
@@ -47,28 +45,41 @@ const TalkForm = () => {
         setSponsors(sponsorRes.data)
     }
 
+    const getSpeakerName = async() => {
+        const requests = speakersIds.split(',').map((id) => saphira.getSpeaker(id))
+        const response = await Promise.all(requests)
+        const names = response.map(res => `${res.data.id}|${res.data.name}`)
+        setSelectedSpeakers(names)
+    }
+
+    const removeTalk = async(id) => {
+        await saphira.removeTalk(id)
+        router.back()
+    }
+
     useEffect(() => {
         if (router.isReady){
             try{
                 fetchData()
+                if (router.query) {
+                    getSpeakerName()
+                }
             }
             catch(err){
                 console.log(err)
             }
-            finally{
-                setisLoading(false)
-            }
         }
     }, [])
 
+
     return(
         <>
-            <NavBar name = "Palestrantes > Adicionar Palestra"/>
-            <Meta title = "Adicionar Palestra | COSSI 2025 Dashboard"/>
+            <NavBar name = {`Palestrantes > ${router.query ? 'Editar Palestra' : 'Adicionar Palestra'}`}/>
+            <Meta title = {`${router.query ? 'Editar Palestra' : 'Adicionar Palestra'} | COSSI 2025 Dashboard`}/>
 
             <FormContainer onClick={(e) => e.stopPropagation()}>
                 <FormHeader>
-                    <h5>Adicionar Palestra</h5>
+                    <h5>{router.query ? 'Editar Palestra' : 'Adicionar Palestra'}</h5>
                 </FormHeader>
 
                 <form action = "" onSubmit={handleSubmit(postTalk)}>
@@ -87,12 +98,19 @@ const TalkForm = () => {
                                     {
                                         sponsors.map((sponsor) => {
                                             return(
-                                                <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
+                                                <>
+                                                {
+                                                    sponsor_id == sponsor.id
+                                                    ? 
+                                                    <option selected key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
+                                                    :
+                                                    <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
+                                                }
+                                                </>
                                             )
                                         })
                                     }
                                     <option selected value = {0}>Nenhuma</option>
-
                                 </select>
                             </FormGroup>
                         </FormColumn>
@@ -110,6 +128,7 @@ const TalkForm = () => {
                         </FormGroup>
 
                         <FormGroup>
+                            
                            <SpeakerInput setSelectedSpeakers={setSelectedSpeakers} selectedSpeakers={selectedSpeakers} speakers = {speakers}/>
                         </FormGroup>
 

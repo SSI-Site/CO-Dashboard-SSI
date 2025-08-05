@@ -285,6 +285,11 @@ const saphira = {
         )
     },
 
+    removeTalk: async(id) => {
+        const requestUrl = `/admin/talks/${id}`
+        return await axios.delete(requestUrl)
+    },
+
     getPresences: async() => {
         const requestUrl = '/admin/presences/'
         return axios.get(requestUrl)
