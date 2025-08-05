@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import saphira from "../../services/saphira";
 import { useRouter } from "next/router";
 
-const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor_id = 0, description, mode, date, isEven}) => {
+const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor_id = 0, description, mode, isEven}) => {
 
     const router = useRouter()
     const [presences, setPresences] = useState(0)
@@ -14,7 +14,7 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
 
     const formatedTime = (isoDate) => {
         const date = new Date(isoDate)
-        return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+        return date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
     }
 
     const formatedDate = (isoDate) => {
@@ -45,15 +45,20 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         setSpeakersNames(names)
     }
 
+    const getDate = (isoDate) => {
+        const date = new Date(isoDate)
+        return date.toISOString().split('T')[0]
+    }
+
     const updateTalk = () => {
         router.push({pathname: '/talkForm',
             query: {
                 id: id,
                 title: title,
                 speakersIds: speakers.join(','),
-                start_time: start_time,
-                end_time: end_time,
-                date: date,
+                start_time: formatedTime(start_time),
+                end_time: formatedTime(end_time),
+                date: getDate(end_time),
                 activity_type: activity_type,
                 sponsor_id: sponsor_id,
                 mode:  mode,
