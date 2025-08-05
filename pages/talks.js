@@ -105,7 +105,7 @@ const Talks = () => {
                                     end_time={talk.end_time}
                                     mode={talk.mode}
                                     speakers={talk.speakers}
-                                    sponsor={talk.sponsor_id}
+                                    sponsor_id={talk.sponsor_id}
                                     activity_type={talk.activity_type}
                                     description = {talk.description}
                                 /> 
