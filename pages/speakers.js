@@ -1,7 +1,7 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 
 // saphira
@@ -18,8 +18,14 @@ import Alert from "../src/components/Alert";
 const Speakers = () => {
 
     const [speakers, setSpeakers] = useState([])
+    const [filteredSpeakers, setFilteredSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
     const [isLoading, setisLoading] = useState(true)
+
+    // Funcionalidades
+    const [currentPage, setCurrentPage] = useState(1)
+    const [query, setQuery] = useState('')
+    const maxRows = 11;
 
     const getPalestrantes = async() => {
         if (!isLoading) setisLoading(true);
@@ -28,6 +34,7 @@ const Speakers = () => {
             const { data } = await saphira.getSpeakers()
             if (data) {
                 setSpeakers(data);
+                setFilteredSpeakers(data)
             }
         }
 
@@ -48,6 +55,12 @@ const Speakers = () => {
     useEffect(() => {
         getPalestrantes()
     }, [])
+
+    const totalPages = Math.ceil(filteredSpeakers.length / maxRows)
+    const currentSpeakers = filteredSpeakers.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    )
 
 
     return (
@@ -97,7 +110,7 @@ const Speakers = () => {
 
                 <PalestrantesWrapper>
                     {!isLoading &&
-                        speakers.map((speaker, index) => {
+                        currentSpeakers.map((speaker, index) => {
                             return (
                                 <PalestranteRow
                                     isEven = {index % 2}
@@ -133,7 +146,20 @@ const Speakers = () => {
 
                 <PalestrantesFooter>
                     <p>{speakers.length} palestrantes encontrados</p>
-                    <Pagination></Pagination>
+                    <Pagination>
+                        <Button 
+                        className = {currentPage == 1 ? 'noInteraction' : ''}
+                        onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
+                        {Array.from({length: totalPages}, (_, i) => 
+                            <Button 
+                            className = {currentPage == i + 1 ? '': 'disabled'}
+                            key = {i + 1} 
+                            onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
+                        )}
+                        <Button 
+                        className = {currentPage == totalPages? 'noInteraction' : ''}
+                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                    </Pagination>
                 </PalestrantesFooter>
             </PalestrantesContainer>
             <Alert>
@@ -263,4 +289,22 @@ const PalestrantesFooter = styled.footer`
 `
 
 const Pagination = styled.div`
+    display: flex;
+    gap: 0.75rem;
+
+    button{
+        width: 2rem;
+        height: 2rem;
+        padding: 1.5rem;
+    }
+    .noInteraction{
+        color: var(--content-neutrals-primary);
+        background-color: var(--background-neutrals-tertiary);
+        pointer-events: none;
+    }
+
+    .disabled{
+        background-color: transparent;
+        border: 1px solid var(--content-neutrals-primary);
+    }
 `
