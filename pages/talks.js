@@ -3,6 +3,7 @@ import Meta from "../src/infra/Meta";
 import styled, { css } from "styled-components";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import {useRouter} from "next/router";
 
 // saphira
 import saphira from "../services/saphira";
@@ -15,7 +16,7 @@ import TalkPopUp from "../src/components/TalkPopUp";
 import TalkRow from "../src/components/TalkRow";
 
 const Talks = () => {
-
+    const router = useRouter()
     const [isOpen, setisOpen] = useState(false);
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
@@ -71,7 +72,7 @@ const Talks = () => {
                             <Button>Consultar</Button>
                         </TalksFilter>
                         <span/>
-                        <SecondaryButton onClick = {() => setisOpen(true)}>
+                        <SecondaryButton onClick = {() => router.push({pathname: '/talkForm',})}>
                             + Adicionar
                         </SecondaryButton> 
 
@@ -93,9 +94,10 @@ const Talks = () => {
 
                 <TalksWrapper>
                     {!isLoading &&
-                        talks.map((talk) => {
+                        talks.map((talk, index) => {
                             return (
                                 <TalkRow
+                                    isEven={index % 2}
                                     key = {talk.id}
                                     id = {talk.id}
                                     title = {talk.title}
@@ -103,7 +105,7 @@ const Talks = () => {
                                     end_time={talk.end_time}
                                     mode={talk.mode}
                                     speakers={talk.speakers}
-                                    sponsor={talk.sponsor}
+                                    sponsor={talk.sponsor_id}
                                     activity_type={talk.activity_type}
                                     description = {talk.description}
                                 /> 
@@ -225,7 +227,6 @@ const TalksWrapper = styled.div`
     width: 100%;
     display: grid;
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);

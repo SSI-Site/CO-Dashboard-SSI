@@ -36,9 +36,9 @@ const Gifts = () => {
         }
     }
 
-    const OnClosePopUp = async() => {
+    const OnClosePopUp = async(render) => {
         setisOpen(false)
-        await getGifts()
+        if (render) await getGifts()
     }
 
     useEffect(() => {

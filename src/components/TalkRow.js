@@ -1,17 +1,13 @@
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
 // saphira
 import saphira from "../../services/saphira";
+import { useRouter } from "next/router";
 
-// components
-import Button from "./Button";
+const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor_id = 0, description, mode, date, isEven}) => {
 
-const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor = {}, description, mode}) => {
-
-    const [isUpdateOpen, setIsUpdateOpen] = useState(false)
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
+    const router = useRouter()
     const [presences, setPresences] = useState(0)
     const [speakersNames, setSpeakersNames] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -49,6 +45,23 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         setSpeakersNames(names)
     }
 
+    const updateTalk = () => {
+        router.push({pathname: '/talkForm',
+            query: {
+                id: id,
+                title: title,
+                speakersIds: speakers.join(','),
+                start_time: start_time,
+                end_time: end_time,
+                date: date,
+                activity_type: activity_type,
+                sponsor_id: sponsor_id,
+                mode:  mode,
+                description: description,
+            }
+        })
+    }
+
     useEffect(() => {
         getPresences()
         getSpeakerNames()
@@ -59,7 +72,7 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
     return (
         <>
         {!isLoading &&
-            <Talk>
+            <Talk $isEven = {isEven} onClick={() => updateTalk()}>
                 <p>{id}</p>
                 <p>{title}</p>
                 <p>{speakersNames.join(', ')}</p>
@@ -67,7 +80,7 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
                 <p>{formatedTime(start_time)}</p>
                 <p>{formatedTime(end_time)}</p>
                 <p>{formatedDate(end_time)}</p>
-                <p>Não realizado</p>
+                <p className="status">Não realizado</p>
             </Talk>
         }
         </>
@@ -82,12 +95,25 @@ const Talk = styled.div`
     display: grid;
     grid-template-columns: 1fr 3fr 3fr repeat(5, 1fr);
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
+    padding: 0.75rem 0.5rem; 
     height: 4rem;
     align-items: center;
+    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
+    transition: background-color 200ms ease-in-out;
+    
+    &:hover{
+        background-color: var(--state-layers-neutrals-primary-008);
+    }
 
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+
+    .status{
+        padding: 0.125rem 0.25rem;
+        color: var(--content-accent-green);
+        background-color: var(--background-accent-green);
+        font: 400 0.875rem/1.5rem 'At Aero';
+        text-align: center;
     }
 `

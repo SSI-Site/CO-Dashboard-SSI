@@ -36,9 +36,9 @@ const Sponsors = () => {
 
     }
 
-    const OnClosePopUp = async() => {
+    const OnClosePopUp = async(render) => {
         setisOpen(false)
-        await getSponsors()
+        if (render) await getSponsors()
     }
 
     useEffect(() => {
