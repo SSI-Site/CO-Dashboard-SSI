@@ -8,7 +8,7 @@ import saphira from "../../services/saphira";
 // components
 import Button from "./Button";
 
-const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor = {}, description, mode}) => {
+const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type, sponsor = {}, description, mode, isEven}) => {
 
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
@@ -82,10 +82,15 @@ const Talk = styled.div`
     display: grid;
     grid-template-columns: 1fr 3fr 3fr repeat(5, 1fr);
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
+    padding: 0.75rem 0.5rem; 
     height: 4rem;
     align-items: center;
+    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
+    transition: background-color 200ms ease-in-out;
+    
+    &:hover{
+        background-color: var(--state-layers-neutrals-primary-008);
+    }
 
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
