@@ -11,31 +11,29 @@ import saphira from "../services/saphira";
 // Componenets
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
+import SpeakerInput from "../src/components/SpeakerInput";
 
 const TalkForm = () => {
     const router = useRouter();
-    const {data = "None"} = router.query
+    const { id, title, start_time, end_time, activity_type, description, mode, date } = router.query
     const [sponsors, setSponsors] = useState([])
     const [speakers, setSpeakers] = useState([])
+    const [selectedSpeakers, setSelectedSpeakers] = useState([])
     const [isLoading, setisLoading] = useState(true)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
 
     const postTalk = async(talk) => {
 
-        const speakers = []
-        speakers.push(talk.speakers)
-        speakers.push('e41f901b-03be-4604-8ca4-155383fd5dba')
-
         await saphira.postTalk(
             `${talk.date}T${talk.start_time}`,
             `${talk.date}T${talk.end_time}`,
-            speakers,
+            selectedSpeakers.map(speaker => speaker.split('|')[0]),
             talk.activity_type,
-            "IP",
+            talk.mode,
             talk.sponsor,
             talk.title,
-            "talk.description"
+            talk.description
         )   
     }
 
@@ -63,14 +61,6 @@ const TalkForm = () => {
         }
     }, [])
 
-    const speakersOptions = useMemo(() => {
-        return speakers.map((speaker)  => {
-            return(
-                <option key = {speaker.id} value = {speaker.id}>{speaker.name}</option>
-            )
-        })
-    }, [speakers])
-
     return(
         <>
             <NavBar name = "Palestrantes > Adicionar Palestra"/>
@@ -86,7 +76,7 @@ const TalkForm = () => {
                         <FormColumn $columns = {'1fr 1fr'}>
                             <FormGroup>
                                 <label htmlFor="title">Nome da palestra</label>
-                                <input id = "title" type = "text"
+                                <input id = "title" type = "text" defaultValue = {title ? title : ''}
                                 {...register('title')}
                                 placeholder = "Nome da palestra..."/>
                             </FormGroup>
@@ -111,6 +101,7 @@ const TalkForm = () => {
                             <label>Descrição</label>
                             <textarea
                             id = "description"
+                            defaultValue = {description ? description : ''}
                             placeholder="Descrição da palestra..."
                             {...register('description')}
                             >
@@ -119,38 +110,34 @@ const TalkForm = () => {
                         </FormGroup>
 
                         <FormGroup>
-                            <label>Palestrantes</label>
-                            <select id = "speakers"  
-                            {...register('speakers')}>
-                                {speakersOptions}
-                            </select>
+                           <SpeakerInput setSelectedSpeakers={setSelectedSpeakers} selectedSpeakers={selectedSpeakers} speakers = {speakers}/>
                         </FormGroup>
 
                         <FormColumn $columns = '1fr 1fr 2fr 2fr 2fr'>
                             <FormGroup>
                                 <label html = "start_time">Início</label>
-                                <input id = "start_time" type = "time"
+                                <input id = "start_time" type = "time" defaultValue = {start_time ? start_time : ''}
                                 {...register('start_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "end_time">Fim</label>
-                                <input id = "end_time" type = "time"
+                                <input id = "end_time" type = "time" defaultValue = {end_time ? end_time : ''}
                                 {...register('end_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "date">Data</label>
-                                <input id = "date" type = "date"
+                                <input id = "date" type = "date" defaultValue = {date ? date : ''}
                                 {...register('date')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "activity_type">Tipo de atividade</label>
-                                <select id = "activity_type"
+                                <select id = "activity_type" defaultValue = {activity_type ? activity_type : 'PR'}
                                 {...register('activity_type')}
                                 >
                                     <option selected value = "PR">Palestra</option>
@@ -160,7 +147,7 @@ const TalkForm = () => {
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "mode">Modalidade</label>
+                                <label html = "mode" defaultValue = {mode ? mode : ''}>Modalidade</label>
                                 <select id = "mode"
                                 {...register('mode')}
                                 >
@@ -171,9 +158,16 @@ const TalkForm = () => {
                         </FormColumn>
                     </FormWrapper>
 
-                    <FormFooter>
-                        <SecondaryButton onClick={() => router.back()} type = "button">Cancelar</SecondaryButton>
-                        <Button type = "submit">Confirmar</Button>
+                    <FormFooter $update = {title ? true : false}>
+                        {title && 
+                            <Cancel>
+                                <Button style={{backgroundColor: '#F82122'}} onClick={() => removeTalk(id)}>Deletar palestra</Button>
+                            </Cancel>
+                        }
+                        <FormButtons>
+                            <SecondaryButton onClick={() => router.back()} type = "button">Cancelar</SecondaryButton>
+                            <Button type = "submit">{title ? 'Adicionar nova palestra' : 'Salvar Alterações'}</Button>
+                        </FormButtons>
                     </FormFooter>
                 </form>
             </FormContainer>
@@ -182,6 +176,7 @@ const TalkForm = () => {
 }
 
 export default TalkForm;
+
 
 const FormContainer = styled.div`
     width: 100%;
@@ -260,14 +255,18 @@ const FormColumn = styled.div`
     grid-column-gap: 1rem;
 `
 
-
 const FormFooter = styled.div`
     margin-top: 1rem;
     gap: 1.5rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: ${({$update}) => $update ? 'space-between': 'flex-end'} ;
+`
 
-    button{
-        max-width: none;
-    }
+const Cancel = styled.div`
+    display: flex;
+`
+
+const FormButtons = styled.div`
+    display: flex;
+    gap: 1.5rem;
 `

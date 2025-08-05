@@ -30,7 +30,7 @@ export default function PalestrantePopUp ({isOpen, onClose}){
             console.log(err)
         }
         finally{
-            onClose();
+            onClose(true);
         }
 
     }

@@ -72,12 +72,7 @@ const Talks = () => {
                             <Button>Consultar</Button>
                         </TalksFilter>
                         <span/>
-                        <SecondaryButton onClick = {() => router.push({
-                            pathname: '/talkForm',
-                            query: {
-                                data: "Eduardo"
-                            }
-                        })}>
+                        <SecondaryButton onClick = {() => router.push({pathname: '/talkForm',})}>
                             + Adicionar
                         </SecondaryButton> 
 
