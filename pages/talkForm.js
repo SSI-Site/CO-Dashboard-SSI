@@ -36,7 +36,16 @@ const TalkForm = () => {
                 )   
             }
             else {
-                await saphira.updateTalk()
+                await saphira.updateTalk(
+                    `${talk.date}T${talk.start_time}`,
+                    `${talk.date}T${talk.end_time}`,
+                    selectedSpeakers.map(speaker => speaker.split('|')[0]),
+                    talk.activity_type,
+                    talk.mode,
+                    talk.sponsor,
+                    talk.title,
+                    talk.description
+                )
             }
         }
         catch(err){
