@@ -278,9 +278,11 @@ const PalestrantesWrapper = styled.div`
     }
 
     .allRow{
-        align-self: center;
-        padding: 5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        padding: 5rem;
     }
 `
 
