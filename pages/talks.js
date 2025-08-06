@@ -60,9 +60,9 @@ const Talks = () => {
     const handleSearch = (e) => {
         
         const query = e.toLowerCase()
-        const filtered = talks.filter(speaker => 
-            speaker.name.toLowerCase().includes(query)
-            || speaker.id.toLowerCase().includes(query)
+        const filtered = talks.filter(talk => 
+            talk.name.toLowerCase().includes(query)
+            || talk.id.toLowerCase().includes(query)
         )
         setFilteredTalks(filtered)
         setCurrentPage(1)
@@ -91,9 +91,11 @@ const Talks = () => {
                     <TalksInteractions>
                         <TalksFilter>
                             <input 
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)} 
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </TalksFilter>
                         <span/>
                         <SecondaryButton onClick = {() => router.push({pathname: '/talkForm',})}>

@@ -20,6 +20,12 @@ const Sponsors = () => {
     const [sponsors, setSponsors] = useState([])
     const [isLoading, setisLoading] = useState(true)
 
+    // Funcionalidades
+    const [currentPage, setCurrentPage] = useState(1)
+    const [query, setQuery] = useState('')
+    const [filteredSponsors, setFilteredSponsors] = useState([])
+    const maxRows = 11;
+
     const getSponsors = async() => {
         if (!isLoading) setisLoading(true)
 
@@ -41,6 +47,22 @@ const Sponsors = () => {
         if (render) await getSponsors()
     }
 
+    const totalPages = Math.ceil(filteredSponsors.length / maxRows)
+    const currentSponsors = filteredSponsors.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    )
+
+    const handleSearch = (e) => {
+        
+        const query = e.toLowerCase()
+        const filtered = sponsors.filter(sponsor => 
+            sponsor.name.toLowerCase().includes(query)
+        )
+        setFilteredSponsors(filtered)
+        setCurrentPage(1)
+    }
+
     useEffect(() => {
         getSponsors()
     }, [])
@@ -57,9 +79,11 @@ const Sponsors = () => {
                     <SponsorsInteractions>
                         <SponsorsFilter>
                             <input 
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)} 
                                 placeholder = "Buscar por nome...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick={() => handleSearch(query)}>Consultar</Button>
                             <span/>
                             <SecondaryButton onClick = {() => setisOpen(true)}>
                                 + Adicionar
@@ -75,7 +99,7 @@ const Sponsors = () => {
                     <label>URL do site</label>
                 </SponsorsGrid>
                 <SponsorsWrapper>
-                    {!isLoading && sponsors.map((sponsor, index) => {
+                    {!isLoading && currentSponsors.map((sponsor, index) => {
                         return(
                             <SponsorRow
                             isEven = {index % 2}
@@ -104,6 +128,20 @@ const Sponsors = () => {
                 </SponsorsWrapper>   
                 <SponsorsFooter>
                     <p>{sponsors.length} Parceiro/Apoiador encontrado</p>
+                    <Pagination>
+                        <Button 
+                            className = {currentPage == 1 ? 'noInteraction' : ''}
+                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
+                            {Array.from({length: totalPages}, (_, i) => 
+                                <Button 
+                                className = {currentPage == i + 1 ? '': 'disabled'}
+                                key = {i + 1} 
+                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
+                            )}
+                        <Button 
+                        className = {currentPage == totalPages? 'noInteraction' : ''}
+                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                    </Pagination>
                 </SponsorsFooter>
             </SponsorsContainer>
         </>
@@ -219,10 +257,31 @@ const SponsorsFooter = styled.footer`
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
 
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
+    }
+`
+
+const Pagination = styled.div`
+    display: flex;
+    gap: 0.75rem;
+
+    button{
+        width: 2rem;
+        height: 2rem;
+        padding: 1.5rem;
+    }
+    .noInteraction{
+        color: var(--content-neutrals-primary);
+        background-color: var(--background-neutrals-tertiary);
+        pointer-events: none;
+    }
+
+    .disabled{
+        background-color: transparent;
+        border: 1px solid var(--content-neutrals-primary);
     }
 `
 
