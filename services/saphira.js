@@ -318,6 +318,11 @@ const saphira = {
         )
     },
 
+    getTalk: async(id) => {
+        const requestUrl = `/admin/talks/${id}`
+        return await axios.get(requestUrl)
+    },
+
     getPresences: async() => {
         const requestUrl = '/admin/presences/'
         return axios.get(requestUrl)
