@@ -37,6 +37,7 @@ const TalkForm = () => {
             }
             else {
                 await saphira.updateTalk(
+                    talk.id,
                     `${talk.date}T${talk.start_time}`,
                     `${talk.date}T${talk.end_time}`,
                     selectedSpeakers.map(speaker => speaker.split('|')[0]),
