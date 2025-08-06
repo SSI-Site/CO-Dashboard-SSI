@@ -113,6 +113,7 @@ const Login = () => {
                 src = "./images/co/login.jpg"
                 width={1280}
                 height={960}
+                alt = "COSSI 2025"
                 className='cossi-image'
                 />
             </COSSIWraper>

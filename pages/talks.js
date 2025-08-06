@@ -144,6 +144,7 @@ const Talks = () => {
                             src = {LoadingSVG}
                             width={120}
                             height={50}
+                            alt = "Loading..."
                             className = "allRow"
                         />
                     }

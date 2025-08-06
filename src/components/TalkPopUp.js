@@ -162,7 +162,7 @@ const TalkPopUp = ({isOpen, onClose}) => {
                         src = {LoadingSVG}
                         width={120}
                         height={50}
-                        alt = "loading"
+                        alt = "Loading..."
                         className = "loading"
                     />
                 }
