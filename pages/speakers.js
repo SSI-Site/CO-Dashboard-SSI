@@ -13,7 +13,6 @@ import SecondaryButton from "../src/components/SecondaryButton";
 import Button from '../src/components/Button';
 import PalestrantePopUp from '../src/components/PalestrantePopUp'
 import PalestranteRow from '../src/components/PalestranteRow'
-import Alert from "../src/components/Alert";
 
 const Speakers = () => {
 
@@ -62,6 +61,17 @@ const Speakers = () => {
         currentPage * maxRows
     )
 
+    const handleSearch = (e) => {
+        
+        const query = e.toLowerCase()
+        const filtered = speakers.filter(speaker => 
+            speaker.name.toLowerCase().includes(query)
+            || speaker.id.toLowerCase().includes(query)
+        )
+        setFilteredSpeakers(filtered)
+        setCurrentPage(1)
+    }
+
 
     return (
         <>
@@ -85,9 +95,11 @@ const Speakers = () => {
                     <PalestrantesInteractions>
                         <PalestrantesFilter>
                             <input 
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </PalestrantesFilter>
                         <span/>
                         <SecondaryButton onClick = {() => setisOpen(true)}>
@@ -162,12 +174,6 @@ const Speakers = () => {
                     </Pagination>
                 </PalestrantesFooter>
             </PalestrantesContainer>
-            <Alert>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.5501 18L3.8501 12.3L5.2751 10.875L9.5501 15.15L18.7251 5.97498L20.1501 7.39998L9.5501 18Z" fill="#046502"/>
-                </svg>
-                <p>Palestrante adicionado com sucesso!</p>
-            </Alert>
         </>
     )   
 }
