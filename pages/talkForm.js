@@ -37,6 +37,9 @@ const TalkForm = () => {
         catch(err){
             console.log("Ocorreu um erro no POST da palestra", err)
         }
+        finally{
+            router.push('/talks')
+        }
     }
 
     const fetchData = async() => {

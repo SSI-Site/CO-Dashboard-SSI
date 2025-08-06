@@ -45,6 +45,18 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         setSpeakersNames(names)
     }
 
+    const TalkStatus = () => {
+        const clientTime = new Date().getTime()
+        const end = new Date(end_time).getTime()
+
+        if (end < clientTime) return(
+            <p className="status done">Realizado</p>
+        )
+        else return(
+            <p className="status undone">Não realizado</p>
+        )
+    }
+
     const getDate = (isoDate) => {
         const date = new Date(isoDate)
         return date.toISOString().split('T')[0]
@@ -85,7 +97,7 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
                 <p>{formatedTime(start_time)}</p>
                 <p>{formatedTime(end_time)}</p>
                 <p>{formatedDate(end_time)}</p>
-                <p className="status">Não realizado</p>
+                {TalkStatus()}
             </Talk>
         }
         </>
@@ -96,6 +108,7 @@ export default TalkRow;
 
 const Talk = styled.div`
     width: 100%;
+    align-items: center;
     cursor: pointer;
     display: grid;
     grid-template-columns: 1fr 3fr 3fr repeat(5, 1fr);
@@ -116,9 +129,17 @@ const Talk = styled.div`
 
     .status{
         padding: 0.125rem 0.25rem;
-        color: var(--content-accent-green);
-        background-color: var(--background-accent-green);
         font: 400 0.875rem/1.5rem 'At Aero';
         text-align: center;
+    }
+
+    .done{
+        color: var(--content-accent-green);
+        background-color: var(--background-accent-green);
+    }
+
+    .undone{
+        color: var(--content-accent-red);
+        background-color: var(--background-accent-red);
     }
 `

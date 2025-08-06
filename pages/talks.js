@@ -12,12 +12,10 @@ import saphira from "../services/saphira";
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
 import LoadingSVG from '../public/loading.svg'
-import TalkPopUp from "../src/components/TalkPopUp";
 import TalkRow from "../src/components/TalkRow";
 
 const Talks = () => {
     const router = useRouter()
-    const [isOpen, setisOpen] = useState(false);
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
 
@@ -32,7 +30,10 @@ const Talks = () => {
 
         try{
             const { data } = await saphira.getTalks()
-            if (data) setTalks(data)
+            if (data) {
+                setTalks(data)
+                setFilteredTalks(data)
+            }
         }
         catch(err){
             console.log(err)
@@ -42,10 +43,6 @@ const Talks = () => {
         }
     }
 
-    const OnClosePopUp = async() => {
-        setisOpen(false)
-        await getTalks()
-    }
 
     useEffect(() => {
         getTalks()
@@ -101,8 +98,6 @@ const Talks = () => {
                         <SecondaryButton onClick = {() => router.push({pathname: '/talkForm',})}>
                             + Adicionar
                         </SecondaryButton> 
-
-                        <TalkPopUp isOpen={isOpen} onClose={OnClosePopUp}/>
                     </TalksInteractions>
 
                 </TalksTitle>
