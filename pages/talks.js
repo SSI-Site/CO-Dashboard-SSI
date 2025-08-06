@@ -271,8 +271,7 @@ const TalksWrapper = styled.div`
     }
 
     .allRow{
-        grid-row-start: 1;
-        grid-row-end: 11;
+        padding: 5rem;
         align-self: center;
         width: 100%;
     }
