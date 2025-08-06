@@ -57,24 +57,11 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         )
     }
 
-    const getDate = (isoDate) => {
-        const date = new Date(isoDate)
-        return date.toISOString().split('T')[0]
-    }
 
     const updateTalk = () => {
         router.push({pathname: '/talkForm',
             query: {
                 id: id,
-                title: title,
-                speakersIds: speakers.join(','),
-                start_time: formatedTime(start_time),
-                end_time: formatedTime(end_time),
-                date: getDate(end_time),
-                activity_type: activity_type,
-                sponsor_id: sponsor_id,
-                mode:  mode,
-                description: description,
             }
         })
     }
