@@ -1,7 +1,7 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 
 // saphira
@@ -13,13 +13,18 @@ import SecondaryButton from "../src/components/SecondaryButton";
 import Button from '../src/components/Button';
 import PalestrantePopUp from '../src/components/PalestrantePopUp'
 import PalestranteRow from '../src/components/PalestranteRow'
-import Alert from "../src/components/Alert";
 
 const Speakers = () => {
 
     const [speakers, setSpeakers] = useState([])
+    const [filteredSpeakers, setFilteredSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
     const [isLoading, setisLoading] = useState(true)
+
+    // Funcionalidades
+    const [currentPage, setCurrentPage] = useState(1)
+    const [query, setQuery] = useState('')
+    const maxRows = 11;
 
     const getPalestrantes = async() => {
         if (!isLoading) setisLoading(true);
@@ -28,6 +33,7 @@ const Speakers = () => {
             const { data } = await saphira.getSpeakers()
             if (data) {
                 setSpeakers(data);
+                setFilteredSpeakers(data)
             }
         }
 
@@ -48,6 +54,23 @@ const Speakers = () => {
     useEffect(() => {
         getPalestrantes()
     }, [])
+
+    const totalPages = Math.ceil(filteredSpeakers.length / maxRows)
+    const currentSpeakers = filteredSpeakers.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    )
+
+    const handleSearch = (e) => {
+        
+        const query = e.toLowerCase()
+        const filtered = speakers.filter(speaker => 
+            speaker.name.toLowerCase().includes(query)
+            || speaker.id.toLowerCase().includes(query)
+        )
+        setFilteredSpeakers(filtered)
+        setCurrentPage(1)
+    }
 
 
     return (
@@ -72,9 +95,11 @@ const Speakers = () => {
                     <PalestrantesInteractions>
                         <PalestrantesFilter>
                             <input 
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </PalestrantesFilter>
                         <span/>
                         <SecondaryButton onClick = {() => setisOpen(true)}>
@@ -97,7 +122,7 @@ const Speakers = () => {
 
                 <PalestrantesWrapper>
                     {!isLoading &&
-                        speakers.map((speaker, index) => {
+                        currentSpeakers.map((speaker, index) => {
                             return (
                                 <PalestranteRow
                                     isEven = {index % 2}
@@ -116,8 +141,7 @@ const Speakers = () => {
 
                     {!isLoading &&
                         speakers.length == 0 &&
-                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>
-                           
+                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>     
                     }
 
                     {isLoading &&
@@ -133,15 +157,22 @@ const Speakers = () => {
 
                 <PalestrantesFooter>
                     <p>{speakers.length} palestrantes encontrados</p>
-                    <Pagination></Pagination>
+                    <Pagination>
+                        <Button 
+                        className = {currentPage == 1 ? 'noInteraction' : ''}
+                        onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
+                        {Array.from({length: totalPages}, (_, i) => 
+                            <Button 
+                            className = {currentPage == i + 1 ? '': 'disabled'}
+                            key = {i + 1} 
+                            onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
+                        )}
+                        <Button 
+                        className = {currentPage == totalPages? 'noInteraction' : ''}
+                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                    </Pagination>
                 </PalestrantesFooter>
             </PalestrantesContainer>
-            <Alert>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.5501 18L3.8501 12.3L5.2751 10.875L9.5501 15.15L18.7251 5.97498L20.1501 7.39998L9.5501 18Z" fill="#046502"/>
-                </svg>
-                <p>Palestrante adicionado com sucesso!</p>
-            </Alert>
         </>
     )   
 }
@@ -263,4 +294,22 @@ const PalestrantesFooter = styled.footer`
 `
 
 const Pagination = styled.div`
+    display: flex;
+    gap: 0.75rem;
+
+    button{
+        width: 2rem;
+        height: 2rem;
+        padding: 1.5rem;
+    }
+    .noInteraction{
+        color: var(--content-neutrals-primary);
+        background-color: var(--background-neutrals-tertiary);
+        pointer-events: none;
+    }
+
+    .disabled{
+        background-color: transparent;
+        border: 1px solid var(--content-neutrals-primary);
+    }
 `

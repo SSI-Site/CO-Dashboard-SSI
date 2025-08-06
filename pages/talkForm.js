@@ -22,17 +22,21 @@ const TalkForm = () => {
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const postTalk = async(talk) => {
-
-        await saphira.postTalk(
-            `${talk.date}T${talk.start_time}`,
-            `${talk.date}T${talk.end_time}`,
-            selectedSpeakers.map(speaker => speaker.split('|')[0]),
-            talk.activity_type,
-            talk.mode,
-            talk.sponsor,
-            talk.title,
-            talk.description
-        )   
+        try{
+            await saphira.postTalk(
+                `${talk.date}T${talk.start_time}`,
+                `${talk.date}T${talk.end_time}`,
+                selectedSpeakers.map(speaker => speaker.split('|')[0]),
+                talk.activity_type,
+                talk.mode,
+                talk.sponsor,
+                talk.title,
+                talk.description
+            )   
+        }
+        catch(err){
+            console.log("Ocorreu um erro no POST da palestra", err)
+        }
     }
 
     const fetchData = async() => {
@@ -110,7 +114,7 @@ const TalkForm = () => {
                                             )
                                         })
                                     }
-                                    <option selected value = {0}>Nenhuma</option>
+                                    <option selected value = {undefined}>Nenhuma</option>
                                 </select>
                             </FormGroup>
                         </FormColumn>

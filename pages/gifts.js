@@ -9,7 +9,6 @@ import saphira from "../services/saphira";
 
 // Components
 import LoadingSVG from '../public/loading.svg'
-import Alert from '../src/components/Alert'
 import SecondaryButton from "../src/components/SecondaryButton";
 import GiftsPopUp from "../src/components/GiftPopUp";
 import GiftRow from "../src/components/GiftRow";

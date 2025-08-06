@@ -21,6 +21,12 @@ const Talks = () => {
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
 
+    // Funcionalidades
+    const [currentPage, setCurrentPage] = useState(1)
+    const [query, setQuery] = useState('')
+    const [filteredTalks, setFilteredTalks] = useState([])
+    const maxRows = 11;
+
     const getTalks =  async()=> {
         setisLoading(true)
 
@@ -45,6 +51,24 @@ const Talks = () => {
         getTalks()
     }, [])
 
+    const totalPages = Math.ceil(filteredTalks.length / maxRows)
+    const currentTalks = filteredTalks.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    )
+
+    const handleSearch = (e) => {
+        
+        const query = e.toLowerCase()
+        const filtered = talks.filter(talk => 
+            talk.name.toLowerCase().includes(query)
+            || talk.id.toLowerCase().includes(query)
+        )
+        setFilteredTalks(filtered)
+        setCurrentPage(1)
+    }
+
+
     return (
         <>
             <script
@@ -67,9 +91,11 @@ const Talks = () => {
                     <TalksInteractions>
                         <TalksFilter>
                             <input 
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)} 
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </TalksFilter>
                         <span/>
                         <SecondaryButton onClick = {() => router.push({pathname: '/talkForm',})}>
@@ -94,7 +120,7 @@ const Talks = () => {
 
                 <TalksWrapper>
                     {!isLoading &&
-                        talks.map((talk, index) => {
+                        currentTalks.map((talk, index) => {
                             return (
                                 <TalkRow
                                     isEven={index % 2}
@@ -131,7 +157,20 @@ const Talks = () => {
 
                 <TalksFooter>
                     <p>{talks.length} palestras encontradas</p>
-                    <Pagination></Pagination>
+                    <Pagination>
+                        <Button 
+                            className = {currentPage == 1 ? 'noInteraction' : ''}
+                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
+                            {Array.from({length: totalPages}, (_, i) => 
+                                <Button 
+                                className = {currentPage == i + 1 ? '': 'disabled'}
+                                key = {i + 1} 
+                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
+                            )}
+                        <Button 
+                        className = {currentPage == totalPages? 'noInteraction' : ''}
+                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                    </Pagination>
                 </TalksFooter>
             </TalksContainer>
         </>    
@@ -255,4 +294,22 @@ const TalksFooter = styled.footer`
 `
 
 const Pagination = styled.div`
+    display: flex;
+    gap: 0.75rem;
+
+    button{
+        width: 2rem;
+        height: 2rem;
+        padding: 1.5rem;
+    }
+    .noInteraction{
+        color: var(--content-neutrals-primary);
+        background-color: var(--background-neutrals-tertiary);
+        pointer-events: none;
+    }
+
+    .disabled{
+        background-color: transparent;
+        border: 1px solid var(--content-neutrals-primary);
+    }
 `
