@@ -55,11 +55,9 @@ const Talks = () => {
     )
 
     const handleSearch = (e) => {
-        
         const query = e.toLowerCase()
         const filtered = talks.filter(talk => 
-            talk.name.toLowerCase().includes(query)
-            || talk.id.toLowerCase().includes(query)
+            talk.title.toLowerCase().includes(query)
         )
         setFilteredTalks(filtered)
         setCurrentPage(1)
@@ -126,7 +124,7 @@ const Talks = () => {
                                     end_time={talk.end_time}
                                     mode={talk.mode}
                                     speakers={talk.speakers}
-                                    sponsor_id={talk.sponsor_id}
+                                    sponsor_id={talk.sponsor ? talk.sponsor.id : 'Nenhuma'}
                                     activity_type={talk.activity_type}
                                     description = {talk.description}
                                 /> 
