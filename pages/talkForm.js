@@ -15,14 +15,16 @@ import SpeakerInput from "../src/components/SpeakerInput";
 
 const TalkForm = () => {
     const router = useRouter();
-    const { id, title, start_time, end_time, activity_type, description, mode, date, sponsor_id, speakersIds = []} = router.query
+    const { id } = router.query
+
+    const [talkInfo, setTalkInfo] = useState([])
     const [sponsors, setSponsors] = useState([])
     const [speakers, setSpeakers] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [selectedSpeakers, setSelectedSpeakers] = useState([])
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const postTalk = async(talk) => {
-        console.log(talk)
         try{
             if (!id){
                 await saphira.postTalk(
@@ -58,21 +60,43 @@ const TalkForm = () => {
         }
     }
 
-    const fetchData = async() => {
-        const [speakerRes, sponsorRes] = await Promise.all([
-            saphira.getSpeakers(),
-            saphira.getSponsors()
-        ])
-
-        setSpeakers(speakerRes.data)
-        setSponsors(sponsorRes.data)
+    const getDate = (isoDate) => {
+        const date = new Date(isoDate)
+        return date.toISOString().split('T')[0]
     }
 
-    const getSpeakerName = async() => {
-        const requests = speakersIds.split(',').map((id) => saphira.getSpeaker(id))
-        const response = await Promise.all(requests)
-        const names = response.map(res => `${res.data.id}|${res.data.name}`)
-        setSelectedSpeakers(names)
+    const formatedTime = (isoDate) => {
+        const date = new Date(isoDate)
+        return date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+    }
+
+    const fetchData = async() => {
+
+        try{
+            const [speakerRes, sponsorRes, talkRes] = await Promise.all([
+                saphira.getSpeakers(),
+                saphira.getSponsors(),
+                saphira.getTalk(id)
+            ])
+    
+            setTalkInfo(talkRes.data)
+            setSpeakers(speakerRes.data)
+            setSponsors(sponsorRes.data)
+    
+            if (talkRes.data) {
+                const requests = talkRes.data.speakers.map((id) => saphira.getSpeaker(id))
+                const response = await Promise.all(requests)
+                const names = response.map(res => `${res.data.id}|${res.data.name}`)
+                setSelectedSpeakers(names)
+            }
+        }
+
+        catch(err){
+            console.log(err)
+        }
+        finally{
+            setIsLoading(false)
+        }
     }
 
     const removeTalk = async(id) => {
@@ -84,9 +108,6 @@ const TalkForm = () => {
         if (router.isReady){
             try{
                 fetchData()
-                if (router.query.id) {
-                    getSpeakerName()
-                }
             }
             catch(err){
                 console.log(err)
@@ -105,35 +126,28 @@ const TalkForm = () => {
                     <h5>{id ? 'Editar Palestra' : 'Adicionar Palestra'}</h5>
                 </FormHeader>
 
+                {!isLoading &&
+
                 <form action = "" onSubmit={handleSubmit(postTalk)}>
                     <FormWrapper>
                         <FormColumn $columns = {'1fr 1fr'}>
                             <FormGroup>
                                 <label htmlFor="title">Nome da palestra</label>
-                                <input id = "title" type = "text" defaultValue = {title ? title : ''}
+                                <input id = "title" type = "text" defaultValue = {talkInfo.title ? talkInfo.title : ''}
                                 {...register('title')}
                                 placeholder = "Nome da palestra..."/>
                             </FormGroup>
 
                             <FormGroup>
                                 <label>Empresa</label>
-                                <select id = "sponsor" {...register('sponsor')}>
+                                <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor ? talkInfo.sponsor.id : 'Nenhuma'}>
                                     {
-                                        sponsors.map((sponsor) => {
-                                            return(
-                                                <>
-                                                {
-                                                    sponsor_id == sponsor.id
-                                                    ? 
-                                                    <option selected key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
-                                                    :
+                                        sponsors.map((sponsor) => 
                                                     <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
-                                                }
-                                                </>
-                                            )
-                                        })
-                                    }
-                                    <option selected value = {undefined}>Nenhuma</option>
+                                                
+                                    )}
+                                    <option value = {undefined}>Nenhuma</option>
+
                                 </select>
                             </FormGroup>
                         </FormColumn>
@@ -142,7 +156,7 @@ const TalkForm = () => {
                             <label>Descrição</label>
                             <textarea
                             id = "description"
-                            defaultValue = {description ? description : ''}
+                            defaultValue = {talkInfo.description ? talkInfo.description : ''}
                             placeholder="Descrição da palestra..."
                             {...register('description')}
                             >
@@ -158,28 +172,28 @@ const TalkForm = () => {
                         <FormColumn $columns = '1fr 1fr 2fr 2fr 2fr'>
                             <FormGroup>
                                 <label html = "start_time">Início</label>
-                                <input id = "start_time" type = "time" defaultValue = {start_time ? start_time : ''}
+                                <input id = "start_time" type = "time" defaultValue = {talkInfo.start_time ? formatedTime(talkInfo.start_time) : ''}
                                 {...register('start_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "end_time">Fim</label>
-                                <input id = "end_time" type = "time" defaultValue = {end_time ? end_time : ''}
+                                <input id = "end_time" type = "time" defaultValue = {talkInfo.end_time ? formatedTime(talkInfo.end_time) : ''}
                                 {...register('end_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "date">Data</label>
-                                <input id = "date" type = "date" defaultValue = {date ? date : ''}
+                                <input id = "date" type = "date" defaultValue = {talkInfo.end_time ? getDate(talkInfo.end_time) : ''}
                                 {...register('date')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
                                 <label html = "activity_type">Tipo de atividade</label>
-                                <select id = "activity_type" defaultValue = {activity_type ? activity_type : 'PR'}
+                                <select id = "activity_type" defaultValue = {talkInfo.activity_type ? talkInfo.activity_type : 'PR'}
                                 {...register('activity_type')}
                                 >
                                     <option selected value = "PR">Palestra</option>
@@ -191,7 +205,7 @@ const TalkForm = () => {
                             <FormGroup>
                                 <label html = "mode">Modalidade</label>
                                 <select id = "mode"
-                                defaultValue = {mode ? mode : 'IP'}
+                                defaultValue = {talkInfo.mode ? talkInfo.mode : 'IP'}
                                 {...register('mode')}
                                 >
                                     <option value = "ON">Online</option>
@@ -201,7 +215,7 @@ const TalkForm = () => {
                         </FormColumn>
                     </FormWrapper>
 
-                    <FormFooter $update = {title ? true : false}>
+                    <FormFooter $update = {id ? true : false}>
                         {id && 
                             <Cancel>
                                 <Button style={{backgroundColor: '#F82122'}} onClick={() => removeTalk(id)}>Deletar palestra</Button>
@@ -213,6 +227,7 @@ const TalkForm = () => {
                         </FormButtons>
                     </FormFooter>
                 </form>
+                }
             </FormContainer>
         </>
     )
