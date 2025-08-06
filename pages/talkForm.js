@@ -22,6 +22,7 @@ const TalkForm = () => {
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const postTalk = async(talk) => {
+        console.log(talk)
         try{
             if (!id){
                 await saphira.postTalk(
@@ -188,8 +189,9 @@ const TalkForm = () => {
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "mode" defaultValue = {mode ? mode : ''}>Modalidade</label>
+                                <label html = "mode">Modalidade</label>
                                 <select id = "mode"
+                                defaultValue = {mode ? mode : 'IP'}
                                 {...register('mode')}
                                 >
                                     <option value = "ON">Online</option>
