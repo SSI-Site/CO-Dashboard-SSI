@@ -61,7 +61,7 @@ const TalkForm = () => {
 
     const removeTalk = async(id) => {
         await saphira.removeTalk(id)
-        router.back()
+        router.push('/talkForm')
     }
 
     useEffect(() => {
@@ -192,7 +192,7 @@ const TalkForm = () => {
                         }
                         <FormButtons>
                             <SecondaryButton onClick={() => router.back()} type = "button">Cancelar</SecondaryButton>
-                            <Button type = "submit">{title ? 'Adicionar nova palestra' : 'Salvar Alterações'}</Button>
+                            <Button type = "submit">{router.query? 'Salvar Alterações' : 'Adicionar nova palestra'}</Button>
                         </FormButtons>
                     </FormFooter>
                 </form>

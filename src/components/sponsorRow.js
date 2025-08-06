@@ -8,18 +8,20 @@ import saphira from "../../services/saphira";
 // componenets
 import Button from "./Button";
 
-const SponsorRow = ({id, name, url, isEven}) => {
+const SponsorRow = ({id, name, url, isEven, update}) => {
 
     const [isModalOpen, setisModalOpen] = useState(false)
     const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const updateSponsor = async (sponsor) => {
         await saphira.updateSponsor(id, sponsor.name, sponsor.url)
+        await update()
         setisModalOpen(false)
     }
 
     const deleteSponsor = async (id) => {
         await saphira.deleteSponsor(id)
+        await update()
         setisModalOpen(false)
     }
 

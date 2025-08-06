@@ -105,6 +105,7 @@ const Sponsors = () => {
                     {!isLoading && currentSponsors.map((sponsor, index) => {
                         return(
                             <SponsorRow
+                            update = {getSponsors}
                             isEven = {index % 2}
                             id = {sponsor.id}
                             name={sponsor.name}
@@ -249,10 +250,9 @@ const SponsorsWrapper = styled.div`
     }
 
     .allRow{
-        grid-row-start: 1;
-        grid-row-end: 11;
         align-self: center;
         width: 100%;
+        padding: 5rem;
     }
 `
 

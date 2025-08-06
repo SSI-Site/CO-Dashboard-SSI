@@ -178,10 +178,9 @@ const GiftsWrapper = styled.div`
     }
 
     .allRow{
-        grid-row-start: 1;
-        grid-row-end: 11;
         align-self: center;
         width: 100%;
+        padding: 5rem;
     }
 `
 

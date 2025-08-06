@@ -125,6 +125,7 @@ const Speakers = () => {
                         currentSpeakers.map((speaker, index) => {
                             return (
                                 <PalestranteRow
+                                    update = {getPalestrantes}
                                     isEven = {index % 2}
                                     key = {speaker.id}
                                     id = {speaker.id}
@@ -276,9 +277,8 @@ const PalestrantesWrapper = styled.div`
     }
 
     .allRow{
-        grid-row-start: 1;
-        grid-row-end: 11;
         align-self: center;
+        padding: 5rem;
         width: 100%;
     }
 `
