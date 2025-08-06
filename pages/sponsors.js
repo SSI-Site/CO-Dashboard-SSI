@@ -31,7 +31,10 @@ const Sponsors = () => {
 
         try{
             const { data } = await saphira.getSponsors()
-            if (data) setSponsors(data)
+            if (data) {
+                setSponsors(data)
+                setFilteredSponsors(data)
+            }
         }
         catch(err){
             console.log(err)

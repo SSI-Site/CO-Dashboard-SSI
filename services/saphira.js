@@ -274,6 +274,8 @@ const saphira = {
             "description": description,
         }
 
+        if (sponsor_id == undefined) delete params.sponsor_id
+
         return await axios.post(
             requestUrl,
             params,
