@@ -92,12 +92,14 @@ const Gifts = () => {
                     }
 
                     {isLoading &&
-                        <Image
-                            src = {LoadingSVG}
-                            width={120}
-                            height={50}
-                            className = "allRow"
-                        />
+                        <div className = "allRow">
+                            <Image
+                                src = {LoadingSVG}
+                                width={120}
+                                height={50}
+                                alt = "Loading..."
+                            />
+                        </div>
                     }
                     
                 </GiftsWrapper> 
@@ -178,7 +180,9 @@ const GiftsWrapper = styled.div`
     }
 
     .allRow{
-        align-self: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         padding: 5rem;
     }

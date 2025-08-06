@@ -140,13 +140,14 @@ const Talks = () => {
                     }
 
                     {isLoading &&
-                        <Image
-                            src = {LoadingSVG}
-                            width={120}
-                            height={50}
-                            alt = "Loading..."
-                            className = "allRow"
-                        />
+                        <div className = "allRow">
+                            <Image
+                                src = {LoadingSVG}
+                                width={120}
+                                height={50}
+                                alt = "Loading..."
+                            />
+                        </div>
                     }
 
                 </TalksWrapper>
@@ -272,9 +273,11 @@ const TalksWrapper = styled.div`
     }
 
     .allRow{
-        padding: 5rem;
-        align-self: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        padding: 5rem;
     }
 `
 

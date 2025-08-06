@@ -117,18 +117,18 @@ const Sponsors = () => {
 
                     {!isLoading &&
                         sponsors.length == 0 &&
-                            <p className = 'allRow noSpeakers'>Sem empresas cadastradas :(</p>
-                           
+                            <p className = 'allRow noSpeakers'>Sem empresas cadastradas :(</p> 
                     }
 
                     {isLoading &&
+                    <div className = "allRow">
                         <Image
                             src = {LoadingSVG}
                             width={120}
                             height={50}
-                            alt = "Loading"
-                            className = "allRow"
+                            alt = "Loading..."
                         />
+                    </div>
                     }
                 </SponsorsWrapper>   
                 <SponsorsFooter>
@@ -251,7 +251,9 @@ const SponsorsWrapper = styled.div`
     }
 
     .allRow{
-        align-self: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         padding: 5rem;
     }
