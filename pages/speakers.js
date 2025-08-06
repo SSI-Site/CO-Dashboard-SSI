@@ -141,8 +141,7 @@ const Speakers = () => {
 
                     {!isLoading &&
                         speakers.length == 0 &&
-                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>
-                           
+                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>     
                     }
 
                     {isLoading &&
