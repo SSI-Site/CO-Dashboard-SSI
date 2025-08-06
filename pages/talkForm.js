@@ -68,7 +68,7 @@ const TalkForm = () => {
         if (router.isReady){
             try{
                 fetchData()
-                if (router.query) {
+                if (router.query.id) {
                     getSpeakerName()
                 }
             }
@@ -81,12 +81,12 @@ const TalkForm = () => {
 
     return(
         <>
-            <NavBar name = {`Palestrantes > ${router.query ? 'Editar Palestra' : 'Adicionar Palestra'}`}/>
-            <Meta title = {`${router.query ? 'Editar Palestra' : 'Adicionar Palestra'} | COSSI 2025 Dashboard`}/>
+            <NavBar name = {`Palestrantes > ${id ? 'Editar Palestra' : 'Adicionar Palestra'}`}/>
+            <Meta title = {`${id ? 'Editar Palestra' : 'Adicionar Palestra'} | COSSI 2025 Dashboard`}/>
 
             <FormContainer onClick={(e) => e.stopPropagation()}>
                 <FormHeader>
-                    <h5>{router.query ? 'Editar Palestra' : 'Adicionar Palestra'}</h5>
+                    <h5>{id ? 'Editar Palestra' : 'Adicionar Palestra'}</h5>
                 </FormHeader>
 
                 <form action = "" onSubmit={handleSubmit(postTalk)}>
@@ -185,14 +185,14 @@ const TalkForm = () => {
                     </FormWrapper>
 
                     <FormFooter $update = {title ? true : false}>
-                        {title && 
+                        {id && 
                             <Cancel>
                                 <Button style={{backgroundColor: '#F82122'}} onClick={() => removeTalk(id)}>Deletar palestra</Button>
                             </Cancel>
                         }
                         <FormButtons>
                             <SecondaryButton onClick={() => router.back()} type = "button">Cancelar</SecondaryButton>
-                            <Button type = "submit">{router.query? 'Salvar Alterações' : 'Adicionar nova palestra'}</Button>
+                            <Button type = "submit">{id ? 'Salvar Alterações' : 'Adicionar nova palestra'}</Button>
                         </FormButtons>
                     </FormFooter>
                 </form>

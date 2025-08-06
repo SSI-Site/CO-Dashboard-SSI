@@ -56,6 +56,7 @@ const NavBar = ({name}) => {
                     src = {LogoHorizontal}
                     width = {180}
                     height = {40}
+                    alt = "LogoHorizontal"
                     />
                 </div>
 
@@ -82,7 +83,7 @@ const NavBar = ({name}) => {
                     <div className = 'header-nav'>
                         <h6>Navegação rápida</h6>
                         <div className = 'close' onClick={() => setIsOpen(!isOpen)}>
-                            <img 
+                            <Image 
                                 src={CloseBtn}
                                 width={18}
                                 height={18}
@@ -112,6 +113,7 @@ const NavBar = ({name}) => {
             <SidepanelWrapper>
                 <div className = "logo">
                     <Image
+                    alt = "Logo"
                     src = {LogoHorizontal}
                     width = {180}
                     height = {40}
