@@ -40,7 +40,7 @@ const NavBar = ({name}) => {
             main.style.paddingLeft = width > 994 ? '16rem' : '0';
             main.style.transition = 'padding 200ms ease-in-out';
         } else {
-            //document.body.style.overflow = 'unset';
+            document.body.style.overflow = 'unset';
             main.style.marginLeft = '0rem';
             main.style.paddingLeft = '0';
         }
