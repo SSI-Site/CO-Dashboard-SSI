@@ -261,7 +261,7 @@ const saphira = {
         return await axios.get(requestUrl)
     },
 
-    postTalk: async(start_time, end_time, speakers = [], activity_type, mode, sponsor_id = 0, title, description) => {
+    postTalk: async(start_time, end_time, speakers = [], activity_type, mode, sponsor_id, title, description) => {
         const requestUrl = '/admin/talks/'
         const params = {
             "start_time": start_time,
@@ -290,6 +290,32 @@ const saphira = {
     removeTalk: async(id) => {
         const requestUrl = `/admin/talks/${id}`
         return await axios.delete(requestUrl)
+    },
+
+    updateTalk: async(id, start_time, end_time, speakers = [], activity_type, mode, sponsor_id, title, description) => {
+        const requestUrl = `/admin/talks/${id}`
+        const params = {
+            "start_time": start_time,
+            "end_time": end_time,
+            "speakers": speakers,
+            "activity_type": activity_type,
+            "mode": mode,
+            "sponsor_id": sponsor_id,
+            "title": title,
+            "description": description,
+        }
+
+        if (sponsor_id ==  'Nenhuma') delete params.sponsor_id
+
+        return await axios.put(
+            requestUrl, 
+            params,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
     },
 
     getPresences: async() => {

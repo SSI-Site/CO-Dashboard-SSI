@@ -23,16 +23,21 @@ const TalkForm = () => {
 
     const postTalk = async(talk) => {
         try{
-            await saphira.postTalk(
-                `${talk.date}T${talk.start_time}`,
-                `${talk.date}T${talk.end_time}`,
-                selectedSpeakers.map(speaker => speaker.split('|')[0]),
-                talk.activity_type,
-                talk.mode,
-                talk.sponsor,
-                talk.title,
-                talk.description
-            )   
+            if (!id){
+                await saphira.postTalk(
+                    `${talk.date}T${talk.start_time}`,
+                    `${talk.date}T${talk.end_time}`,
+                    selectedSpeakers.map(speaker => speaker.split('|')[0]),
+                    talk.activity_type,
+                    talk.mode,
+                    talk.sponsor,
+                    talk.title,
+                    talk.description
+                )   
+            }
+            else {
+                await saphira.updateTalk()
+            }
         }
         catch(err){
             console.log("Ocorreu um erro no POST da palestra", err)
@@ -61,7 +66,7 @@ const TalkForm = () => {
 
     const removeTalk = async(id) => {
         await saphira.removeTalk(id)
-        router.push('/talkForm')
+        router.push('/talks')
     }
 
     useEffect(() => {
