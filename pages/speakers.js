@@ -123,20 +123,25 @@ const Speakers = () => {
                 <PalestrantesWrapper>
                     {!isLoading &&
                         currentSpeakers.map((speaker, index) => {
-                            return (
-                                <PalestranteRow
-                                    update = {getPalestrantes}
-                                    isEven = {index % 2}
-                                    key = {speaker.id}
-                                    id = {speaker.id}
-                                    name = {speaker.name}
-                                    pronouns = {speaker.pronouns}
-                                    role = {speaker.role}
-                                    instagram = {speaker.instagram_link}
-                                    linkedin = {speaker.linkedin_link}
-                                    description = {speaker.description}
-                                /> 
-                            )
+                            try{
+                                return (
+                                    <PalestranteRow
+                                        update = {getPalestrantes}
+                                        isEven = {index % 2}
+                                        key = {speaker.id}
+                                        id = {speaker.id}
+                                        name = {speaker.name}
+                                        pronouns = {speaker.pronouns}
+                                        role = {speaker.role}
+                                        instagram = {speaker.instagram_link != null ? speaker.instagram_link : ''}
+                                        linkedin = {speaker.linkedin_link != null ? speaker.linkedin_link : ''}
+                                        description = {speaker.description}
+                                    /> 
+                                )
+                            }
+                            catch(err){
+                                alert(`Ocorreu um erro no cliente ao renderizar: ${speaker.name}. Erro: ${err}`)
+                            }
                         })
                     }
 
