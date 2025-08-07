@@ -107,9 +107,9 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
             <p>{id.slice(0,3).toUpperCase()}</p>
             <p>{name}</p>
             <p>{pronouns}</p>
-            <p>{role}</p>
-            <p>{instagram}</p>
-            <p>{linkedin}</p>
+            <p>{role.slice(0, 20)}</p>
+            <p>{instagram.split("/")[3].slice(0, 10)+ "..."}</p>
+            <p>{linkedin.split("/")[4].slice(0, 10) + "..."}</p>
         </PalestranteWrapper>
         </>
     )
@@ -275,5 +275,6 @@ const PalestranteWrapper = styled.div`
     
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
+        text-overflow: ellipsis;
     }
 `
