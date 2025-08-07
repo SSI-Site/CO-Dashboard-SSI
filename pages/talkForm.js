@@ -154,12 +154,12 @@ const TalkForm = () => {
 
                             <FormGroup>
                                 <label>Empresa</label>
-                                <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor ? talkInfo.sponsor.id : null}>
+                                <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor != null? talkInfo.sponsor.id : 'Nenhuma'}>
                                     {sponsors.map((sponsor) => 
                                         <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
                                                 
                                     )}
-                                    <option value = {null}>Nenhuma</option>
+                                    <option value = {'Nenhuma'}>Nenhuma</option>
 
                                 </select>
                             </FormGroup>
