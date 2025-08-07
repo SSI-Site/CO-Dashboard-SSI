@@ -305,7 +305,7 @@ const saphira = {
             "description": description,
         }
 
-        if (sponsor_id ==  'Nenhuma') delete params.sponsor_id
+        if (sponsor_id ==  'undefined') delete params.sponsor_id
 
         return await axios.put(
             requestUrl, 
