@@ -53,13 +53,13 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                             <FormRow $columns="1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="nome">Nome</StyledLabel>
-                                    <StyledInput id="nome" type="text" defaultValue = {name}
+                                    <StyledInput id="nome" type="text" defaultValue = {name ? name : ''}
                                     {...register('name')}
                                     placeholder="Insira o nome do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
-                                    <StyledInput id="cargo" type="text" defaultValue = {role}
+                                    <StyledInput id="cargo" type="text" defaultValue = {role ? role : ''}
                                     {...register('role')}
                                     placeholder="Insira o cargo do Palestrante"/>
                                 </FormGroup>
@@ -67,19 +67,19 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                             <FormRow $columns="auto 1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
-                                    <StyledInput id="pronomes" type="text" defaultValue = {pronouns}
+                                    <StyledInput id="pronomes" type="text" defaultValue = {pronouns ? pronouns : ''}
                                     {...register('pronouns')}
                                     placeholder="Elu/Delu"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
-                                    <StyledInput id="instagram" type="text" defaultValue = {instagram}
+                                    <StyledInput id="instagram" type="text" defaultValue = {instagram ? instagram : ''}
                                     {...register('instagram_link')}
                                     placeholder="Insira o link do Instagram"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
-                                    <StyledInput id="linkedin" type="text" defaultValue = {linkedin}
+                                    <StyledInput id="linkedin" type="text" defaultValue = {linkedin ? linkedin : ''}
                                     {...register('linkedin_link')}
                                     placeholder="Insira o link do Linkedin"/>
                                 </FormGroup>
@@ -88,7 +88,7 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                     
                         <FormGroup>
                             <StyledLabel>Sobre</StyledLabel>
-                            <TextArea id="sobre" defaultValue = {description}
+                            <TextArea id="sobre" defaultValue = {description ? description : ''}
                             maxLength={512}
                             {...register('description')}
                             placeholder="Escreva sobre quem é o palestrante (no máximo 512 caracteres)"/>
