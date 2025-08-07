@@ -88,6 +88,7 @@ export default function PalestrantePopUp ({isOpen, onClose}){
                         <FormGroup>
                             <StyledLabel>Sobre</StyledLabel>
                             <TextArea id="sobre" 
+                            maxLength={512}
                             {...register('description')}
                             placeholder="Escreva sobre quem é o palestrante"/>
                         </FormGroup>
