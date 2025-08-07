@@ -132,7 +132,7 @@ const Sponsors = () => {
                     }
                 </SponsorsWrapper>   
                 <SponsorsFooter>
-                    <p>{sponsors.length} Parceiro/Apoiador encontrado</p>
+                    <p>{currentSponsors.length} Parceiro/Apoiador encontrado</p>
                     <Pagination>
                         <Button 
                             className = {currentPage == 1 ? 'noInteraction' : ''}

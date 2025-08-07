@@ -158,7 +158,7 @@ const Speakers = () => {
                 </PalestrantesWrapper>
 
                 <PalestrantesFooter>
-                    <p>{speakers.length} palestrantes encontrados</p>
+                    <p>{currentSpeakers.length} palestrantes encontrados</p>
                     <Pagination>
                         <Button 
                         className = {currentPage == 1 ? 'noInteraction' : ''}
