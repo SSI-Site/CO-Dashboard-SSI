@@ -78,8 +78,8 @@ const TalkRow = ({id, title, speakers = [], start_time, end_time, activity_type,
         {!isLoading &&
             <Talk $isEven = {isEven} onClick={() => updateTalk()}>
                 <p>{id}</p>
-                <p>{title}</p>
-                <p>{speakersNames.join(', ')}</p>
+                <p>{title.slice(0, 20) + '...'}</p>
+                <p>{speakersNames.join(', ').slice(0, 20) + '...'}</p>
                 <p>{presences}</p>
                 <p>{formatedTime(start_time)}</p>
                 <p>{formatedTime(end_time)}</p>
@@ -101,7 +101,7 @@ const Talk = styled.div`
     grid-template-columns: 1fr 3fr 3fr repeat(5, 1fr);
     grid-column-gap: 3rem;
     padding: 0.75rem 0.5rem; 
-    height: 4rem;
+    min-height: 4rem;
     align-items: center;
     background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
     transition: background-color 200ms ease-in-out;

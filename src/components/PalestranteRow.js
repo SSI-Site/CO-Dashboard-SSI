@@ -89,8 +89,9 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                         <FormGroup>
                             <StyledLabel>Sobre</StyledLabel>
                             <TextArea id="sobre" defaultValue = {description}
+                            maxLength={512}
                             {...register('description')}
-                            placeholder="Escreva sobre quem é o palestrante"/>
+                            placeholder="Escreva sobre quem é o palestrante (no máximo 512 caracteres)"/>
                         </FormGroup>
                     
                     </MainPopUp>
@@ -108,8 +109,8 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
             <p>{name}</p>
             <p>{pronouns}</p>
             <p>{role.slice(0, 20)}</p>
-            <p>{instagram.split("/")[3].slice(0, 10)+ "..."}</p>
-            <p>{linkedin.split("/")[4].slice(0, 10) + "..."}</p>
+            <p>{instagram.slice(0, 20)}</p>
+            <p>{linkedin.slice(0, 20)}</p>
         </PalestranteWrapper>
         </>
     )
@@ -264,7 +265,7 @@ const PalestranteWrapper = styled.div`
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
     padding: 0.75rem 0.5rem; 
-    height: 4rem;
+    min-height: 4rem;
     align-items: center;
     background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
     transition: background-color 200ms ease-in-out;
@@ -276,5 +277,6 @@ const PalestranteWrapper = styled.div`
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
         text-overflow: ellipsis;
+       // white-space: nowrap;
     }
 `

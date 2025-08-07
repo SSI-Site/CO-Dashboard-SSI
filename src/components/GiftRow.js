@@ -222,7 +222,7 @@ const Gift = styled.div`
     grid-template-columns: 2fr repeat(3, 1fr); 
     grid-column-gap: 3rem;
     padding: 0.75rem 0.5rem; 
-    height: 4rem;
+    min-height: 4rem;
     align-items: center;
     background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
     transition: background-color 200ms ease-in-out;

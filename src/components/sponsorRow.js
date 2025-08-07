@@ -212,7 +212,7 @@ const Sponsor = styled.div`
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
     padding-inline: 0.75rem 0.5rem; 
-    height: 4rem;
+    min-height: 4rem;
     align-items: center;
     cursor: pointer;
     background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
