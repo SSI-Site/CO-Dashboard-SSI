@@ -133,8 +133,10 @@ const Sponsors = () => {
                 </SponsorsWrapper>   
                 <SponsorsFooter>
                     <p>{currentSponsors.length} Parceiro/Apoiador encontrado</p>
-                    <Pagination>
-                        <Button 
+                    {!isLoading &&
+                        !sponsors.length == 0 &&
+                        <Pagination>
+                            <Button 
                             className = {currentPage == 1 ? 'noInteraction' : ''}
                             onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
                             {Array.from({length: totalPages}, (_, i) => 
@@ -143,10 +145,11 @@ const Sponsors = () => {
                                 key = {i + 1} 
                                 onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
                             )}
-                        <Button 
-                        className = {currentPage == totalPages? 'noInteraction' : ''}
-                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                    </Pagination>
+                            <Button 
+                            className = {currentPage == totalPages? 'noInteraction' : ''}
+                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                        </Pagination>
+                    }
                 </SponsorsFooter>
             </SponsorsContainer>
         </>

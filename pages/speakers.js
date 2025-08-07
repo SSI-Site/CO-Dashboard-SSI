@@ -159,20 +159,23 @@ const Speakers = () => {
 
                 <PalestrantesFooter>
                     <p>{currentSpeakers.length} palestrantes encontrados</p>
-                    <Pagination>
-                        <Button 
-                        className = {currentPage == 1 ? 'noInteraction' : ''}
-                        onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
-                        {Array.from({length: totalPages}, (_, i) => 
+                    {!isLoading &&
+                        !speakers.length == 0 &&
+                        <Pagination>
                             <Button 
-                            className = {currentPage == i + 1 ? '': 'disabled'}
-                            key = {i + 1} 
-                            onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
-                        )}
-                        <Button 
-                        className = {currentPage == totalPages? 'noInteraction' : ''}
-                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                    </Pagination>
+                            className = {currentPage == 1 ? 'noInteraction' : ''}
+                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
+                            {Array.from({length: totalPages}, (_, i) => 
+                                <Button 
+                                className = {currentPage == i + 1 ? '': 'disabled'}
+                                key = {i + 1} 
+                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
+                            )}
+                            <Button 
+                            className = {currentPage == totalPages? 'noInteraction' : ''}
+                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                        </Pagination>
+                    }
                 </PalestrantesFooter>
             </PalestrantesContainer>
         </>
