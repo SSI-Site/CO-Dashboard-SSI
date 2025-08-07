@@ -152,8 +152,10 @@ const Talks = () => {
 
                 <TalksFooter>
                     <p>{currentTalks.length} palestras encontradas</p>
-                    <Pagination>
-                        <Button 
+                    {!isLoading &&
+                        !talks.length == 0 &&
+                        <Pagination>
+                            <Button 
                             className = {currentPage == 1 ? 'noInteraction' : ''}
                             onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
                             {Array.from({length: totalPages}, (_, i) => 
@@ -162,10 +164,11 @@ const Talks = () => {
                                 key = {i + 1} 
                                 onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
                             )}
-                        <Button 
-                        className = {currentPage == totalPages? 'noInteraction' : ''}
-                        onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                    </Pagination>
+                            <Button 
+                            className = {currentPage == totalPages? 'noInteraction' : ''}
+                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
+                        </Pagination>
+                    }
                 </TalksFooter>
             </TalksContainer>
         </>    
