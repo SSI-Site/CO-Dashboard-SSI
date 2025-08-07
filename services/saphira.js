@@ -269,12 +269,10 @@ const saphira = {
             "speakers": speakers,
             "activity_type": activity_type,
             "mode": mode,
-            "sponsor_id": sponsor_id,
+            "sponsor_id": sponsor_id == 'Nenhuma' ? null : sponsor_id,
             "title": title,
             "description": description,
         }
-
-        if (sponsor_id ==  '-1') delete params.sponsor_id
 
         return await axios.post(
             requestUrl,
@@ -300,12 +298,10 @@ const saphira = {
             "speakers": speakers,
             "activity_type": activity_type,
             "mode": mode,
-            "sponsor_id": sponsor_id,
+            "sponsor_id": sponsor_id == 'Nenhuma' ? null : sponsor_id,
             "title": title,
             "description": description,
         }
-
-        if (sponsor_id ==  '-1') delete params.sponsor_id
 
         return await axios.put(
             requestUrl, 
