@@ -70,21 +70,15 @@ const TalkForm = () => {
         return date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
     }
 
-    const fetchData = async() => {
+    const getTalk = async() => {
+        setIsLoading(true)
 
         try{
-            const [speakerRes, sponsorRes, talkRes] = await Promise.all([
-                saphira.getSpeakers(),
-                saphira.getSponsors(),
-                saphira.getTalk(id)
-            ])
+            const { data } = await saphira.getTalk(id)
+            if (data) setTalkInfo(data)
     
-            setTalkInfo(talkRes.data)
-            setSpeakers(speakerRes.data)
-            setSponsors(sponsorRes.data)
-    
-            if (talkRes.data) {
-                const requests = talkRes.data.speakers.map((id) => saphira.getSpeaker(id))
+            if (data) {
+                const requests = data.speakers.map((speakerId) => saphira.getSpeaker(speakerId))
                 const response = await Promise.all(requests)
                 const names = response.map(res => `${res.data.id}|${res.data.name}`)
                 setSelectedSpeakers(names)
@@ -96,6 +90,26 @@ const TalkForm = () => {
         }
         finally{
             setIsLoading(false)
+        }
+    }
+
+    const fetchData = async() => {
+
+        try{
+            const [speakerRes, sponsorRes ] = await Promise.all([
+                saphira.getSpeakers(),
+                saphira.getSponsors(),
+            ])
+    
+            setSpeakers(speakerRes.data)
+            setSponsors(sponsorRes.data)
+    
+            if (id) getTalk()
+            else setIsLoading(false)
+        }
+
+        catch(err){
+            console.log(err)
         }
     }
 
@@ -140,13 +154,12 @@ const TalkForm = () => {
 
                             <FormGroup>
                                 <label>Empresa</label>
-                                <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor ? talkInfo.sponsor.id : 'Nenhuma'}>
-                                    {
-                                        sponsors.map((sponsor) => 
-                                                    <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
+                                <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor ? talkInfo.sponsor.id : 'undefined'}>
+                                    {sponsors.map((sponsor) => 
+                                        <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
                                                 
                                     )}
-                                    <option value = {undefined}>Nenhuma</option>
+                                    <option value = {'undefined'}>Nenhuma</option>
 
                                 </select>
                             </FormGroup>

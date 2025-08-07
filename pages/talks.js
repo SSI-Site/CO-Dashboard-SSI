@@ -151,7 +151,7 @@ const Talks = () => {
                 </TalksWrapper>
 
                 <TalksFooter>
-                    <p>{talks.length} palestras encontradas</p>
+                    <p>{currentTalks.length} palestras encontradas</p>
                     <Pagination>
                         <Button 
                             className = {currentPage == 1 ? 'noInteraction' : ''}
