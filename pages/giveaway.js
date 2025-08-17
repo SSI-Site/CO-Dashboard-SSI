@@ -146,15 +146,6 @@ const Giveaway = () => {
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }}
-            />
 
             <Meta title='CO SSI 2025 | Sorteio' />
 
@@ -185,11 +176,7 @@ const Giveaway = () => {
                                     </div>
                                 </InputBox>
 
-                                <CheckboxBox>
-                                    <input id='isPresencialOnly' type='checkbox' defaultChecked={false}
-                                        {...register('isPresencialOnly')} />
-                                    <label htmlFor='isPresencialOnly'> Apenas presencial? </label>
-                                </CheckboxBox>
+
                             </form>
                         </FormWrapper>
                     }
@@ -241,7 +228,6 @@ const Giveaway = () => {
                     }
                 </div>
             </GiveawayWrapper>
-            <LectureList />
         </>
     )
 }

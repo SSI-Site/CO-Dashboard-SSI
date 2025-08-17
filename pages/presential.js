@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
-import { React, useEffect, useState } from 'react';
+import { React, useEffect, useState, useMemo } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
-import Swal from 'sweetalert2';
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
@@ -18,7 +17,7 @@ const Presential = () => {
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
     const [accessAllowed, setAccessAllowed] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [talks, setTalks] = useState([])
 
     const onSubmit = data => {
@@ -49,26 +48,27 @@ const Presential = () => {
     }
 
     const getTalks = async () => {
-        const { data } = await saphira.getLectures()
-        // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
-        setTalks(data)
+        setIsLoading(true)
+        try{
+            const { data } = await saphira.getLectures()
+            // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
+            if (data) setTalks(data)
+        }
+        catch(err){
+            console.log("Houve um erro:", err)
+        }
+        finally{
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
         checkAuthentication();
+        getTalks()
     }, []);
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
 
             <Meta title='CO SSI 2025 | Registrar presença' />
 
@@ -82,17 +82,33 @@ const Presential = () => {
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p> Registro de presenças presenciais :)</p>
                                 {!isLoading &&
                                     <>
-                                        <SelectBox>
-                                            <label htmlFor='lectureId'> ID da palestra: </label>
-                                            <div className='form-input'>
-                                                <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
-                                                    {...register("lectureId", { required: true, minLength: 1, })} />
-                                            </div>
-                                            {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                        </SelectBox>
+                                    <label>ID da palestra:</label>
+                                    <div className = "form-input">
+                                        <select 
+                                        id='lectureId' 
+                                        className={`${errors.lectureId && 'error-border'}`}
+                                        {...register("lectureId", { required: true, minLength: 1, })}>
+                                            {
+                                                talks
+                                                .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
+                                                .map(talk => {
+                                                    const today = new Date('2025-08-18T09:00:00').toDateString()
+                                                    const lowerLimit = new Date(talk.start_time).toDateString()
+                                                    const upperLimit = new Date(talk.end_time).toDateString()
+
+                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+                                                    if (today >= lowerLimit && today <= upperLimit){
+                                                        return(
+                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                                        )}
+                                                    }
+                                                )
+                                            }
+                                        </select>
+                                    </div>
+                                
 
                                         <InputBox>
                                             <label htmlFor='document'>Código do inscrito:</label>
@@ -174,6 +190,11 @@ const FormWrapper = styled.div`
     --color-invalid: #F24822;
     --color-valid: #14AE5C;
     width: 100%;
+
+    label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;   
+    }
 
     form {
         display: flex;
@@ -273,11 +294,4 @@ const InputBox = styled.div`
         width: 100%;
         margin-bottom: .5rem;
     }
-`
-
-const SelectBox = styled.select`
-    width: 100%;
-    border: 1px solid var(--content-neutrals-primary);
-    height: 4rem;
-    
 `
