@@ -11,7 +11,6 @@ import NavBar from '../src/patterns/base/Nav';
 
 // components
 import Button from '../src/components/Button';
-import LectureList from '../src/components/LectureList';
 
 const Exterminate = () => {
     const router = useRouter();
@@ -20,6 +19,7 @@ const Exterminate = () => {
 
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [talks, setTalks] = useState([])
 
     const onSubmit = data => {
         setIsLoading(true);
@@ -68,21 +68,28 @@ const Exterminate = () => {
         }
     }
 
+    const getTalks = async () => {
+        setIsLoading(true)
+        try{
+            const { data } = await saphira.getLectures()
+            // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
+            if (data) setTalks(data)
+        }
+        catch(err){
+            console.log("Houve um erro:", err)
+        }
+        finally{
+            setIsLoading(false)
+        }
+    }
+
     useEffect(() => {
         checkAuthentication();
+        getTalks()
     }, []);
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
 
             <Meta title='CO SSI 2025 | Remover presença' />
 
@@ -95,17 +102,32 @@ const Exterminate = () => {
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p> Remoção de presenças </p>
                                 {!isLoading &&
                                     <>
-                                        <InputBox>
-                                            <label htmlFor='lectureId'> ID da palestra: </label>
-                                            <div className='form-input'>
-                                                <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
-                                                    {...register("lectureId", { required: true, minLength: 1, })} />
-                                            </div>
-                                            {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-                                        </InputBox>
+                                   <label>ID da palestra:</label>
+                                    <div className = "form-input">
+                                        <select 
+                                        id='lectureId' 
+                                        className={`${errors.lectureId && 'error-border'}`}
+                                        {...register("lectureId", { required: true, minLength: 1, })}>
+                                            {
+                                                talks
+                                                .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
+                                                .map(talk => {
+                                                    const today = new Date('2025-08-18T09:00:00').toDateString()
+                                                    const lowerLimit = new Date(talk.start_time).toDateString()
+                                                    const upperLimit = new Date(talk.end_time).toDateString()
+
+                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+                                                    if (today >= lowerLimit && today <= upperLimit){
+                                                        return(
+                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                                        )}
+                                                    }
+                                                )
+                                            }
+                                        </select>
+                                    </div>
 
                                         <InputBox>
                                             <label htmlFor='document'> Documento do inscrito:</label>
@@ -131,7 +153,7 @@ const Exterminate = () => {
 
                 </div>
             </ExterminateWrapper>
-            <LectureList />
+            
         </>
     )
 }
@@ -163,7 +185,7 @@ const ExterminateWrapper = styled.section`
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: var(--color-neutral-800); 
+        background-color: var(--background-neutrals-secondary); 
         padding: 2rem 3.5rem;
         gap: 1.5rem;
 
@@ -188,6 +210,11 @@ const FormWrapper = styled.div`
     --color-invalid: #F24822;
     --color-valid: #14AE5C;
     width: 100%;
+
+    label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;   
+    }
 
     form {
         display: flex;
@@ -215,7 +242,6 @@ const FormWrapper = styled.div`
         justify-content: center;
         width: 100%;
         height: 4rem;
-        background-color: var(--color-neutral-50);
         padding: 0.5rem;
         margin-left: -4px;
 
@@ -225,11 +251,11 @@ const FormWrapper = styled.div`
         color: white;
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
-            border-color: var(--color-primary);
+            border-color: var(--brand-primary);
         }
 
         &:has(input[type=password]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
-            border-color: var(--color-primary);
+            border-color: var(--brand-primary);
         }
 
         &:has(.error-border) {
