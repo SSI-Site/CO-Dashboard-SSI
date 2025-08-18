@@ -98,7 +98,7 @@ const NavBar = ({name}) => {
                                 <Link legacyBehavior href="/presential"><a>Registrar presença</a></Link>
                             </li>
 
-                            <li className = {router.pathname == '/xterminate' ? 'active': ''}>
+                            <li className = {router.pathname == '/exterminate' ? 'active': ''}>
                                 <Link legacyBehavior href="/xterminate"><a>Remover presença</a></Link>
                             </li>
                         </Accordion>

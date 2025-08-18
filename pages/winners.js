@@ -1,11 +1,40 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 
+// Components
 import Button from "../src/components/Button";
 
+//saphira
+import saphira from "../services/saphira";
+
+// Assets
+import LoadingSVG from '../public/loading.svg'
 
 const Winners = () => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [winners, setWinners] = useState([])
+
+    const getWinners = async() => {
+        setIsLoading(true);
+
+        try{
+            const { data } = await saphira.getWinners()
+            if (data) setWinners(data)
+        }
+        catch(err){
+            console.log("Houve um erro na hora de pegar os ganhadores!", err)
+        }
+        finally{
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getWinners()
+    }, [])
+
     return (
         <>
             <NavBar name = {"Realizar Sorteio > Lista de ganhadores"}/>
@@ -29,6 +58,7 @@ const Winners = () => {
                     <label>Código SSI</label>
                     <label>Nome</label>
                     <label>Email</label>
+                    <label>Palestra</label>
                 </WinnersGrid>
                 <WinnersWrapper>
                     <Winner>

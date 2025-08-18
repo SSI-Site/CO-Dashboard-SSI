@@ -21,7 +21,6 @@ const Students = () => {
     const [students, setStudents] = useState([])
     const [filteredStudents, setFilteredStudents] = useState([])
 
-
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
     const [query, setQuery] = useState('')
@@ -103,6 +102,7 @@ const Students = () => {
                                     key = {student.id}
                                     id = {student.code}
                                     name = {student.name}
+                                    email = {student.email}
                                 />
                             )
                         })

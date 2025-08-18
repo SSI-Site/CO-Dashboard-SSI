@@ -1,10 +1,15 @@
 import styled from "styled-components";
+import { useRouter } from "next/router";
 
-const StudentRow = ({id, name, isEven}) => {
+const StudentRow = ({id, name, email, isEven}) => {
+
+    const router = useRouter()
+
     return(
-        <Student $isEven = {isEven}>
+        <Student $isEven = {isEven} onClick={() => router.push({pathname: '/studentView', query: {id: id}})}>
             <p>{id}</p>
             <p>{name}</p>
+            <p>{email}</p>
         </Student>
     )
 

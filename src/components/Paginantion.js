@@ -5,7 +5,7 @@ import Button from "./Button";
 const Pagination = ({totalPages, currentPage, setCurrentPage}) => {
     const getPageNumbers = () => {
         const pages = [];
-        const delta = 2;
+        const delta = 1;
     
         const range = [];
         for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
