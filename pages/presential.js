@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import { React, useEffect, useState, useMemo } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
+
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
@@ -26,10 +28,24 @@ const Presential = () => {
         saphira.addPresenceToUser(data.lectureId, data.document)
             .then((res) => {
                 setIsLoading(false);
-                alert("Presença registrada!")
+                Swal.fire({
+                    icon: 'info',
+                    title: `Presença adicionada para ${data.document}`,
+                    showConfirmButton: true,
+                    confirmButtonText: "Ok!",
+                    confirmButtonColor: "#151023"
+                })
 
             }, (err) => {
                 setIsLoading(false);
+                Swal.fire({
+                   icon: 'info',
+                   title: 'Falha na adição!',
+                   text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                   showConfirmButton: true,
+                   confirmButtonText: "Ok",
+                   confirmButtonColor: "#151023"
+               })
 
             });
   
