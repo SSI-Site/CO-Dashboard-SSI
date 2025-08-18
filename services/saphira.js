@@ -97,7 +97,7 @@ const saphira = {
     },
 
     removePresenceFromUser: async (lectureId, document) => {
-        const requestUrl = `/admin/presence/${lectureId}/${document}`
+        const requestUrl = `/admin/presences/${lectureId}/${document}`
         return await axios.delete(requestUrl);
     },
 
@@ -321,6 +321,11 @@ const saphira = {
 
     getPresences: async() => {
         const requestUrl = '/admin/presences/'
+        return axios.get(requestUrl)
+    },
+
+    getStudents: async() => {
+        const requestUrl = '/admin/students/'
         return axios.get(requestUrl)
     }
 }
