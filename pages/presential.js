@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import { React, useEffect, useState, useMemo } from 'react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
+
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
@@ -26,9 +28,24 @@ const Presential = () => {
         saphira.addPresenceToUser(data.lectureId, data.document)
             .then((res) => {
                 setIsLoading(false);
+                Swal.fire({
+                    icon: 'info',
+                    title: `Presença adicionada para ${data.document}`,
+                    showConfirmButton: true,
+                    confirmButtonText: "Ok!",
+                    confirmButtonColor: "#151023"
+                })
 
             }, (err) => {
                 setIsLoading(false);
+                Swal.fire({
+                   icon: 'info',
+                   title: 'Falha na adição!',
+                   text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                   showConfirmButton: true,
+                   confirmButtonText: "Ok",
+                   confirmButtonColor: "#151023"
+               })
 
             });
   
@@ -94,7 +111,7 @@ const Presential = () => {
                                                 talks
                                                 .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
                                                 .map(talk => {
-                                                    const today = new Date('2025-08-18T09:00:00').toDateString()
+                                                    const today = new Date().toDateString()
                                                     const lowerLimit = new Date(talk.start_time).toDateString()
                                                     const upperLimit = new Date(talk.end_time).toDateString()
 

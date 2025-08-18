@@ -114,7 +114,7 @@ const Exterminate = () => {
                                                 talks
                                                 .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
                                                 .map(talk => {
-                                                    const today = new Date('2025-08-18T09:00:00').toDateString()
+                                                    const today = new Date().toDateString()
                                                     const lowerLimit = new Date(talk.start_time).toDateString()
                                                     const upperLimit = new Date(talk.end_time).toDateString()
 

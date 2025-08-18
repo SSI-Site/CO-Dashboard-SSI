@@ -56,7 +56,8 @@ const Students = () => {
         const query = e.toLowerCase()
         const filtered = students.filter(student => 
             student.name.toLowerCase().includes(query)
-            || student.id.toLowerCase().includes(query)
+            || student.code.toLowerCase().includes(query)
+            || student.email.toLowerCase().includes(query)
         )
         setFilteredStudents(filtered)
         setCurrentPage(1)
@@ -95,7 +96,7 @@ const Students = () => {
                 <StudentsWrapper>
                     {!isLoading && 
                         currentStudents.map((student, index) => {
-                            console.log(student)
+                     
                             return(
                                 <StudentRow
                                     isEven={index % 2}
