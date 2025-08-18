@@ -57,9 +57,26 @@ const saphira = {
     },
 
     getGivawayResult: async (lectureId) => {
-        const requestUrl = `/admin/${lectureId}/draw`
+        const requestUrl = `/admin/winners/${lectureId}/draw`
         return await axios.get(requestUrl);
     },
+
+    postWinner: async(lectureId, studentId) => {
+        const requestUrl = `/admin/winners/${lectureId}`
+        const params = new URLSearchParams();
+        params.append("student", studentId)
+
+        return await axios.post(
+            requestUrl,
+            params.toString(),
+            {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+
+        )
+    },  
 
     getPresencialOnlyGivawayResult: async (lectureId) => {
         const requestUrl = `/admin/${lectureId}/in-person-draw`
@@ -97,7 +114,7 @@ const saphira = {
     },
 
     removePresenceFromUser: async (lectureId, document) => {
-        const requestUrl = `/admin/presence/${lectureId}/${document}`
+        const requestUrl = `/admin/presences/${lectureId}/${document}`
         return await axios.delete(requestUrl);
     },
 
@@ -322,6 +339,21 @@ const saphira = {
     getPresences: async() => {
         const requestUrl = '/admin/presences/'
         return axios.get(requestUrl)
+    },
+
+    getUserPresences: async(ssiID) => {
+        const requestUrl = `/admin/student/${ssiID}`
+        return axios.get(requestUrl)
+    },
+
+    getStudents: async() => {
+        const requestUrl = '/admin/students/'
+        return axios.get(requestUrl)
+    },
+    
+    getWinners: async() => {
+        const requestUrl = '/admin/winners/'
+        return await axios.get(requestUrl)
     }
 }
 

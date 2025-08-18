@@ -29,103 +29,29 @@ const Giveaway = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [gotResult, setGotResult] = useState(false);
     const [giveawayResultName, setGiveawayResultName] = useState(placeholderMessage);
-    const [isLastSeconds, setIsLastSeconds] = useState(false);
-    const [key, setKey] = useState(0);
+    const [talks, setTalks] = useState([])
+    const [talkId, setTalkId] = useState(undefined)
 
     const { register, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const onSubmit = data => {
-        setGiveawayResultName(placeholderMessage);
-        setGotResult(false);
-        setIsLastSeconds(false);
-
-        if (data.isPresencialOnly) {
-            getPresencialOnlyGivawayResult(data.lectureId);
-        } else {
-            getGivawayResult(data.lectureId);
+    const getGiveaway = async(lectureId) => {
+        setTalkId(lectureId)
+        setIsLoading(true)
+        try{
+            const { data } = await saphira.getGivawayResult(lectureId)
+            if (data) {
+                setGotResult(data)
+                setGiveawayResultName(data.name)
+            }
+        }
+        catch(err){
+            console.log("Houve um erro na hora de gerar o vencedor!", err)
+        }
+        finally{
+            setIsLoading(false)
         }
     }
-
-    const getGivawayResult = (lectureId) => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            saphira.getGivawayResult(lectureId)
-                .then((res) => {
-                    setKey(prevKey => prevKey + 1);
-                    setGiveawayResultName(res.data.student_name);
-                    setIsLoading(false);
-                    setGotResult(true);
-                    reset();
-                })
-                .catch(err => {
-                    console.error(err);
-                    setIsLoading(false);
-                    setError("lectureId", { type: "focus" }, { shouldFocus: true })
-                })
-        }, 2000);
-    }
-
-    const getPresencialOnlyGivawayResult = (lectureId) => {
-        setIsLoading(true);
-
-        setTimeout(() => {
-            saphira.getPresencialOnlyGivawayResult(lectureId)
-                .then((res) => {
-                    setKey(prevKey => prevKey + 1);
-                    setGiveawayResultName(res.data.student_name);
-                    setIsLoading(false);
-                    setGotResult(true);
-                    reset();
-                })
-                .catch(err => {
-                    console.error(err);
-                    setIsLoading(false);
-                    setError("lectureId", { type: "focus" }, { shouldFocus: true });
-                })
-        }, 2000);
-    }
-
-    // Timer
-    const renderTime = ({ remainingTime }) => {
-        const currentTime = useRef(remainingTime);
-        const prevTime = useRef(null);
-        const isNewTimeFirstTick = useRef(false);
-        const [, setOneLastRerender] = useState(0);
         
-        if (currentTime.current !== remainingTime) {
-            isNewTimeFirstTick.current = true;
-            prevTime.current = currentTime.current;
-            currentTime.current = remainingTime;
-        } else {
-            isNewTimeFirstTick.current = false;
-        }
-        
-        // force one last re-render when the time is over to trigger the last animation
-        if (remainingTime === 0) {
-            setTimeout(() => {
-                setOneLastRerender((val) => val + 1);
-            }, 20);
-        }
-        
-        const isTimeUp = isNewTimeFirstTick.current;
-        
-        return (
-            <div className="time-wrapper">
-                <div key={remainingTime} className={`time ${isTimeUp ? "up" : ""}`}>
-                    {remainingTime}
-                </div>
-                {prevTime.current !== null && (
-                    <div
-                        key={prevTime.current}
-                        className={`time ${!isTimeUp ? "down" : ""}`}
-                    >
-                        {prevTime.current}
-                    </div>
-                )}
-            </div>
-        );
-    };
 
     const checkAuthentication = () => {
         if (isAuthenticated === null) {
@@ -140,8 +66,39 @@ const Giveaway = () => {
         }
     }
 
+    const onSubmit = (formData) => {
+        const lectureId = formData.lectureId
+        getGiveaway(lectureId)
+    }
+
+    const getTalks = async () => {
+        setIsLoading(true)
+        try{
+            const { data } = await saphira.getLectures()
+            // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
+            if (data) setTalks(data)
+        }
+        catch(err){
+            console.log("Houve um erro:", err)
+        }
+        finally{
+            setIsLoading(false)
+        }
+    }
+
+    const createWinner = async() => {
+        try{
+            const { data } = await saphira.postWinner(talkId, gotResult.id)
+            if (data) alert("Usuário registrado!")
+        }
+        catch(err){
+            console.log("Houve um erro ao registrar o aluno!", err)
+        }
+    }
+
     useEffect(() => {
         checkAuthentication();
+        getTalks()
     }, []);
 
     return (
@@ -157,26 +114,31 @@ const Giveaway = () => {
                     {accessAllowed &&
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <p> Realização do sorteio :)</p>
-                                <InputBox>
-                                    <label htmlFor='lectureId'> ID da palestra: </label>
+                                <label>ID da palestra</label>
+                                    <div className = "form-input">
+                                        <select 
+                                        id='lectureId' 
+                                        className={`${errors.lectureId && 'error-border'}`}
+                                        {...register("lectureId", { required: true, minLength: 1, })}>
+                                            {
+                                                talks
+                                                .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
+                                                .map(talk => {
+                                                    const today = new Date().toDateString()
+                                                    const lowerLimit = new Date(talk.start_time).toDateString()
+                                                    const upperLimit = new Date(talk.end_time).toDateString()
 
-                                    <div className='input-btn'>
-                                        <div className='form-input'>
-                                            <input id='lectureId' type='text' placeholder='Insira o ID' className={`${errors.lectureId && 'error-border'}`}
-                                                {...register("lectureId", { required: true, minLength: 1 })} />
-                                        </div>
-                                        {errors.lectureId && <ErrorMessage> ID inválido </ErrorMessage>}
-
-                                        {giveawayResultName === placeholderMessage ?
-                                            <Button> Sortear </Button>
-                                            :
-                                            <SecondaryButton type="button" onClick={() => {setGiveawayResultName(placeholderMessage); setKey(prev => prev+1); setGotResult(false); setIsLastSeconds(false)}}> Limpar </SecondaryButton>
-                                        }
+                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+                                                    if (today >= lowerLimit && today <= upperLimit){
+                                                        return(
+                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                                        )}
+                                                    }
+                                                )
+                                            }
+                                        </select>
                                     </div>
-                                </InputBox>
-
-
+                                <Button type = "submit" disabled = {talkId == undefined ? false : true}>Sortear</Button>
                             </form>
                         </FormWrapper>
                     }
@@ -190,40 +152,12 @@ const Giveaway = () => {
                         :
                         <>
                             <ResultSection>
-                                <h6> {giveawayResultName} </h6>
+                                <h6>{giveawayResultName}</h6>
                             </ResultSection>
-                            <TimerWrapper>
-                                {isLastSeconds ? 
-                                    <img src={SleepEmoji} alt="sleep emoji" /> 
-                                    :
-                                    <img src={TimerEmoji} alt="timer emoji" />
-                                }
-                                <div className="timer-wrapper">
-                                    <CountdownCircleTimer
-                                        key={key}
-                                        isPlaying={gotResult}
-                                        duration={40}
-                                        colors={["#9638FF", "#A86BDA", "#F7B801", "#A30000"]}
-                                        colorsTime={[40, 30, 20, 0]}
-                                        onUpdate={(remainingTime) => {
-                                            if (remainingTime === 10) {
-                                                setIsLastSeconds(true);
-                                            }
-                                            if (remainingTime === 0) {
-                                                setGiveawayResultName('Dormiu no ponto...');
-                                                setGotResult(false);
-                                            }
-                                        }}
-                                        >
-                                        {renderTime}
-                                    </CountdownCircleTimer>
-                                </div>
-                                {isLastSeconds ? 
-                                    <img src={SleepEmoji} alt="sleep emoji" /> 
-                                    :
-                                    <img src={TimerEmoji} alt="timer emoji" />
-                                }
-                            </TimerWrapper>
+                            <ButtonsOptions>
+                                <SecondaryButton disabled = {talkId == undefined ? true : false} onClick={() => {setGiveawayResultName(placeholderMessage); setTalkId(undefined); setGotResult(false)}}>Limpar</SecondaryButton>
+                                <Button disabled = {talkId == undefined ? true : false} onClick={() => createWinner()}>Sorteado(a) presente</Button>
+                            </ButtonsOptions>
                         </>
                     }
                 </div>
@@ -247,21 +181,45 @@ const Loading = styled.figure`
 `
 
 const GiveawayWrapper = styled.section`
-    margin-top: 7.5rem;
+    margin-top: 3.75rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.5rem;
+
+    label {
+        font: 700 1.125rem/1.5rem 'AT Aero Bold';
+        width: 100%;   
+    }
+
+    input, select {
+        font: 400 1rem/1.5rem 'At Aero';
+        width: 100%;
+        height: 3rem;
+        //max-width: 30rem;
+        padding: 0.75rem 1rem;
+        background-color: transparent;
+        transition: all 200ms ease-in-out;
+        border: 1px solid var(--content-neutrals-primary);
+
+        &:hover, &:focus-visible{
+            background-color: var(--background-neutrals-secondary);
+        }
+
+        &:focus-visible{
+            border: 1px solid var(--brand-primary);
+        }
+    }
 
     .section-container {
         width: fit-content;
-        height: 18.5rem;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: var(--color-neutral-800); 
+        background-color: var(--background-neutrals-secondary); 
         padding: 2rem 3.5rem;
         gap: 1.5rem;
 
@@ -272,10 +230,6 @@ const GiveawayWrapper = styled.section`
         @media (min-width: 480px) {
             width: 41rem;
         }
-    }
-
-    @media (min-width: 960px) {
-        flex-direction: row;
     }
 `
 
@@ -290,6 +244,7 @@ const FormWrapper = styled.div`
     --color-invalid: #F24822;
     --color-valid: #14AE5C;
     width: 100%;
+    
 
     form {
         display: flex;
@@ -297,7 +252,8 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 1.5rem;
+
 
         p {
             font: 700 1rem/1.5rem 'AT Aero Bold';
@@ -313,7 +269,6 @@ const FormWrapper = styled.div`
 
         button {
             padding-inline: 1.5rem;
-            width: fit-content;
         }
     }
 
@@ -323,7 +278,7 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         width: 100%;
-        background-color: var(--color-neutral-50);
+        background-color: var(--background-neutrals-primary);
         padding: 0.5rem;
         gap: 1rem;
 
@@ -383,21 +338,6 @@ const FormWrapper = styled.div`
     }
 `
 
-const InputBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-
-    label {
-        font: 700 1.125rem/1.5rem 'AT Aero Bold';
-        width: 100%;
-        margin-bottom: .5rem;
-    }
-`
-
 const CheckboxBox = styled.div`
     display: flex;
     align-items: center;
@@ -428,7 +368,7 @@ const ResultSection = styled.div`
     justify-content: center;
     gap: 3rem;
     width: 100%;
-    background-color: white;
+    background-color: var(--background-neutrals-inverse);
     padding: 1rem 1.5rem;
 
     .show-list-btn {
@@ -436,51 +376,14 @@ const ResultSection = styled.div`
     }
 
     h6 {
-        color: var(--color-primary-500);
+        color: var(--brand-primary);
     }
 `
 
-const TimerWrapper = styled.section`
+const ButtonsOptions = styled.div`
     display: flex;
-    gap: 1.5rem;
-    flex-direction: row;
-    max-height: 60%;
-    
-    .timer-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 7.25rem;
-        height: 7.25rem;
-        font: 700 2.5rem/3.5rem 'AT Aero Bold';
-
-        svg {
-            width: 100%;
-        }
-    }
-
-    .time-wrapper .time {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transform: translateY(0);
-        opacity: 1;
-        transition: all 0.2s;
-    }
-
-    .time-wrapper .time.up {
-        opacity: 0;
-        transform: translateY(-30%);
-    }
-
-    .time-wrapper .time.down {
-        opacity: 0;
-        transform: translateY(30%);
-    }
+    width: 100%;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
 `

@@ -1,15 +1,70 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 
 // Components
 import Button from "../src/components/Button";
+import Image from "next/image";
+import StudentRow from "../src/components/StudentRow";
+import Pagination from "../src/components/Paginantion";
+
+// Assets
+import LoadingSVG from '../public/loading.svg'
 
 // Saphira
 import saphira from "../services/saphira";
 
 const Students = () => {
 
+    const [isLoading, setIsLoading] = useState(false)
+    const [students, setStudents] = useState([])
+    const [filteredStudents, setFilteredStudents] = useState([])
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const [query, setQuery] = useState('')
+    const maxRows = 11;
+
+    const getStudents = async() => {
+        setIsLoading(true)
+        try {
+            const { data } = await saphira.getStudents()
+            if (data) {
+                setStudents(data)
+                setFilteredStudents(data)
+            }
+        }
+
+        catch(err){
+            console.log("Houve um erro na requisição dos estudantes", err)
+        }
+
+        finally{
+            setIsLoading(false)
+        }
+    }
+
+    const totalPages = Math.ceil(filteredStudents.length / maxRows)
+    const currentStudents = filteredStudents.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    )
+
+    const handleSearch = (e) => {
+        
+        const query = e.toLowerCase()
+        const filtered = students.filter(student => 
+            student.name.toLowerCase().includes(query)
+            || student.id.toLowerCase().includes(query)
+        )
+        setFilteredStudents(filtered)
+        setCurrentPage(1)
+    }
+
+    useEffect(() => {
+        getStudents()
+    }, [])
 
     return (
         <>
@@ -23,9 +78,11 @@ const Students = () => {
                     <StudentsInteractions>
                         <StudentsFilter>
                             <input 
-                                placeholder = "Buscar por nome, id, código...">
+                                type = "text"
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder = "Buscar por nome, email, código SSI...">
                             </input>
-                            <Button>Consultar</Button>
+                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </StudentsFilter>
                     </StudentsInteractions>
                 </StudentsTitle>
@@ -36,10 +93,42 @@ const Students = () => {
                     <label>Email</label>
                 </StudentsGrid>
                 <StudentsWrapper>
-                    <Student>
-                        <p>A</p><p>A</p><p>A</p>
-                    </Student>
-                </StudentsWrapper>   
+                    {!isLoading && 
+                        currentStudents.map((student, index) => {
+                            console.log(student)
+                            return(
+                                <StudentRow
+                                    isEven={index % 2}
+                                    key = {student.id}
+                                    id = {student.code}
+                                    name = {student.name}
+                                    email = {student.email}
+                                />
+                            )
+                        })
+                    }
+                    
+                    {isLoading && 
+                        <Image
+                            src = {LoadingSVG}
+                            width={120}
+                            height={50}
+                            alt = "Loading"
+                            className = "allRow"
+                        />
+                    }
+                </StudentsWrapper> 
+                <StudentsFooter>
+                    <p>{students.length} usuários encontrados</p>
+                        {!isLoading &&
+                            !students.length == 0 &&
+                            <Pagination
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                totalPages={totalPages}
+                            />
+                        }
+                </StudentsFooter>  
             </StudentsContainer>
         </>
     )
@@ -125,18 +214,26 @@ const StudentsGrid = styled.div`
 const StudentsWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-rows: repeat(11, 1fr);
     grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--outline-neutrals-secondary);
+
+    .allRow{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 5rem;
+    }
 `
 
-const Student = styled.div`
+const StudentsFooter = styled.footer`
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 3fr 3fr; 
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    padding-inline: 0.75rem 0.5rem; 
-    height: 4rem;
-    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    
+    p {
+        font: 700 1rem/1.5rem 'At Aero Bold';
+    }
 `
