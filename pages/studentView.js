@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import ProgressBar from "../src/components/ProgressBar";
-import { useForm } from 'react-hook-form';
+import Swal from "sweetalert2";
 
 // Saphira
 import saphira from "../services/saphira";
@@ -24,13 +24,23 @@ const StudentView = () => {
 
     const redeemGift = async(student_gift) => {
         try{
-            const { data } = await saphira.postCheckGift(student_gift)
+            const { data } = await saphira.updateCheckGift(student_gift)
+            if (data){
+                Swal.fire({
+                    icon: 'info',
+                    title: `${data.gift.name} resgatado com sucesso para ${data.student.name}`,
+                    showConfirmButton: true,
+                    confirmButtonText: "Ok!",
+                    confirmButtonColor: "#151023"
+                })
+            }
+            await getUserGifts(userData.id)
         }
         catch(err){
-            console.log("Erro ao atualizar o brinde")
+            console.log("Erro ao atualizar o brinde", err)
         }
     }
-    
+
     const fetchData = async() => {
         setIsLoading(true)
         try{   
@@ -41,6 +51,7 @@ const StudentView = () => {
                 await getUserGifts(data.id)
             }
             await getGifts()
+            
         }
         catch(err){
             console.log("Houve um erro na hora de obter os dados do inscrito", err)
@@ -108,7 +119,8 @@ const StudentView = () => {
                         />
                         <div className = "checkboxWrapper">
                             <input 
-                            onClick={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
+                            onChange={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
+                            disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
                             checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
                             type="checkbox"/>
                         </div>
@@ -211,6 +223,15 @@ const GiftRow = styled.div`
         display: flex;
         justify-content: center;
         width: 15%;
+
+        input{
+            cursor: pointer;
+        }
+
+        input:disabled{
+            opacity: 20%;
+            pointer-events:none;
+        }
     }
 
     p {

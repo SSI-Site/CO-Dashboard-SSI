@@ -22,7 +22,9 @@ const ProgressBar = ({totalPresence, requisitePresence, userGifts, id}) => {
 
     return(
         <ProgressBarContainer>
-            <BarCompleted $total = {percentage}>{totalPresence}</BarCompleted>
+            <BarCompleted $total = {percentage}>
+                <p>{totalPresence == 0 ? '' : totalPresence}</p>
+            </BarCompleted>
             <UncompleteBar $total = {percentage}>
                 <p>{Math.max(requisitePresence - totalPresence, 0) == 0 ? '' : requisitePresence - totalPresence}</p>
             </UncompleteBar>
