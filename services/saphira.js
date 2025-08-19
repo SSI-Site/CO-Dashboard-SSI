@@ -183,6 +183,11 @@ const saphira = {
         const requestUrl = '/admin/gifts/'
         return await axios.get(requestUrl)
     },
+    
+    getStudentGifts: async(student_id) => {
+        const requestUrl = `/admin/student/${student_id}/gifts`
+        return axios.get(requestUrl)
+    },
 
     postGift: async(name, description, min_presence, total_amount) => {
         const requestUrl = '/admin/gifts/'
@@ -354,6 +359,13 @@ const saphira = {
     getWinners: async() => {
         const requestUrl = '/admin/winners/'
         return await axios.get(requestUrl)
+    },
+
+    postCheckGift: async(student_gift) => {
+        const requestUrl = `/admin/student/gift/${student_gift}`;
+        return axios.post(
+            requestUrl
+        )
     }
 }
 

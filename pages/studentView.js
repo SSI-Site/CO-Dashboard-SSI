@@ -5,27 +5,41 @@ import { useRouter } from "next/router";
 // Components
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
+import ProgressBar from "../src/components/ProgressBar";
+import { useForm } from 'react-hook-form';
 
 // Saphira
 import saphira from "../services/saphira";
+
 
 const StudentView = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [userData, setUserData] = useState({})
     const [gifts, setGifts] = useState([])
-    
+    const [userGifts, setUserGifts] = useState([])
+
     const router = useRouter()
+    
     const { id } = router.query
 
-    const redeemGift = async() => {
-
+    const redeemGift = async(student_gift) => {
+        try{
+            const { data } = await saphira.postCheckGift(student_gift)
+        }
+        catch(err){
+            console.log("Erro ao atualizar o brinde")
+        }
     }
-
-    const getUserPresences = async() => {
+    const fetchData = async() => {
         setIsLoading(true)
         try{   
+            
             const { data } = await saphira.getUserPresences(id)
-            if (data) setUserData(data)
+            if (data) {
+                setUserData(data)
+                await getUserGifts(data.id)
+            }
+            await getGifts()
         }
         catch(err){
             console.log("Houve um erro na hora de obter os dados do inscrito", err)
@@ -45,9 +59,18 @@ const StudentView = () => {
         }
     }
 
+    const getUserGifts = async(id) => {
+        try{
+            const { data } = await saphira.getStudentGifts(id);
+            if (data) setUserGifts(data)
+        }
+        catch(err){
+            console.log("Houve um erro ao obter os brindes do usuário :(")
+        }
+    }
+
     useEffect(() => {
-        getUserPresences()
-        getGifts()
+        fetchData()
     }, [])
 
     return(
@@ -72,12 +95,21 @@ const StudentView = () => {
                 <label>Já retirou?</label>
             </StudentsGrid>
             <StudentGiftsWrapper>
-                {gifts.map((gift, index) => 
+                {!isLoading && 
+                gifts.sort((a, b) => a.min_presence - b.min_presence).map((gift, index) => 
                     <GiftRow $isEven = {index % 2}>
                         <p>{gift.name}</p>
-                        <p>A</p>
+                        <ProgressBar 
+                        totalPresence = {userData.total_presences_count}
+                        requisitePresence = {gift.min_presence}
+                        userGifts = {userGifts}
+                        id = {gift.id}
+                        />
                         <div className = "checkboxWrapper">
-                            <input type="checkbox"/>
+                            <input 
+                            onClick={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
+                            checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
+                            type="checkbox"/>
                         </div>
                     </GiftRow>
                 )}
@@ -86,24 +118,6 @@ const StudentView = () => {
         </StudentContainer>
 
         </>
-    )
-}
-
-const ProgressBar = ({current, required}) => {
-    const percentage = Math.min((current / required) * 100, 100)
-
-    return (
-        <div className="progress-wrapper">
-            <div className="progress-bar" style={{ width: `${percentage}%` }}>
-            {current >= required ? (
-                <span className="progress-text success">Brinde retirado!</span>
-            ) : (
-                <span className="progress-text">
-                {current} / {required}
-                </span>
-            )}
-            </div>
-        </div>
     )
 }
 
