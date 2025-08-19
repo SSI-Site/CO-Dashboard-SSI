@@ -89,13 +89,15 @@ const StudentView = () => {
                 <label>Já retirou?</label>
             </StudentsGrid>
             <StudentGiftsWrapper>
-                {gifts.map((gift, index) => 
+                {!isLoading && 
+                gifts.sort((a, b) => a.min_presence - b.min_presence).map((gift, index) => 
                     <GiftRow $isEven = {index % 2}>
                         <p>{gift.name}</p>
                         <ProgressBar 
                         totalPresence = {userData.total_presences_count}
                         requisitePresence = {gift.min_presence}
                         userGifts = {userGifts}
+                        id = {gift.id}
                         />
                         <div className = "checkboxWrapper">
                             <input type="checkbox"/>

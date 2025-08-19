@@ -1,11 +1,24 @@
 import styled from "styled-components";
 
-const ProgressBar = ({totalPresence, requisitePresence, userGifts}) => {
+const ProgressBar = ({totalPresence, requisitePresence, userGifts, id}) => {
 
     const checkIfUserHasGift = () => {
-
-    }
+        return userGifts.some(userGift => userGift.gift.id === id);
+    };
     const percentage = Math.min((totalPresence/requisitePresence) * 100, 100);
+    const hasGift = checkIfUserHasGift()
+
+    if (hasGift){
+        return (
+            <ProgressBarContainer>
+                <BarReceveid>{
+                userGifts.some(userGift => userGift.gift.id == id && userGift.received)
+                ? 'Brinde retirado!'
+                : 'Disponível para retirada'
+                }</BarReceveid>
+            </ProgressBarContainer>
+        )
+    }
 
     return(
         <ProgressBarContainer>
@@ -43,4 +56,14 @@ const UncompleteBar = styled.div`
     p{
         color: var(--content-neutrals-inverse);
     }
+`
+
+const BarReceveid = styled.div`
+    background-color: var(--background-accent-green);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--content-accent-green);
+    font: 700 1rem/1.5rem 'At aero Bold';
 `
