@@ -93,8 +93,8 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance, is
             <Gift onClick = {() => setisModalOpen(true)} $isEven = {isEven}>
                 <p>{name}</p>
                 <p>{total_amount}</p>
-                <p>{total_amount - balance}</p>
                 <p>{balance}</p>
+                <p>{total_amount - balance}</p>
             </Gift>
         </>
 
