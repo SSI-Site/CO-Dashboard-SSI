@@ -30,6 +30,7 @@ const StudentView = () => {
             console.log("Erro ao atualizar o brinde")
         }
     }
+    
     const fetchData = async() => {
         setIsLoading(true)
         try{   
