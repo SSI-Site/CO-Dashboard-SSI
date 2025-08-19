@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import ProgressBar from "../src/components/ProgressBar";
+import { useForm } from 'react-hook-form';
 
 // Saphira
 import saphira from "../services/saphira";
@@ -18,12 +19,17 @@ const StudentView = () => {
     const [userGifts, setUserGifts] = useState([])
 
     const router = useRouter()
+    
     const { id } = router.query
 
-    const redeemGift = async() => {
-
+    const redeemGift = async(student_gift) => {
+        try{
+            const { data } = await saphira.postCheckGift(student_gift)
+        }
+        catch(err){
+            console.log("Erro ao atualizar o brinde")
+        }
     }
-
     const fetchData = async() => {
         setIsLoading(true)
         try{   
@@ -100,7 +106,10 @@ const StudentView = () => {
                         id = {gift.id}
                         />
                         <div className = "checkboxWrapper">
-                            <input type="checkbox"/>
+                            <input 
+                            onClick={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
+                            checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
+                            type="checkbox"/>
                         </div>
                     </GiftRow>
                 )}
