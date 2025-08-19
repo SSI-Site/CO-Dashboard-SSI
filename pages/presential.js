@@ -37,6 +37,7 @@ const Presential = () => {
                 })
 
             }, (err) => {
+                console.log(err.response.data)
                 setIsLoading(false);
                 Swal.fire({
                    icon: 'info',
@@ -68,7 +69,6 @@ const Presential = () => {
         setIsLoading(true)
         try{
             const { data } = await saphira.getLectures()
-            // FAZER FILTRO BASEADO NAS QUE JÁ OCORRERAM?
             if (data) setTalks(data)
         }
         catch(err){

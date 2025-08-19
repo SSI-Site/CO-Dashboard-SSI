@@ -110,21 +110,27 @@ const Exterminate = () => {
                                         id='lectureId' 
                                         className={`${errors.lectureId && 'error-border'}`}
                                         {...register("lectureId", { required: true, minLength: 1, })}>
-                                            {
+                                             {
                                                 talks
                                                 .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
-                                                .map(talk => {
-                                                    const today = new Date().toDateString()
-                                                    const lowerLimit = new Date(talk.start_time).toDateString()
-                                                    const upperLimit = new Date(talk.end_time).toDateString()
-
-                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
-                                                    if (today >= lowerLimit && today <= upperLimit){
-                                                        return(
-                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
-                                                        )}
+                                                .filter(talk => {
+                                                        const today = new Date().toDateString()
+                                                        const talkDate = new Date(talk.start_time).toDateString()
+                                                        if (today == talkDate) return talkDate
                                                     }
                                                 )
+                                                .filter(talk => {
+                                                    const current_time = new Date()
+                                                    const start_time = new Date(talk.start_time)
+                                                    const start_timeOffset = new Date(start_time.getTime() + 30 * 60000)
+                                                    return start_timeOffset > current_time;
+                                                })
+                                                .map((talk) => {
+                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+                                                        return(
+                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                                        )
+                                                    })
                                             }
                                         </select>
                                     </div>
