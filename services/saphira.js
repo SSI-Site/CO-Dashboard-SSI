@@ -183,6 +183,11 @@ const saphira = {
         const requestUrl = '/admin/gifts/'
         return await axios.get(requestUrl)
     },
+    
+    getStudentGifts: async(student_id) => {
+        const requestUrl = `/admin/student/${student_id}/gifts`
+        return axios.get(requestUrl)
+    },
 
     postGift: async(name, description, min_presence, total_amount) => {
         const requestUrl = '/admin/gifts/'
