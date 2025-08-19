@@ -15,39 +15,42 @@ import LoadingSVG from '../public/loading.svg'
 const Winners = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [winners, setWinners] = useState([])
-    const [student, setStudent] = useState({})
-    const [talk, setTalk] = useState({})
+    const [students, setStudents] = useState([])
+    const [talks, setTalks] = useState([])
 
     const getWinners = async() => { 
         setIsLoading(true);
 
         try{
             const { data } = await saphira.getWinners()
-            if (data) setWinners(data)
+            if (data) {
+                setWinners(data)
+
+                const studentsRes = await Promise.all(
+                    data.map(async (item) => {
+                        const res = await saphira.getStudentInfo(item.student);
+                        if (res) return res.data
+                    })
+                )
+                if (studentsRes) setStudents(studentsRes);
+
+                const talksRes = await Promise.all(
+                    data.map(async item => {
+                        const res = await saphira.getTalk(item.talk)
+                        if (res) return res.data
+                    })
+                )
+
+                setTalks(talksRes)
+                
+            }
+
         }
         catch(err){
             console.log("Houve um erro na hora de pegar os ganhadores!", err)
         }
         finally{
             setIsLoading(false)
-        }
-    }
-
-    const getStudent = async(studentId) => {
-        try{
-            const { data } = await saphira.getStudentInfo(studentId)
-        }
-        catch(err){
-            console.log("Erro ao obter os dados do estudante!")
-        }
-    }
-
-    const getTalk = async() => {
-        try{
-
-        }
-        catch(err){
-            console.log("Erro ao boter os dados da pelstra")
         }
     }
 
@@ -83,13 +86,14 @@ const Winners = () => {
                 <WinnersWrapper>
                     {
                         !isLoading &&
-                        winners.map((winner, index) => {
+                        students.map((student, index) => {
 
                             return (
                                 <Winner $isEven = {index % 2}>
-                                    <p>{winner.id}</p>
-                                    <p>{winner.name}</p>
-                                    <p>{winner.email}</p>
+                                    <p>{student.code}</p>
+                                    <p>{student.name}</p>
+                                    <p>{student.email}</p>
+                                    <p>{talks[index].title}</p>
                                 </Winner>
                             )
                         })
