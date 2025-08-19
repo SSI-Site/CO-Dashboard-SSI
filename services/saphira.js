@@ -88,7 +88,7 @@ const saphira = {
     },
 
     getStudentInfo: async (document) => {
-        const requestUrl = `/admin/student/${document}`
+        const requestUrl = `/admin/student/${document}/profile`
         return await axios.get(requestUrl);
     },
 
