@@ -363,8 +363,16 @@ const saphira = {
 
     updateCheckGift: async(student_gift) => {
         const requestUrl = `/admin/student/gift/${student_gift}`;
+        const params = new URLSearchParams()
+        params.append('received', true)
         return axios.put(
-            requestUrl
+            requestUrl,
+            params.toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
         )
     }
 }
