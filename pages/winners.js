@@ -18,7 +18,7 @@ const Winners = () => {
     const [student, setStudent] = useState({})
     const [talk, setTalk] = useState({})
 
-    const getWinners = async() => {
+    const getWinners = async() => { 
         setIsLoading(true);
 
         try{
