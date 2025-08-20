@@ -75,7 +75,7 @@ const PaginationWrapper = styled.div`
         width: 2rem;
         height: 2rem;
         padding: 1.5rem;
-        color: var(--content-neutrals-inverse);
+        color: var(--content-neutrals-primary);
     }
     .noInteraction{
         color: var(--content-neutrals-inverse);
