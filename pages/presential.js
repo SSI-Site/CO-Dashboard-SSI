@@ -180,6 +180,7 @@ const PresenceWrapper = styled.section`
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--content-neutrals-primary);
 
     .section-container {
         width: fit-content;
@@ -210,8 +211,8 @@ const ErrorMessage = styled.span`
 `
 
 const FormWrapper = styled.div`
-    --color-invalid: #F24822;
-    --color-valid: #14AE5C;
+    --color-invalid: var(--content-accent-red);
+    --color-valid: var(--content-accent-green);
     width: 100%;
 
     label {
@@ -248,10 +249,10 @@ const FormWrapper = styled.div`
         padding: 0.5rem;
         margin-left: -4px;
 
-        border: 2px solid white;
+        border: 2px solid var(--content-neutrals-primary);
         background: transparent;
         background-clip: padding-box;
-        color: white;
+        color: var(--content-neutrals-primary);
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--brand-primary);
@@ -274,21 +275,22 @@ const FormWrapper = styled.div`
             border: none;
             height: 100%;
             background-color: transparent;
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
 
-        select {
-            color: var(--color-neutral-400);
+        option{
+            background-color: var(--background-neutrals-secondary);
+            color: var(--content-neutrals-primary);
         }
 
         ::placeholder {
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
 
         ::-ms-input-placeholder {
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
     }

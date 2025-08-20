@@ -144,6 +144,10 @@ const StudentContainer = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+
+    * {
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const StudentHeader = styled.div`
@@ -177,11 +181,11 @@ const StudentPresences = styled.div`
 
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
-        color: var(--content-neutrals-primary);
+        color: var(--content-neutrals-fixed-white);
     }
 
     h4 {
-        color: var(--content-neutrals-primary);
+        color: var(--content-neutrals-fixed-white);
     }
 
 `
@@ -206,6 +210,7 @@ const StudentGiftsWrapper = styled.div`
     display: grid;
     grid-column-gap: 3rem;
     padding-bottom: 0.75rem;
+    align-items: center;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
 `
@@ -216,6 +221,7 @@ const GiftRow = styled.div`
     grid-column-gap: 3rem;
     min-height: 4rem;
     padding: 0.75rem 0.5rem; 
+    align-items: center;
     background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
 
     .checkboxWrapper{
@@ -229,9 +235,14 @@ const GiftRow = styled.div`
         }
 
         input:disabled{
-            opacity: 20%;
+            opacity: 50%;
             pointer-events:none;
         }
+
+        input[type="checkbox"] {
+            filter: invert(100%) hue-rotate(18deg) brightness(1.7);
+        }
+
     }
 
     p {

@@ -70,14 +70,15 @@ export default Pagination
 const PaginationWrapper = styled.div`
     display: flex;
     gap: 0.75rem;
-
+    
     button{
         width: 2rem;
         height: 2rem;
         padding: 1.5rem;
+        color: var(--content-neutrals-inverse);
     }
     .noInteraction{
-        color: var(--content-neutrals-primary);
+        color: var(--content-neutrals-inverse);
         background-color: var(--background-neutrals-tertiary);
         pointer-events: none;
     }

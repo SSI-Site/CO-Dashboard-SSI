@@ -17,6 +17,7 @@ const SecondaryButton = styled.button`
     background-color: transparent;
     transition: var(--transition-duration);
     white-space: nowrap;
+    color: var(--content-neutrals-primary);
     text-align: center;
 
     background-image: linear-gradient(var(--background-neutrals-inverse), var(--background-neutrals-inverse)); /* Coloca um background branco em cima do botão */
@@ -26,7 +27,7 @@ const SecondaryButton = styled.button`
 
     &:disabled {
         --background: var(--background-neutrals-tertiary);
-        color: var(--background-neutrals-primary);
+        color: var(--background-neutrals-tertiary);
         cursor: unset;
         pointer-events: none;
         border: 2px solid var(--outline-neutrals-secondary);

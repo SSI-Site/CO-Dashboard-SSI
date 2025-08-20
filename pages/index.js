@@ -143,6 +143,10 @@ const PageWrapper = styled.section`
     align-self: center;
     width: 100%;
     height: 100vh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
+
+    * {
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const LoginWrapper = styled.div`

@@ -123,6 +123,9 @@ const GiftsContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    *{
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const GiftsTitle = styled.div`
@@ -131,6 +134,7 @@ const GiftsTitle = styled.div`
     align-items: center;
     width: 100%;
     margin-bottom: 1.5rem;
+
 `
 
 const GiftsInteraction = styled.div`

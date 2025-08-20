@@ -220,13 +220,12 @@ const FormWrapper = styled.div`
         align-items: center;
         justify-content: center;
         width: 100%;
-        background-color: var(--color-neutral-50);
         padding: 0.5rem;
 
-        border: 2px solid white;
+        border: 2px solid var(--content-neutrals-primary);
         background: transparent;
         background-clip: padding-box;
-        color: white;
+        color: var(--content-neutrals-primary);
 
         &:has(input[type=text]:focus):not(:has(.error-border)):not(:has(.token-registered)) {
             border-color: var(--color-primary);
@@ -248,21 +247,21 @@ const FormWrapper = styled.div`
             width: 95%;
             border: none;
             background-color: transparent;
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
 
         select {
-            color: var(--color-neutral-400);
+            color: var(--content-neutrals-primary);
         }
 
         ::placeholder {
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
 
         ::-ms-input-placeholder {
-            color: white;
+            color: var(--content-neutrals-primary);
             font: 400 1rem/1.5rem 'AT Aero';
         }
     }
@@ -318,36 +317,6 @@ const StudentsTable = styled.table`
 
         &:first-child {
             padding-left: 2rem;
-        }
-    }
-
-    tbody {
-        tr {
-            background: var(--color-neutral-800);
-            border-radius: 0.5rem;
-            transition: background 0.3s;
-
-            td {
-                padding-block: 0.5rem;
-                text-align: left;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 450px;
-                padding-right: 3rem;
-
-                &:nth-child(2) {
-                    max-width: 500px;
-                }
-
-                &:nth-child(3) {
-                    padding-inline: 0;
-                }
-            }
-
-            td:first-child {
-                padding-left: 2rem;
-            }
         }
     }
 `

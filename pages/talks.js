@@ -151,7 +151,7 @@ const Talks = () => {
                 </TalksWrapper>
 
                 <TalksFooter>
-                    <p>{currentTalks.length} palestras encontradas</p>
+                    <p>{talks.length} palestras encontradas</p>
                     {!isLoading &&
                         !talks.length == 0 &&
                         <Pagination>
@@ -186,6 +186,10 @@ const TalksContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    * {
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const TalksTitle = styled.div`
