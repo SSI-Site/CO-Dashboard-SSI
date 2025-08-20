@@ -11,11 +11,16 @@ const ProgressBar = ({totalPresence, requisitePresence, userGifts, id}) => {
     if (hasGift){
         return (
             <ProgressBarContainer>
-                <BarReceveid>{
-                userGifts.some(userGift => userGift.gift.id == id && userGift.received)
-                ? 'Brinde retirado!'
-                : 'Disponível para retirada'
-                }</BarReceveid>
+                <BarReceveid>
+                    <p>
+                    {
+                        userGifts.some(userGift => userGift.gift.id == id && userGift.received)
+                        ? 'Brinde retirado!'
+                        : 'Disponível para retirada'
+                    }
+                    </p>
+                </BarReceveid>
+                        
             </ProgressBarContainer>
         )
     }
@@ -47,6 +52,7 @@ const BarCompleted = styled.div`
     justify-content: center;
     width: ${(props) => props.$total}%;
     font: 700 1rem/1.5rem 'At Aero Bold';
+    color: var(--content-neutrals-fixed-white);
 `
 const UncompleteBar = styled.div`
     background-color: var(--background-neutrals-inverse);
@@ -66,6 +72,9 @@ const BarReceveid = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--content-accent-green);
     font: 700 1rem/1.5rem 'At aero Bold';
+
+    p {
+        color: var(--content-accent-green);
+    }
 `

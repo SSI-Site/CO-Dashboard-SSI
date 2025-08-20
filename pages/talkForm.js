@@ -253,7 +253,10 @@ const FormContainer = styled.div`
     width: 100%;
     padding: 2rem;
     max-width: 1920px;
-    color: var(--content-neutrals-primary);
+
+    *{
+        color: var(--content-neutrals-primary);
+    }
 `;
 
 const FormHeader = styled.div`

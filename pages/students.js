@@ -20,11 +20,11 @@ const Students = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [students, setStudents] = useState([])
     const [filteredStudents, setFilteredStudents] = useState([])
+    const [maxRows, setMaxRows] = useState(11)
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
     const [query, setQuery] = useState('')
-    const maxRows = 11;
 
     const getStudents = async() => {
         setIsLoading(true)
@@ -65,6 +65,7 @@ const Students = () => {
 
     useEffect(() => {
         getStudents()
+
     }, [])
 
     return (
@@ -93,7 +94,7 @@ const Students = () => {
                     <label>Nome</label>
                     <label>Email</label>
                 </StudentsGrid>
-                <StudentsWrapper>
+                <StudentsWrapper $maxRows = {maxRows}>
                     {!isLoading && 
                         currentStudents.map((student, index) => {
                      
@@ -146,6 +147,10 @@ const StudentsContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    * {
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const StudentsTitle = styled.div`

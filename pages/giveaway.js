@@ -188,6 +188,10 @@ const GiveawayWrapper = styled.section`
     justify-content: center;
     gap: 1.5rem;
 
+    * {
+        color: var(--content-neutrals-primary);
+    }
+
     label {
         font: 700 1.125rem/1.5rem 'AT Aero Bold';
         width: 100%;   
@@ -201,6 +205,25 @@ const GiveawayWrapper = styled.section`
         padding: 0.75rem 1rem;
         background-color: transparent;
         transition: all 200ms ease-in-out;
+        border: 1px solid var(--background-neutrals-inverse);
+
+        &:hover, &:focus-visible{
+            background-color: var(--background-neutrals-secondary);
+        }
+
+        &:focus-visible{
+            border: 1px solid var(--brand-primary);
+        }
+    }
+
+
+    select {
+        font: 400 1rem/1.5rem 'At Aero';
+        width: 100%;
+        max-width: 30rem;
+        padding: 0.75rem 1rem;
+        background-color: transparent;
+        transition: all 200ms ease-in-out;
         border: 1px solid var(--content-neutrals-primary);
 
         &:hover, &:focus-visible{
@@ -210,6 +233,11 @@ const GiveawayWrapper = styled.section`
         &:focus-visible{
             border: 1px solid var(--brand-primary);
         }
+    }
+
+    option{
+        background-color: var(--background-neutrals-secondary);
+        color: var(--content-neutrals-primary);
     }
 
     .section-container {
@@ -231,13 +259,6 @@ const GiveawayWrapper = styled.section`
             width: 41rem;
         }
     }
-`
-
-const ErrorMessage = styled.span`
-    color: var(--color-invalid);
-    text-decoration: underline;
-    position: absolute;
-    bottom: -1.1rem;
 `
 
 const FormWrapper = styled.div`
@@ -338,29 +359,6 @@ const FormWrapper = styled.div`
     }
 `
 
-const CheckboxBox = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    padding: .5rem;
-    background-color: var(--color-neutral-800);
-
-    label {
-        margin-left: 15px;
-        color: var(--color-text);
-        font: 700 0.875rem/1rem 'AT Aero';
-
-        cursor: pointer;
-    }
-
-    input[type=checkbox] {
-        transform: scale(1.5);
-        padding: 20px;
-        cursor: pointer;
-    }
-`
-
 const ResultSection = styled.div`
     display: flex;
     flex-direction: column;
@@ -386,4 +384,5 @@ const ButtonsOptions = styled.div`
     gap: 1rem;
     justify-content: space-between;
     align-items: center;
+
 `

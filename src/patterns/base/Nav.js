@@ -191,6 +191,7 @@ const NavMobile = styled.nav`
     overflow: hidden;   
     display: flex;
     flex-direction: column;
+    color: var(--contetn-neutrals-primary);
 
     .infos {
         display: flex;
@@ -214,6 +215,7 @@ const NavMobile = styled.nav`
 
         p {
             font: 700 1rem/1.5rem "At Aero Bold";
+            color: var(--content-neutrals-primary);
         }   
     }
 
@@ -257,6 +259,7 @@ const NavigationList = styled.ul`
     width: 100%;
     justify-content: center;
     gap: 1.5rem;
+    color: var(--content-neutrals-primary);
 
     li a {
         display: block;
@@ -474,6 +477,7 @@ const SidepanelDesktop = styled.aside`
     flex-direction: column;
     left: 0;
     top: 0;
+    color: var(--content-neutrals-primary);
     width: 16rem;
     background-color: var(--background-neutrals-secondary);
     border-right: 1px solid var(--outline-neutrals-secondary);
@@ -500,6 +504,7 @@ const NavDesktop = styled.nav`
     align-items: center;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
     transition: all 200ms ease-in-out;
+    color: var(--content-neutrals-primary);
 
     .title {
         padding: 1rem;

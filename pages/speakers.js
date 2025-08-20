@@ -198,6 +198,10 @@ const PalestrantesContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    *{
+        color: var(--content-neutrals-primary);
+    }
 `
 
 const PalestrantesTitle = styled.div`
