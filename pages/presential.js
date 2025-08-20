@@ -119,7 +119,7 @@ const Presential = () => {
                                                 .filter(talk => {
                                                     const current_time = new Date()
                                                     const start_time = new Date(talk.start_time)
-                                                    const start_timeOffset = new Date(start_time.getTime() + 20 * 60000)
+                                                    const start_timeOffset = new Date(start_time.getTime() + 120 * 60000)
                                                     return start_timeOffset > current_time;
                                                 })
                                                 .map((talk) => {
