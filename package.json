@@ -24,5 +24,13 @@
     "styled-components": "^6.1.12",
     "sweetalert2": "^11.6.5",
     "webpack": "^5.0.0"
+  },
+  "devDependencies": {
+    "msw": "^2.12.14"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
