@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { talksMock } from '../data/talksData'
+import { talksSpeakersMock } from '../data/talksSpeakersData'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL || '';
 

@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { giftsMock, studentGiftsMock } from '../data/giftsData'
+import { giftsMock } from '../data/giftsData'
+import { studentGiftsMock } from '../data/studentGiftsData'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL || '';
 
