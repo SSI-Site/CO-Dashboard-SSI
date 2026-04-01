@@ -1,0 +1,38 @@
+export const speakersMock = [
+  {
+    id: '1',
+    name: 'Marina Teixeira',
+    description: 'Especialista em UX para produtos educacionais.',
+    role: 'Product Designer',
+    pronouns: 'ela/dela',
+    linkedin_link: 'https://linkedin.com/in/marina-teixeira',
+    instagram_link: 'https://instagram.com/marina.teixeira',
+  },
+  {
+    id: '2',
+    name: 'Carlos Nogueira',
+    description: 'Engenheiro de software com foco em arquitetura web.',
+    role: 'Software Engineer',
+    pronouns: 'ele/dele',
+    linkedin_link: 'https://linkedin.com/in/carlos-nogueira',
+    instagram_link: 'https://instagram.com/cnogueira.dev',
+  },
+  {
+    id: '3',
+    name: 'Renata Lima',
+    description: 'Pesquisadora em IA aplicada e ciencia de dados.',
+    role: 'Data Scientist',
+    pronouns: 'ela/dela',
+    linkedin_link: 'https://linkedin.com/in/renata-lima',
+    instagram_link: '',
+  },
+  {
+    id: '4',
+    name: 'Joao Pedro Souza',
+    description: 'Desenvolvedor mobile e mentor de comunidades tech.',
+    role: 'Mobile Developer',
+    pronouns: 'ele/dele',
+    linkedin_link: 'https://linkedin.com/in/joaopedro-souza',
+    instagram_link: 'https://instagram.com/jp.souza',
+  },
+];

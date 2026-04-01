@@ -1,0 +1,42 @@
+export const studentsMock = [
+  {
+    id: 1,
+    code: 'SSI001',
+    name: 'Ana Clara Gomes',
+    email: 'ana.clara@usp.br',
+    total_presences_count: 5,
+    in_person_presences_count: 4,
+  },
+  {
+    id: 2,
+    code: 'SSI002',
+    name: 'Bruno Ferreira',
+    email: 'bruno.ferreira@usp.br',
+    total_presences_count: 3,
+    in_person_presences_count: 2,
+  },
+  {
+    id: 3,
+    code: 'SSI003',
+    name: 'Carla Mendes',
+    email: 'carla.mendes@usp.br',
+    total_presences_count: 6,
+    in_person_presences_count: 5,
+  },
+  {
+    id: 4,
+    code: 'SSI004',
+    name: 'Diego Santos',
+    email: 'diego.santos@usp.br',
+    total_presences_count: 2,
+    in_person_presences_count: 1,
+  },
+  {
+    id: 5,
+    code: 'SSI005',
+    name: 'Eduarda Lima',
+    email: 'eduarda.lima@usp.br',
+    total_presences_count: 4,
+    in_person_presences_count: 3,
+  },
+];
