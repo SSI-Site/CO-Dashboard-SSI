@@ -1,27 +1,19 @@
 import { http, HttpResponse } from 'msw';
-import { studentsMock } from '../data/studentsData';
+import { findStudent, students, toStudentResponse } from './_db';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL || '';
 
 const normalize = (value) => String(value).trim().toLowerCase();
 
-const findStudent = (identifier) => {
-  const target = normalize(identifier);
-
-  return studentsMock.find(
-    (student) => normalize(student.code) === target || normalize(student.id) === target
-  );
-};
-
 export const studentsHandlers = [
   http.get(`${BASE_URL}/admin/students/`, () => {
-    return HttpResponse.json(studentsMock);
+    return HttpResponse.json(students);
   }),
 
   http.get(`${BASE_URL}/admin/students/search/:name`, ({ params }) => {
     const term = normalize(params.name || '');
 
-    const result = studentsMock.filter((student) =>
+    const result = students.filter((student) =>
       normalize(student.name).includes(term)
     );
 
@@ -35,7 +27,7 @@ export const studentsHandlers = [
       return HttpResponse.json({ error: 'Estudante nao encontrado' }, { status: 404 });
     }
 
-    return HttpResponse.json(student);
+    return HttpResponse.json(toStudentResponse(student));
   }),
 
   http.get(`${BASE_URL}/admin/student/:ssiID`, ({ params }) => {
@@ -45,6 +37,6 @@ export const studentsHandlers = [
       return HttpResponse.json({ error: 'Estudante nao encontrado' }, { status: 404 });
     }
 
-    return HttpResponse.json(student);
+    return HttpResponse.json(toStudentResponse(student));
   }),
 ];
