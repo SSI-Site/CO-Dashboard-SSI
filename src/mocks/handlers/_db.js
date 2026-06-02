@@ -10,7 +10,7 @@ import { winnersMock } from '../data/winnersData';
 
 const normalize = (value) => String(value ?? '').trim().toLowerCase();
 
-const clone = (value) => JSON.parse(JSON.stringify(value));
+const clone = (value) => structuredClone(value);
 
 export const students = clone(studentsMock);
 export const speakers = clone(speakersMock);
@@ -240,5 +240,4 @@ export const nextNumericId = (list) => {
   return Math.max(...list.map((item) => Number(item.id) || 0)) + 1;
 };
 
-export const createPseudoId = (prefix) =>
-  `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+export const createPseudoId = (prefix) => `${prefix}-${crypto.randomUUID()}`;
