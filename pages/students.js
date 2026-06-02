@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Button from "../src/components/Button";
 import Image from "next/image";
 import StudentRow from "../src/components/StudentRow";
-import Pagination from "../src/components/Paginantion";
+import Pagination from "../src/components/Pagination";
 
 // Assets
 import LoadingSVG from '../public/loading.svg'
