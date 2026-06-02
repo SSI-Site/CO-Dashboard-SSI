@@ -258,7 +258,7 @@ const saphira = {
     updateSponsor: async(id, name, url) => {
         const requestUrl = `/admin/talks/sponsors/${id}`
         const params = new URLSearchParams()
-        params.append("id", 5)
+        params.append("id", id)
         params.append("name", name)
         params.append("url", url)
 
