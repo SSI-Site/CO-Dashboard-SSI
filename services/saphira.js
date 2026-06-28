@@ -92,22 +92,6 @@ const saphira = {
         return await axios.get(requestUrl);
     },
 
-    generateOnlineToken: async (lectureId, currentTime) => {
-        const requestUrl = `/admin/tokens`
-        const params = new URLSearchParams();
-        params.append('talk', lectureId);
-        params.append('duration', '5');
-        params.append('begin', currentTime);
-        return await axios.post(
-            requestUrl,
-            params,
-            {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-    },
-
     searchStudentByName: async (name) => {
         const requestUrl = `/admin/students/search/${name}`
         return await axios.get(requestUrl);
