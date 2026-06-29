@@ -6,7 +6,6 @@ import { sponsorsHandlers } from './handlers/sponsorsHandlers';
 import { studentsHandlers } from './handlers/studentsHandlers';
 import { presencesHandlers } from './handlers/presencesHandlers';
 import { winnersHandlers } from './handlers/winnersHandlers';
-import { tokensHandlers } from './handlers/tokensHandlers';
 
 export const handlers = [
   ...authHandlers,
@@ -17,5 +16,4 @@ export const handlers = [
   ...studentsHandlers,
   ...presencesHandlers,
   ...winnersHandlers,
-  ...tokensHandlers,
 ];
