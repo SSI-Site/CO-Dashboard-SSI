@@ -3,6 +3,8 @@ import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import useAuth from '../hooks/useAuth';
 
 // saphira
 import saphira from "../services/saphira";
@@ -15,7 +17,8 @@ import PalestrantePopUp from '../src/components/PalestrantePopUp'
 import PalestranteRow from '../src/components/PalestranteRow'
 
 const Speakers = () => {
-
+    const { isAuthenticated } = useAuth();
+    const router = useRouter();
     const [speakers, setSpeakers] = useState([])
     const [filteredSpeakers, setFilteredSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
@@ -52,8 +55,18 @@ const Speakers = () => {
     }
 
     useEffect(() => {
-        getPalestrantes()
-    }, [])
+        if (isAuthenticated === true) {
+            getPalestrantes();
+        }
+
+        if (isAuthenticated === false) {
+            router.push('/');
+        }
+    }, [isAuthenticated, router])
+
+    if (isAuthenticated === null) {
+        return null;
+    }
 
     const totalPages = Math.ceil(filteredSpeakers.length / maxRows)
     const currentSpeakers = filteredSpeakers.slice(
@@ -75,16 +88,6 @@ const Speakers = () => {
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
-
             <Meta title = "COSSI 2025 | Palestrantes"/>
             <NavBar name = {"Palestrantes"}/>
 
