@@ -134,7 +134,6 @@ const Loading = styled.figure`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid red;
 
     img {
         width: 50%;
