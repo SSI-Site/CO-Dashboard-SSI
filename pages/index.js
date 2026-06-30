@@ -22,18 +22,24 @@ const Login = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    
-    const onSubmit = data => {
+
+    const onSubmit = async (data) => {
         setIsLoading(true);
-        
-        const isSignInValid = signIn(data.user, data.password);
-        // console.log(isSignInValid);
-        
-        if (!isSignInValid) {
-            setError("credentials" , { type: "focus" }, { shouldFocus: true });
+
+        try {
+            const isSignInValid = await signIn(data.user, data.password);
+            
+            if (!isSignInValid) {
+                setError("credentials", { type: "focus" }, { shouldFocus: true });
+            }
+        }
+        catch (error){
+            console.log(`Erro ao válidar Login: ${error}`)
+        }
+        finally{
+            setIsLoading(false);
         }
 
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -44,19 +50,19 @@ const Login = () => {
 
     return (
         <PageWrapper>
-            <Meta title = 'COSSI 2025 | Login' />
-            
+            <Meta title='COSSI 2025 | Login' />
+
             <LoginWrapper>
                 <div className='logo-container'>
-                    <Image 
-                        src='./images/logos/logo_horizontal.svg' 
-                        alt='SSI 2025 - Logo' 
-                        width = {198}
-                        height = {48}
+                    <Image
+                        src='./images/logos/logo_horizontal.svg'
+                        alt='SSI 2025 - Logo'
+                        width={198}
+                        height={48}
                     />
                 </div>
                 <div className='section-container'>
-                    <div className = 'section-header'>  
+                    <div className='section-header'>
                         <h2>Login</h2>
                         <p>Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
                     </div>
@@ -69,7 +75,7 @@ const Login = () => {
                                         <label htmlFor='user'> Usuário </label>
                                         <div className='form-input'>
                                             <input id='user' type='text' placeholder='Insira o usuário' className={`${errors.user && 'error-border'}`}
-                                                {...register("user", {required: true, minLength: 1 })} />
+                                                {...register("user", { required: true, minLength: 1 })} />
                                         </div>
                                         {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
                                     </InputBox>
@@ -78,43 +84,43 @@ const Login = () => {
                                         <label htmlFor='password'> Senha </label>
                                         <div className='form-input'>
                                             <input id='password' type='password' placeholder='Insira a senha' className={`${errors.password && 'error-border'}`}
-                                                {...register("password", {required: true, minLength: 1 })} />
+                                                {...register("password", { required: true, minLength: 1 })} />
                                         </div>
                                         {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
                                     </InputBox>
 
-                                    <Button type='submit' onClick={() => {clearErrors("credentials")}}> Entrar </Button>
+                                    <Button type='submit' onClick={() => { clearErrors("credentials") }}> Entrar </Button>
 
-                                    {errors.credentials && <p className='error-message'> Credenciais inválidas </p> }
+                                    {errors.credentials && <p className='error-message'> Credenciais inválidas </p>}
                                 </>
                             }
 
                             {isLoading &&
                                 <Loading>
-                                    <Image 
-                                    width={120}
-                                    height={120}
-                                    src={LoadingSVG} 
-                                    alt='SSI 2025 - Loading' />
+                                    <Image
+                                        width={120}
+                                        height={120}
+                                        src={LoadingSVG}
+                                        alt='SSI 2025 - Loading' />
                                 </Loading>
                             }
                         </form>
                     </FormWrapper>
                 </div>
 
-                <div className = "footer-warn">
+                <div className="footer-warn">
                     <p>Esqueceu a senha?</p>
                     <p>Fale com alguém de Infra...</p>
                 </div>
             </LoginWrapper>
 
             <COSSIWraper>
-                <Image 
-                src = "./images/co/login.jpg"
-                width={1280}
-                height={960}
-                alt = "COSSI 2025"
-                className='cossi-image'
+                <Image
+                    src="./images/co/login.jpg"
+                    width={1280}
+                    height={960}
+                    alt="COSSI 2025"
+                    className='cossi-image'
                 />
             </COSSIWraper>
         </PageWrapper>
@@ -128,7 +134,6 @@ const Loading = styled.figure`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid red;
 
     img {
         width: 50%;

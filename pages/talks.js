@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import {useRouter} from "next/router";
+import useAuth from '../hooks/useAuth';
 
 // saphira
 import saphira from "../services/saphira";
@@ -16,6 +17,7 @@ import TalkRow from "../src/components/TalkRow";
 
 const Talks = () => {
     const router = useRouter()
+    const { isAuthenticated } = useAuth();
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
 
@@ -45,8 +47,18 @@ const Talks = () => {
 
 
     useEffect(() => {
-        getTalks()
-    }, [])
+        if (isAuthenticated === true) {
+            getTalks();
+        }
+
+        if (isAuthenticated === false) {
+            router.push('/');
+        }
+    }, [isAuthenticated, router])
+
+    if (isAuthenticated === null) {
+        return null;
+    }
 
     const totalPages = Math.ceil(filteredTalks.length / maxRows)
     const currentTalks = filteredTalks.slice(
@@ -66,16 +78,6 @@ const Talks = () => {
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
-
             <Meta title = "COSSI 2025 | Palestras"/>
             <NavBar name = "Palestras"/>
 
