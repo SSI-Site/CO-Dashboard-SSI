@@ -35,15 +35,13 @@ export function AuthProvider({ children }) {
 
     const signOut = async () => {
         try {
-            const res = await saphira.adminLogOut();
-
-            if (res.status === 200) {
-                setSession(false);
-                setIsAuthenticated(false);
-                Router.push('/');
-            }
+            await saphira.adminLogOut();
         } catch (error) {
-            console.log("Erro ao fazer logout", error);
+            console.log("Erro na API ao fazer logout:", error);
+        } finally {
+            setSession(false);
+            setIsAuthenticated(false);
+            Router.push('/');
         }
     }
 
