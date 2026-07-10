@@ -24,7 +24,7 @@ const Presential = () => {
 
     const onSubmit = data => {
         setIsLoading(true);
-    
+
         saphira.addPresenceToUser(data.lectureId, data.document)
             .then((res) => {
                 setIsLoading(false);
@@ -40,23 +40,23 @@ const Presential = () => {
                 console.log(err.response.data)
                 setIsLoading(false);
                 Swal.fire({
-                   icon: 'info',
-                   title: 'Falha na adição!',
-                   text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
-                   showConfirmButton: true,
-                   confirmButtonText: "Ok",
-                   confirmButtonColor: "#151023"
-               })
+                    icon: 'info',
+                    title: 'Falha na adição!',
+                    text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                    showConfirmButton: true,
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "#151023"
+                })
 
             });
-  
+
     };
 
     const checkAuthentication = () => {
         if (isAuthenticated === null) {
             return;
         }
-        
+
         if (isAuthenticated) {
             setAccessAllowed(true);
         } else {
@@ -67,21 +67,24 @@ const Presential = () => {
 
     const getTalks = async () => {
         setIsLoading(true)
-        try{
+        try {
             const { data } = await saphira.getLectures()
             if (data) setTalks(data)
         }
-        catch(err){
+        catch (err) {
             console.log("Houve um erro:", err)
         }
-        finally{
+        finally {
             setIsLoading(false)
         }
     }
 
     useEffect(() => {
         checkAuthentication();
-        getTalks()
+    }, [isAuthenticated, router]);
+
+    useEffect(() => {
+        getTalks();
     }, []);
 
     return (
@@ -89,11 +92,11 @@ const Presential = () => {
 
             <Meta title='CO SSI 2025 | Registrar presença' />
 
-            <NavBar name = {"Registrar Presença"}/>
+            <NavBar name={"Registrar Presença"} />
 
             <PresenceWrapper>
                 <div className='section-container'>
-                    
+
                     <h5>Registrar presença</h5>
 
                     {accessAllowed &&
@@ -101,37 +104,37 @@ const Presential = () => {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
                                     <>
-                                    <label>ID da palestra:</label>
-                                    <div className = "form-input">
-                                        <select 
-                                        id='lectureId' 
-                                        className={`${errors.lectureId && 'error-border'}`}
-                                        {...register("lectureId", { required: true, minLength: 1, })}>
-                                            {
-                                                talks
-                                                .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
-                                                .filter(talk => {
-                                                        const today = new Date().toDateString()
-                                                        const talkDate = new Date(talk.start_time).toDateString()
-                                                        if (today == talkDate) return talkDate
-                                                    }
-                                                )
-                                                .filter(talk => {
-                                                    const current_time = new Date()
-                                                    const start_time = new Date(talk.start_time)
-                                                    const start_timeOffset = new Date(start_time.getTime() + 20 * 60000)
-                                                    return start_timeOffset > current_time;
-                                                })
-                                                .map((talk) => {
-                                                    const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
-                                                        return(
-                                                            <option key = {talk.id} value = {talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                        <label>ID da palestra:</label>
+                                        <div className="form-input">
+                                            <select
+                                                id='lectureId'
+                                                className={`${errors.lectureId && 'error-border'}`}
+                                                {...register("lectureId", { required: true, minLength: 1, })}>
+                                                {
+                                                    talks
+                                                        .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
+                                                        .filter(talk => {
+                                                            const today = new Date().toDateString()
+                                                            const talkDate = new Date(talk.start_time).toDateString()
+                                                            if (today == talkDate) return talkDate
+                                                        }
                                                         )
-                                                    })
-                                            }
-                                        </select>
-                                    </div>
-                                
+                                                        .filter(talk => {
+                                                            const current_time = new Date()
+                                                            const start_time = new Date(talk.start_time)
+                                                            const start_timeOffset = new Date(start_time.getTime() + 20 * 60000)
+                                                            return start_timeOffset > current_time;
+                                                        })
+                                                        .map((talk) => {
+                                                            const formattedStart = new Date(talk.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false })
+                                                            return (
+                                                                <option key={talk.id} value={talk.id}>{talk.id} - {talk.title} - {formattedStart.toString()}</option>
+                                                            )
+                                                        })
+                                                }
+                                            </select>
+                                        </div>
+
 
                                         <InputBox>
                                             <label htmlFor='document'>Código do inscrito:</label>
