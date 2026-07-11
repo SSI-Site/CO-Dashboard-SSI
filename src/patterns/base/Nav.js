@@ -24,7 +24,6 @@ const NavBar = ({name}) => {
     const [isOpen, setIsOpen] = useState(true); //Gambiarra para manter a navbar no desktop presente quando mudar de página
 
     const handleLogout = async () => {
-        setIsOpen(false);
         try {
             await signOut();
         } catch (error) {
