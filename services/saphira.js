@@ -1,23 +1,30 @@
 import axios from 'axios';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
-import cookie from 'js-cookie';
 
 axios.defaults.withCredentials = true;
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.baseURL = BASE_URL
 
-axios.interceptors.request.use((config) => {
-    const csrfToken = cookie.get('csrftoken');
-    if (csrfToken) {
-        config.headers['X-CSRFToken'] = csrfToken;
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
-
 const saphira = {
+    // Função para obter o token CSRF e configurá-lo nos headers globais do Axios
+    getCsrfToken: async () => {
+        try {
+            console.log("1. Buscando CSRF Token na API...");
+            const response = await axios.get('/csrf');
+            const token = response.data.csrfToken;
+            
+            console.log("2. Token recebido:", token);
+            
+            // Injeta o token nos headers
+            axios.defaults.headers.common['X-CSRFToken'] = token;
+            
+            // Verifica se o Axios realmente salvou o header
+            console.log("3. Headers globais do Axios:", axios.defaults.headers.common);
+            
+            return token;
+        } catch (error) {
+            console.error("Erro ao buscar o CSRF Token:", error);
+        }
+    },
 
     adminLogIn : async (username, password) => {
         const requestUrl = "/admin/login";
