@@ -89,7 +89,7 @@ const Winners = () => {
                         students.map((student, index) => {
 
                             return (
-                                <Winner $isEven = {index % 2}>
+                                <Winner key={index}  $isEven = {index % 2}>
                                     <p>{student.code}</p>
                                     <p>{student.name}</p>
                                     <p>{student.email}</p>
