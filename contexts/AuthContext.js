@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const validateSession = async () => {
             try {
-                await saphira.getCsrfToken();
                 const res = await saphira.getLectures();
                 setIsAuthenticated(res?.status === 200);
             } catch (error) {
@@ -24,8 +23,6 @@ export function AuthProvider({ children }) {
 
     const signIn = async (username, password) => {
         try {
-            await saphira.getCsrfToken();
-
             const res = await saphira.adminLogIn(username, password);
 
             if (res.status === 200) {
