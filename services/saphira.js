@@ -1,7 +1,7 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
-const ENV = process.env.ENVIRONMENT;
+const ENV = process.env.NEXT_PUBLIC_ENVIRONMENT;
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
