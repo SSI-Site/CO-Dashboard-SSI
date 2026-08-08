@@ -1,8 +1,18 @@
 import axios from 'axios';
+import cookie from 'js-cookie';
 const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
+const ENV = process.env.ENVIRONMENT;
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = BASE_URL
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+if (ENV == 'PROD')
+    // Producao nao precisa de proxy reverso
+    axios.defaults.baseURL = BASE_URL;
+else
+    // Dev (local) precisa de proxy reverso
+    axios.defaults.baseURL = "http://localhost:3000/api";
 
 const saphira = {
     // Função para obter o token CSRF e configurá-lo nos headers globais do Axios
