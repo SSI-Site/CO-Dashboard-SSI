@@ -34,12 +34,10 @@ const NavBar = ({name}) => {
     useEffect(() => {
         const main = document.getElementsByTagName('main')[0];
         if (isOpen) {
-            document.body.style.overflow = 'hidden';
             const width = document.documentElement.clientWidth;
             main.style.paddingLeft = width > 994 ? '16rem' : '0';
             main.style.transition = 'padding 200ms ease-in-out';
         } else {
-            document.body.style.overflow = 'unset';
             main.style.marginLeft = '0rem';
             main.style.paddingLeft = '0';
         }
@@ -56,6 +54,7 @@ const NavBar = ({name}) => {
                     width = {180}
                     height = {40}
                     alt = "LogoHorizontal"
+                    priority 
                     />
                 </div>
 

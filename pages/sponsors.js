@@ -105,6 +105,7 @@ const Sponsors = () => {
                     {!isLoading && currentSponsors.map((sponsor, index) => {
                         return(
                             <SponsorRow
+                            key = {index}
                             update = {getSponsors}
                             isEven = {index % 2}
                             id = {sponsor.id}

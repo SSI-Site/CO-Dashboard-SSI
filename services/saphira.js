@@ -269,7 +269,7 @@ const saphira = {
     },
 
     getTalks: async() => {
-        const requestUrl = '/admin/talks'
+        const requestUrl = '/admin/talks/'
         return await axios.get(requestUrl)
     },
 
