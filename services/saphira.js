@@ -1,11 +1,18 @@
 import axios from 'axios';
-const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 import cookie from 'js-cookie';
+const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
+const ENV = process.env.NEXT_PUBLIC_ENVIRONMENT;
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-axios.defaults.baseURL = BASE_URL
+
+if (ENV == 'PROD')
+    // Producao nao precisa de proxy reverso
+    axios.defaults.baseURL = BASE_URL;
+else
+    // Dev (local) precisa de proxy reverso
+    axios.defaults.baseURL = "http://localhost:3000/api";
 
 axios.interceptors.request.use((config) => {
     const csrfToken = cookie.get('csrftoken');
@@ -18,7 +25,6 @@ axios.interceptors.request.use((config) => {
 });
 
 const saphira = {
-
     adminLogIn : async (username, password) => {
         const requestUrl = "/admin/login";
         const params = new URLSearchParams();
