@@ -50,13 +50,13 @@ const Login = () => {
 
     return (
         <PageWrapper>
-            <Meta title='COSSI 2025 | Login' />
+            <Meta title='COSSI 2026 | Login' />
 
             <LoginWrapper>
                 <div className='logo-container'>
                     <Image
-                        src='./images/logos/logo_horizontal.svg'
-                        alt='SSI 2025 - Logo'
+                        src='/images/logos/logo_horizontal.svg'
+                        alt='SSI 2026 - Logo'
                         width={198}
                         height={48}
                     />
@@ -64,7 +64,7 @@ const Login = () => {
                 <div className='section-container'>
                     <div className='section-header'>
                         <h2>Login</h2>
-                        <p>Acesso exclusivo para a Comissão Organizadora da SSI 2025</p>
+                        <p>Acesso exclusivo para a Comissão Organizadora da SSI 2026</p>
                     </div>
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -74,7 +74,7 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='user'> Usuário </label>
                                         <div className='form-input'>
-                                            <input id='user' type='text' placeholder='Insira o usuário' className={`${errors.user && 'error-border'}`}
+                                            <input id='user' type='text' placeholder='Insira o usuário' autoComplete="username" className={`${errors.user && 'error-border'}`}
                                                 {...register("user", { required: true, minLength: 1 })} />
                                         </div>
                                         {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
@@ -83,7 +83,7 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='password'> Senha </label>
                                         <div className='form-input'>
-                                            <input id='password' type='password' placeholder='Insira a senha' className={`${errors.password && 'error-border'}`}
+                                            <input id='password' type='password' placeholder='Insira a senha' autoComplete="current-password" className={`${errors.password && 'error-border'}`}
                                                 {...register("password", { required: true, minLength: 1 })} />
                                         </div>
                                         {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
@@ -101,7 +101,7 @@ const Login = () => {
                                         width={120}
                                         height={120}
                                         src={LoadingSVG}
-                                        alt='SSI 2025 - Loading' />
+                                        alt='SSI 2026 - Loading' />
                                 </Loading>
                             }
                         </form>
@@ -116,11 +116,12 @@ const Login = () => {
 
             <COSSIWraper>
                 <Image
-                    src="./images/co/login.jpg"
+                    src="/images/co/login.png"
                     width={1280}
                     height={960}
-                    alt="COSSI 2025"
+                    alt="COSSI 2026"
                     className='cossi-image'
+                    priority
                 />
             </COSSIWraper>
         </PageWrapper>
@@ -147,7 +148,7 @@ const PageWrapper = styled.section`
     justify-content: center;
     align-self: center;
     width: 100%;
-    height: 100vh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
+    height: 100dvh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
 
     * {
         color: var(--content-neutrals-primary);
@@ -193,6 +194,16 @@ const LoginWrapper = styled.div`
             flex-direction: column;
             gap: 0.5rem;
             margin-bottom: 1rem;
+
+            p {
+                font-size: 1rem;
+            }
+
+            @media (min-width:801px) {
+                p {
+                    font-size: 1.125rem;
+                }
+            }
         }
     }
 
@@ -225,6 +236,7 @@ const COSSIWraper = styled.aside`
 
         .cossi-image{
             width: 100%;
+            height: auto;
             object-fit: contain;
         }
     }
@@ -276,6 +288,7 @@ const FormWrapper = styled.div`
         padding: 0.75rem 1rem;
 
         border: 2px solid;
+        border-radius: 0.75rem;
         border-color: var(--background-neutrals-inverse);
         background: transparent;
         background-clip: padding-box;
@@ -344,5 +357,9 @@ const InputBox = styled.div`
         font: 700 0.875rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
+
+        @media (min-width:801px) {
+            font-size: 1rem;
+        } 
     }
 `

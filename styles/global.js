@@ -120,7 +120,7 @@ export default createGlobalStyle`
     }
 
     body, p, span, a {
-        font: 700 0.875rem/1.5rem 'AT Aero';
+        font: 400 0.875rem/1.5rem 'AT Aero';
     }
 
     a {
@@ -213,7 +213,7 @@ export default createGlobalStyle`
         }
 
         body, p, span, a {
-            font: 700 1rem/1.5rem 'AT Aero';
+            font: 400 1rem/1.5rem 'AT Aero';
         }
 
         label {
