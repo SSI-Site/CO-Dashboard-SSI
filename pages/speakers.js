@@ -164,13 +164,14 @@ const Speakers = () => {
                     }
 
                     {isLoading &&
-                        <Image
-                            src = {LoadingSVG}
-                            width={120}
-                            height={50}
-                            alt = "Loading"
-                            className = "allRow"
-                        />
+                        <div className="allRow">
+                            <Image
+                                src = {LoadingSVG}
+                                width={120}
+                                height={50}
+                                alt = "Loading"
+                            />
+                        </div>
                     }
 
                 </PalestrantesWrapper>

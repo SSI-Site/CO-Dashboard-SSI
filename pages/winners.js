@@ -2,6 +2,7 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 // Components
 import Button from "../src/components/Button";
@@ -142,6 +143,17 @@ const Winners = () => {
                                 {fullData.length === 0 ? "Sem vencedores, ainda!" : "Nenhum vencedor encontrado para esta busca."}
                             </p>
                         )
+                    }
+                    {
+                        isLoading &&
+                        <div className = "allRow">
+                            <Image
+                                src = {LoadingSVG}
+                                width={120}
+                                height={50}
+                                alt = "Loading..."
+                            />
+                        </div>
                     }
                 </WinnersWrapper>   
             </WinnersContainer>
