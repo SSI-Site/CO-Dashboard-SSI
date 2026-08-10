@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 //saphira
 import saphira from "../services/saphira";
@@ -22,10 +23,18 @@ const TalkForm = () => {
     const [speakers, setSpeakers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [selectedSpeakers, setSelectedSpeakers] = useState([])
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
+    const {register, handleSubmit, watch, formState: {errors}} = useForm()
 
     const postTalk = async(talk) => {
         try{
+            Swal.fire({
+                title: 'Processando...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
             if (!id){
                 await saphira.postTalk(
                     `${talk.date}T${talk.start_time}`,
@@ -51,12 +60,26 @@ const TalkForm = () => {
                     talk.description
                 )
             }
-        }
-        catch(err){
-            console.log("Ocorreu um erro no POST da palestra", err)
-        }
-        finally{
+
+            // Exibe mensagem de sucesso e SÓ ENTÃO redireciona
+            await Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: `Palestra ${id ? 'atualizada' : 'adicionada'} com sucesso!`,
+                timer: 1000,
+                showConfirmButton: false
+            });
+            
             router.push('/talks')
+            
+        } catch(err){
+            console.error("Ocorreu um erro no POST da palestra", err.response)
+            // Informa ao usuário que algo deu errado e NÃO redireciona
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Não foi possível salvar a palestra. Verifique os dados e tente novamente.',
+            });
         }
     }
 
@@ -84,9 +107,13 @@ const TalkForm = () => {
                 setSelectedSpeakers(names)
             }
         }
-
         catch(err){
-            console.log(err)
+            console.error(err)
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro de Carregamento',
+                text: 'Não foi possível carregar os dados desta palestra.',
+            });
         }
         finally{
             setIsLoading(false)
@@ -94,7 +121,6 @@ const TalkForm = () => {
     }
 
     const fetchData = async() => {
-
         try{
             const [speakerRes, sponsorRes ] = await Promise.all([
                 saphira.getSpeakers(),
@@ -107,28 +133,61 @@ const TalkForm = () => {
             if (id) getTalk()
             else setIsLoading(false)
         }
-
         catch(err){
-            console.log(err)
+            console.error(err)
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Houve um problema ao buscar palestrantes ou patrocinadores.',
+            });
+            setIsLoading(false) // Adicionado para destravar a tela mesmo com erro
         }
     }
 
     const removeTalk = async(id) => {
-        await saphira.removeTalk(id)
-        router.push('/talks')
+        // Pede confirmação antes de deletar
+        const result = await Swal.fire({
+            title: 'Tem certeza?',
+            text: "Você não poderá reverter isso!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122', // Usando a cor do seu botão
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, deletar!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                Swal.fire({ title: 'Deletando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                await saphira.removeTalk(id)
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deletado!',
+                    text: 'A palestra foi removida.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                
+                router.push('/talks')
+            } catch (err) {
+                console.error("Erro ao deletar", err)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Houve um problema ao tentar excluir a palestra.',
+                });
+            }
+        }
     }
 
     useEffect(() => {
         if (router.isReady){
-            try{
-                fetchData()
-            }
-            catch(err){
-                console.log(err)
-            }
+            fetchData()
         }
-    }, [])
-
+    }, [router.isReady])
 
     return(
         <>
@@ -148,7 +207,7 @@ const TalkForm = () => {
                             <FormGroup>
                                 <label htmlFor="title">Nome da palestra</label>
                                 <input id = "title" type = "text" defaultValue = {talkInfo.title ? talkInfo.title : ''}
-                                {...register('title')}
+                                {...register('title', { required: true })}
                                 placeholder = "Nome da palestra..."/>
                             </FormGroup>
 
@@ -157,10 +216,8 @@ const TalkForm = () => {
                                 <select id = "sponsor" {...register('sponsor')} defaultValue={talkInfo.sponsor != null? talkInfo.sponsor.id : 'Nenhuma'}>
                                     {sponsors.map((sponsor) => 
                                         <option key = {sponsor.id} value = {sponsor.id}>{sponsor.name}</option>
-                                                
                                     )}
                                     <option value = {'Nenhuma'}>Nenhuma</option>
-
                                 </select>
                             </FormGroup>
                         </FormColumn>
@@ -173,56 +230,53 @@ const TalkForm = () => {
                             defaultValue = {talkInfo.description ? talkInfo.description : ''}
                             placeholder="Descrição da palestra... (no máximo 512 caracteres)"
                             {...register('description')}
-                            >   
-                            </textarea>
+                            />   
                         </FormGroup>
 
                         <FormGroup>
-                            
                            <SpeakerInput setSelectedSpeakers={setSelectedSpeakers} selectedSpeakers={selectedSpeakers} speakers = {speakers}/>
                         </FormGroup>
 
                         <FormColumn $columns = '1fr 1fr 2fr 2fr 2fr'>
                             <FormGroup>
-                                <label html = "start_time">Início</label>
+                                <label htmlFor="start_time">Início</label>
                                 <input id = "start_time" type = "time" defaultValue = {talkInfo.start_time ? formatedTime(talkInfo.start_time) : ''}
                                 {...register('start_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "end_time">Fim</label>
+                                <label htmlFor="end_time">Fim</label>
                                 <input id = "end_time" type = "time" defaultValue = {talkInfo.end_time ? formatedTime(talkInfo.end_time) : ''}
                                 {...register('end_time')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "date">Data</label>
-                                <input id = "date" type = "date" defaultValue = {talkInfo.end_time ? getDate(talkInfo.end_time) : ''}
+                                <label htmlFor="date">Data</label>
+                                <input id = "date" type = "date" defaultValue = {talkInfo.start_time ? getDate(talkInfo.start_time) : ''}
                                 {...register('date')}
                                 />
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "activity_type">Tipo de atividade</label>
+                                <label htmlFor="activity_type">Tipo de atividade</label>
                                 <select id = "activity_type" defaultValue = {talkInfo.activity_type ? talkInfo.activity_type : 'PR'}
                                 {...register('activity_type')}
                                 >
-                                    <option selected value = "PR">Palestra</option>
+                                    <option value = "PR">Palestra</option>
                                     <option value = "WS">Workshop</option>
-
                                 </select>
                             </FormGroup>
 
                             <FormGroup>
-                                <label html = "mode">Modalidade</label>
+                                <label htmlFor="mode">Modalidade</label>
                                 <select id = "mode"
                                 defaultValue = {talkInfo.mode ? talkInfo.mode : 'IP'}
                                 {...register('mode')}
                                 >
                                     <option value = "ON">Online</option>
-                                    <option value = "IP" selected >Presencial</option>
+                                    <option value = "IP">Presencial</option>
                                 </select>
                             </FormGroup>
                         </FormColumn>
@@ -231,7 +285,7 @@ const TalkForm = () => {
                     <FormFooter $update = {id ? true : false}>
                         {id && 
                             <Cancel>
-                                <Button style={{backgroundColor: '#F82122'}} onClick={() => removeTalk(id)}>Deletar palestra</Button>
+                                <Button type="button" style={{backgroundColor: '#F82122'}} onClick={() => removeTalk(id)}>Deletar palestra</Button>
                             </Cancel>
                         }
                         <FormButtons>
@@ -247,7 +301,6 @@ const TalkForm = () => {
 }
 
 export default TalkForm;
-
 
 const FormContainer = styled.div`
     width: 100%;
