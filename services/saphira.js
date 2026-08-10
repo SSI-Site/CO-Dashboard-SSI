@@ -206,21 +206,19 @@ const saphira = {
 
     updateGift: async(id, name, total_amount, min_presence, description) => {
         const requestUrl = `/admin/gifts/${id}`
-        const params = new URLSearchParams()
-        params.append("name", name)
-        params.append("description", description)
-        params.append("min_presence", min_presence)
-        params.append("total_amount", total_amount)
-        console.log('teste')
-        return await axios.put(
-            requestUrl,
-            params.toString(),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+        const payload = {
+            name: name,
+            description: description,
+            total_amount: Number(total_amount),
+            min_presence: Number(min_presence)
+        };
+
+        
+        return await axios.put(requestUrl, payload, {
+            headers: {
+                'Content-Type': 'application/json',
             }
-        )
+        });
     },
 
     postSponsor: async(name, url) => {
