@@ -80,6 +80,7 @@ const Gifts = () => {
                                     min_presence = {gift.min_presence}
                                     description = {gift.description}
                                     total_amount = {gift.total_amount}
+                                    update = {getGifts}
                                 />
                             )
                         })
