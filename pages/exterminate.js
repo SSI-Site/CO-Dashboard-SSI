@@ -35,9 +35,17 @@ const Exterminate = () => {
             await Swal.fire({
                 icon: 'success',
                 title: `Presença removida para ${data.document}`,
+                text: 'A operação foi um sucesso!',
+
+                background: 'var(--background-neutrals-secondary)',
+                color: 'var(--content-neutrals-primary)',
+                
                 showConfirmButton: true,
                 confirmButtonText: "Ok!",
-                confirmButtonColor: "#151023"
+                confirmButtonColor: "var(--brand-primary)",
+                
+                borderRadius: '2rem',
+                backdrop: `rgba(0,0,0,0.8)`
             });
 
         } catch (err) {
@@ -51,9 +59,16 @@ const Exterminate = () => {
                 icon: 'error',
                 title: 'Falha na remoção!',
                 text: errorMessage,
+
+                background: 'var(--background-neutrals-secondary)',
+                color: 'var(--content-neutrals-primary)',
+                
                 showConfirmButton: true,
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#151023"
+                confirmButtonText: "Ok!",
+                confirmButtonColor: "var(--brand-primary)",
+                
+                borderRadius: '2rem',
+                backdrop: `rgba(0,0,0,0.8)`
             });
 
         } finally {      

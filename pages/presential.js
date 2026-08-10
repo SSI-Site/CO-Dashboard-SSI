@@ -33,25 +33,39 @@ const Presential = () => {
             await Swal.fire({
                 icon: 'success',
                 title: `Presença adicionada para ${data.document}`,
+
+                background: 'var(--background-neutrals-secondary)',
+                color: 'var(--content-neutrals-primary)',
+                
                 showConfirmButton: true,
                 confirmButtonText: "Ok!",
-                confirmButtonColor: "#151023"
+                confirmButtonColor: "var(--brand-primary)",
+                
+                borderRadius: '2rem',
+                backdrop: `rgba(0,0,0,0.8)`
             });
 
         } catch (err) {
             // Prepara a mensagem de erro
             const errorMessage = err.response?.data?.talk 
                 ? "Palestra não encontrada" 
-                : (err.response);
+                : (err.response.data);
 
             // Mostra o alerta de erro e espera o usuário fechá-lo (await)
             await Swal.fire({
                 icon: 'error',
                 title: 'Falha na adição!',
-                text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                text: errorMessage,
+
+                background: 'var(--background-neutrals-secondary)',
+                color: 'var(--content-neutrals-primary)',
+                
                 showConfirmButton: true,
-                confirmButtonText: "Ok",
-                confirmButtonColor: "#151023"
+                confirmButtonText: "Ok!",
+                confirmButtonColor: "var(--brand-primary)",
+                
+                borderRadius: '2rem',
+                backdrop: `rgba(0,0,0,0.8)`
             });
 
         } finally {      
