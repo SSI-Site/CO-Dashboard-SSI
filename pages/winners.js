@@ -6,6 +6,7 @@ import Image from "next/image";
 
 // Components
 import Button from "../src/components/Button";
+import Pagination from "../src/components/Pagination";
 
 //saphira
 import saphira from "../services/saphira";
@@ -19,6 +20,9 @@ const Winners = () => {
     const [fullData, setFullData] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [query, setQuery] = useState('')
+
+    const [currentPage, setCurrentPage] = useState(1)
+    const [maxRows, setMaxRows] = useState(6)
 
     const getWinners = async () => { 
         setIsLoading(true);
@@ -53,7 +57,7 @@ const Winners = () => {
                 }));
 
                 setFullData(combinedData);
-                setFilteredData(combinedData); // Inicialmente, os dados filtrados são iguais aos dados totais
+                setFilteredData(combinedData);
             }
         }
         catch(err){
@@ -63,6 +67,25 @@ const Winners = () => {
             setIsLoading(false)
         }
     }
+
+    // Dimensionamento automatico
+    useEffect(() => {
+        const calculateMaxRows = () => {
+            if (typeof window === "undefined") return;
+
+            const offsetHeight = 350; 
+            const rowHeight = 104; 
+            const availableHeight = window.innerHeight - offsetHeight;
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        calculateMaxRows();
+        window.addEventListener('resize', calculateMaxRows);
+
+        return () => window.removeEventListener('resize', calculateMaxRows);
+    }, [])
 
     // Função responsável por executar o filtro
     const handleSearch = (searchValue) => {
@@ -76,11 +99,19 @@ const Winners = () => {
         );
 
         setFilteredData(filtered);
+        setCurrentPage(1);
     }
 
     useEffect(() => {
         getWinners()
     }, [])
+
+    // Fatiamento dos dados para a página atual
+    const totalPages = Math.ceil(filteredData.length / maxRows);
+    const currentWinners = filteredData.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    );
 
     return (
         <>
@@ -108,7 +139,6 @@ const Winners = () => {
                                 }} 
                                 placeholder="Buscar por nome, e-mail, código ou palestra..."
                             />
-                            {/* Adicionado o onClick no botão */}
                             <Button onClick={() => handleSearch(query)}>Consultar</Button>
                         </WinnersFilter>
                     </WinnersInteractions>
@@ -124,9 +154,8 @@ const Winners = () => {
                 <WinnersWrapper>
                     {
                         !isLoading &&
-                        filteredData.map((item, index) => {
+                        currentWinners.map((item, index) => {
                             return (
-                                // Usamos o array unificado para renderizar
                                 <Winner key={item.id}  $isEven={index % 2}>
                                     <p>{item.code}</p>
                                     <p>{item.name}</p>
@@ -137,7 +166,6 @@ const Winners = () => {
                         })
                     }
                     {
-                        // Se não houver dados, exibe a mensagem apropriada
                         !isLoading && filteredData.length === 0 && (
                             <p className="allRow">
                                 {fullData.length === 0 ? "Sem vencedores, ainda!" : "Nenhum vencedor encontrado para esta busca."}
@@ -156,6 +184,17 @@ const Winners = () => {
                         </div>
                     }
                 </WinnersWrapper>   
+                
+                <WinnersFooter>
+                    <p>{filteredData.length} ganhadores encontrados</p>
+                    {!isLoading && filteredData.length !== 0 && (
+                        <Pagination 
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            totalPages={totalPages}
+                        />
+                    )}
+                </WinnersFooter>
             </WinnersContainer>
         </>
     )
@@ -277,5 +316,16 @@ const Winner = styled.div`
 
     p {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
+    }
+`
+
+const WinnersFooter = styled.footer`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    p {
+        font: 700 1rem/1.5rem 'At Aero Bold';
     }
 `
