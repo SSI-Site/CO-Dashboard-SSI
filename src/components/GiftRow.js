@@ -1,48 +1,110 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 // saphira
 import saphira from "../../services/saphira";
 
 // components
 import Button from "./Button";
+import SecondaryButton from "./SecondaryButton"; // <-- Importe se quiser usar para o Cancelar
 
-const GiftRow = ({id, name, total_amount, min_presence, description, balance, isEven}) => {
+const GiftRow = ({id, name, total_amount, min_presence, description, balance, isEven, update}) => {
+    const {register, handleSubmit, formState: {errors}} = useForm()
     const [isModalOpen, setisModalOpen] = useState(false)
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const updateGift = async(updatedGift) => {
         try{
-            const { response } = await saphira.updateGift(
+            Swal.fire({
+                title: 'Atualizando...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            await saphira.updateGift(
                 id,
                 updatedGift.name,
                 updatedGift.total_amount,
                 updatedGift.min_presence,
                 updatedGift.description
             )
+            
+            await Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Brinde atualizado.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            setisModalOpen(false)
+
+            // Recarrega a tabela se a função update foi passada pelo componente pai
+            if (typeof update === 'function') {
+                await update();
+            }
         }
         catch(err){
-            console.log(err)
-        }
-        finally{
-            setisModalOpen(false)
+            console.error("Erro ao atualizar brinde:", err)
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: 'Houve um problema ao atualizar o brinde.',
+            });
         }
     }
 
     const deleteGift = async(id) => {
-        await saphira.deleteGift(id)
-        setisModalOpen(false)
-    }
+        const result = await Swal.fire({
+            title: 'Apagar Brinde?',
+            text: "Você não poderá desfazer essa ação!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, remover!',
+            cancelButtonText: 'Cancelar'
+        });
 
+        if (result.isConfirmed) {
+            try {
+                Swal.fire({ title: 'Deletando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                await saphira.deleteGift(id)
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deletado!',
+                    text: 'O brinde foi removido.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                setisModalOpen(false)
+
+                // Recarrega a tabela se a função update foi passada pelo componente pai
+                if (typeof update === 'function') {
+                    await update();
+                }
+            } catch (err) {
+                console.error("Erro ao deletar brinde:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Houve um erro no servidor ao tentar excluir o brinde.',
+                });
+            }
+        }
+    }
 
     return (
         <>
             {isModalOpen &&
-                <ModalOverlay onClick={() => setisModalOpen(false)}>
+                <ModalOverlay>
                     <PopUpContainer onClick={(e) => e.stopPropagation()}>
                         <PopUpHeader>
-                            <h5>{name}</h5>
+                            <h5>Editar Brinde</h5>
                             <div className = 'close' onClick={() => setisModalOpen(false)}>
                                 <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
@@ -53,39 +115,48 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance, is
                             <MainPopUp>
                                 <FormGroup>
                                     <label htmlFor="name">Nome</label>
-                                    <input id="name" type="text" defaultValue = {name}
-                                    {...register('name')}
+                                    <StyledInput id="name" type="text" defaultValue = {name}
+                                    $hasError={!!errors.name}
+                                    {...register('name', { required: true, maxLength: 64 })}
                                     placeholder="Digite o nome do brinde..."/>
                                 </FormGroup>
 
                                 <FormGroup>
                                     <label htmlFor="description">Descrição</label>
-                                    <input id="description" type="text" defaultValue = {description}
-                                    {...register('description')}
+                                    <StyledInput id="description" type="text" defaultValue = {description}
+                                    $hasError={!!errors.description}
+                                    {...register('description', { maxLength: 256 })}
                                     placeholder="Digite a descrição do brinde..."/>
                                 </FormGroup>
 
                                 <FormGroup>
-                                    <label htmlFor="total_amount">Quantidade total disponível</label>
-                                    <input id="total_amount" type="text" defaultValue = {total_amount}
-                                    {...register('total_amount')}
-                                    placeholder="Digite a quantidade disponível"/>
+                                    <label htmlFor="total_amount">Quantidade total</label>
+                                    <StyledInput id="total_amount" type="number" defaultValue = {total_amount}
+                                    $hasError={!!errors.total_amount}
+                                    {...register('total_amount', { required: true, min: 0})}
+                                    placeholder="Digite a quantidade total do brinde"/>
                                 </FormGroup>
 
                                 <FormGroup>
-                                    <label htmlFor="min_presence">Quantidade mínima de presença</label>
-                                    <input id="min_presence" type="text" defaultValue = {min_presence}
-                                    {...register('min_presence')}
+                                    <label htmlFor="min_presence">Mínimo de presenças</label>
+                                    <StyledInput id="min_presence" type="number" defaultValue = {min_presence}
+                                    $hasError={!!errors.min_presence}
+                                    {...register('min_presence', { required: true, min: 1})}
                                     placeholder="Digite a quantidade mínima de presenças..."/>
                                 </FormGroup>
                             </MainPopUp>
+                            
                             <PopUpFooter>
-                                <Button onClick={() => deleteGift(id)} type = "button">Remover</Button>
-                                <Button type = "submit">Confirmar</Button>
+                                <DeleteWrapper>
+                                    <Button onClick={() => deleteGift(id)} type="button">Remover</Button>
+                                </DeleteWrapper>
+                                
+                                <ButtonsWrapper>
+                                    <SecondaryButton onClick={() => setisModalOpen(false)} type="button">Cancelar</SecondaryButton>
+                                    <Button type="submit">Salvar Alterações</Button>
+                                </ButtonsWrapper>
                             </PopUpFooter>
                         </form>
-
-
                     </PopUpContainer>
                 </ModalOverlay>
             }
@@ -97,7 +168,6 @@ const GiftRow = ({id, name, total_amount, min_presence, description, balance, is
                 <p>{total_amount - balance}</p>
             </Gift>
         </>
-
     )
 }
 
@@ -109,13 +179,10 @@ const ModalOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-
     background-color: rgba(0, 0, 0, 0.7);
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     z-index: 1000;
 `
 
@@ -180,40 +247,50 @@ const FormGroup = styled.div`
     label {
         font: 700 1rem/1.5rem 'At Aero Bold';
     }
+`;
 
-    input {
-        font: 400 1rem/1.5rem 'At Aero';
-        width: 100%;
-        //max-width: 30rem;
-        padding: 0.75rem 1rem;
-        background-color: transparent;
-        transition: all 200ms ease-in-out;
-        border: 1px solid var(--content-neutrals-primary);
+const StyledInput = styled.input`
+    font: 400 1rem/1.5rem 'At Aero';
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    transition: all 200ms ease-in-out;
+    border: 0.125rem solid ${({ $hasError }) => $hasError ? '#F82122' : 'var(--content-neutrals-primary)'} !important;
+    color: var(--content-neutrals-primary);
+    
+    &:hover, &:focus-visible{
+        background-color: var(--background-neutrals-secondary);
+    }
 
-        &:hover, &:focus-visible{
-            background-color: var(--background-neutrals-secondary);
-        }
-
-        &:focus-visible{
-            border: 1px solid var(--brand-primary);
-        }
+    &:focus-visible{
+        outline: none;
+        border-color: ${({ $hasError }) => $hasError ? '#F82122' : 'var(--brand-primary)'} !important;
     }
 `;
 
 const PopUpFooter = styled.div`
     margin-top: 1rem;
     display: flex;
+    justify-content: space-between;
     gap: 1.5rem;
-
-    button{
-        max-width: none;
-        
-        &:first-of-type{
-            background-color: #F82122;
-        }
-    }
-
 `
+
+const DeleteWrapper = styled.div`
+    display: flex;
+    button {
+        background-color: #F82122;
+        color: white;
+        max-width: none;
+    }
+`;
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    gap: 1.5rem;
+    button {
+         max-width: none;
+    }
+`;
 
 const Gift = styled.div`
     width: 100%;

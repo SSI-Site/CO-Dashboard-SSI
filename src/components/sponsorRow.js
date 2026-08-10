@@ -1,28 +1,97 @@
 import styled, { css } from "styled-components";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Swal from 'sweetalert2';
 
 // saphira
 import saphira from "../../services/saphira";
 
-// componenets
+// components
 import Button from "./Button";
+import SecondaryButton from "./SecondaryButton";
 
 const SponsorRow = ({id, name, url, isEven, update}) => {
 
     const [isModalOpen, setisModalOpen] = useState(false)
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
+    const {register, handleSubmit, formState: {errors}} = useForm()
 
     const updateSponsor = async (sponsor) => {
-        await saphira.updateSponsor(id, sponsor.name, sponsor.url)
-        await update()
-        setisModalOpen(false)
+        try {
+            Swal.fire({
+                title: 'Atualizando...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            await saphira.updateSponsor(id, sponsor.name, sponsor.url)
+            
+            await Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Empresa atualizada.',
+                timer: 1000,
+                showConfirmButton: false
+            });
+
+            await update()
+            setisModalOpen(false)
+        } catch (err) {
+            console.error("Erro ao atualizar empresa:", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: 'Houve um problema ao atualizar a empresa.',
+            });
+        }
     }
 
     const deleteSponsor = async (id) => {
-        await saphira.deleteSponsor(id)
-        await update()
-        setisModalOpen(false)
+        const result = await Swal.fire({
+            title: 'Apagar Empresa?',
+            text: "Você não poderá desfazer essa ação!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, remover!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                Swal.fire({ title: 'Deletando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                await saphira.deleteSponsor(id)
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deletado!',
+                    text: 'A empresa foi removida.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                await update()
+                setisModalOpen(false)
+            } catch (err) {
+                console.error("Erro ao deletar empresa:", err);
+                
+                // Trata especificamente o erro de tentar apagar um patrocinador associado a uma palestra
+                if(err?.response?.status === 400 || err?.response?.status === 409) {
+                    Swal.fire({
+                       icon: 'error',
+                       title: 'Não é possível apagar',
+                       text: 'Esta empresa está associada a uma ou mais palestras. Remova-a das palestras primeiro.',
+                   });
+               } else {
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Erro!',
+                       text: 'Houve um erro no servidor ao tentar excluir.',
+                   });
+               }
+            }
+        }
     }
 
     return (
@@ -46,24 +115,32 @@ const SponsorRow = ({id, name, url, isEven, update}) => {
                                         <FormGroup>
                                             <StyledLabel htmlFor="name">Nome</StyledLabel>
                                             <StyledInput id="name" type="text" defaultValue = {name}
-                                            {...register('name')}
+                                            $hasError={!!errors.name}
+                                            {...register('name', { required: true, maxLength: 64 })}
                                             placeholder="Digite o nome da empresa"/>
                                         </FormGroup>
                                     </FormRow>
                                     <FormRow>
                                         <FormGroup>
                                             <StyledLabel htmlFor="url">URL do site</StyledLabel>
-                                            <StyledInput id="url" type="text" defaultValue = {url}
-                                            {...register('url')}
-                                            placeholder="Digite a URL do site..."/>
+                                            <StyledInput id="url" type="url" defaultValue = {url}
+                                            $hasError={!!errors.url}
+                                            {...register('url', { required: true, maxLength: 200 })}
+                                            placeholder="https://www.exemplo.com.br"/>
                                         </FormGroup>
                                     </FormRow>
                                 </FormContainer>
                             
                             </MainPopUp>
                             <PopUpFooter>
-                                <Button onClick={() => deleteSponsor(id)} type="button">Remover</Button>
-                                <Button type="submit">Salvar Alterações</Button>
+                                <DeleteWrapper>
+                                    <Button onClick={() => deleteSponsor(id)} type="button">Remover</Button>
+                                </DeleteWrapper>
+
+                                <ButtonsWrapper>
+                                    <SecondaryButton onClick={() => setisModalOpen(false)} type="button">Cancelar</SecondaryButton>
+                                    <Button type="submit">Salvar Alterações</Button>
+                                </ButtonsWrapper>
                             </PopUpFooter>
                         </form>
                     </ModalContainer>
@@ -99,7 +176,7 @@ const ModalOverlay = styled.div`
 const ModalContainer = styled.div`
     background-color: var(--background-neutrals-secondary);
     width: 90%;
-    max-width: 62.5rem;
+    max-width: 34rem;
     padding: 2rem;
     border: 0.063rem;
     box-shadow: 0 0.313rem 1rem rgba(0,0,0,0.3);
@@ -177,11 +254,17 @@ const StyledLabel = styled.label`
 
 const InputStyle = css`
     background-color: var(--background-neutrals-secondary);
-    border: 0.125rem solid var(--background-neutrals-inverse) !important; //no figma a cor ta como var(--outline-neutrals-inverse), porém não tem essa cor no style
+    border: 0.125rem solid ${({ $hasError }) => $hasError ? '#F82122' : 'var(--background-neutrals-inverse)'} !important;
     padding: 0.75rem 1rem;
     color: var(--content-neutrals-primary);
     font-size: 1rem;
     width: 100%;
+    transition: border 0.2s ease-in-out;
+    
+    &:focus {
+        outline: none;
+        border-color: ${({ $hasError }) => $hasError ? '#F82122' : 'var(--brand-primary)'} !important;
+    }
 `;
 
 const StyledInput = styled.input`
@@ -191,18 +274,28 @@ const StyledInput = styled.input`
 const PopUpFooter = styled.footer`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 1.5rem;
     width: 100%;
     margin-top: 1rem;
-
+    
     button{
         max-width: none;
-
-        &:first-of-type{
-            background-color: #F82122;
-        }
     }
+`;
+
+const DeleteWrapper = styled.div`
+    display: flex;
+
+    button {
+        background-color: #F82122;
+        color: white;
+    }
+`;
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    gap: 1.5rem;
 `;
 
 const Sponsor = styled.div`

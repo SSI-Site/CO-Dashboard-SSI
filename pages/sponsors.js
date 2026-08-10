@@ -72,7 +72,7 @@ const Sponsors = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Empresas"/>
+            <Meta title = "COSSI 2026 | Empresas"/>
             <NavBar name = {"Empresas"}/>
 
             <SponsorsContainer>
@@ -82,8 +82,18 @@ const Sponsors = () => {
                     <SponsorsInteractions>
                         <SponsorsFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)} 
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredSponsors(sponsors);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
                                 placeholder = "Buscar por nome...">
                             </input>
                             <Button onClick={() => handleSearch(query)}>Consultar</Button>

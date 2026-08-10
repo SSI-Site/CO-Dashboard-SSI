@@ -78,7 +78,7 @@ const Talks = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Palestras"/>
+            <Meta title = "COSSI 2026 | Palestras"/>
             <NavBar name = "Palestras"/>
 
             <TalksContainer>
@@ -88,8 +88,18 @@ const Talks = () => {
                     <TalksInteractions>
                         <TalksFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)} 
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredTalks(talks);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
                             <Button onClick = {() => handleSearch(query)}>Consultar</Button>

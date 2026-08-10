@@ -88,7 +88,7 @@ const StudentView = () => {
     return(
         <>
         <NavBar name = {`Lista de Inscritos > ${userData.name}`}/>
-        <Meta title = {`${userData.name} | COSSI 2025 Dashboard`}/>
+        <Meta title = {`${userData.name} | COSSI 2026 Dashboard`}/>
         <StudentContainer>
             <StudentHeader>
                 <StudentData>

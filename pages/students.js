@@ -70,7 +70,7 @@ const Students = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Inscritos"/>
+            <Meta title = "COSSI 2026 | Inscritos"/>
             <NavBar name = {"Inscritos"}/> 
 
             <StudentsContainer>
@@ -80,11 +80,21 @@ const Students = () => {
                     <StudentsInteractions>
                         <StudentsFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)}
-                                placeholder = "Buscar por nome, email, código SSI...">
-                            </input>
-                            <Button onClick = {() => handleSearch(query)}>Consultar</Button>
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredStudents(students);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
+                                placeholder="Buscar por nome, email, código SSI..."
+                            />
+                            <Button onClick={() => handleSearch(query)}>Consultar</Button>
                         </StudentsFilter>
                     </StudentsInteractions>
                 </StudentsTitle>

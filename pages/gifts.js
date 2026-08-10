@@ -46,7 +46,7 @@ const Gifts = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Controle de brindes"/>
+            <Meta title = "COSSI 2026 | Controle de brindes"/>
             <NavBar name = {"Controle de brindes"}/>
 
             <GiftsContainer>
@@ -80,6 +80,7 @@ const Gifts = () => {
                                     min_presence = {gift.min_presence}
                                     description = {gift.description}
                                     total_amount = {gift.total_amount}
+                                    update = {getGifts}
                                 />
                             )
                         })
