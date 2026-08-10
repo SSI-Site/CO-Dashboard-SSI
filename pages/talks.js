@@ -195,7 +195,7 @@ const Talks = () => {
                 </TalksWrapper>
 
                 <TalksFooter>
-                    <p>{talks.length} palestras encontradas</p>
+                    <p>{filteredTalks.length} palestras encontradas</p>
                     {!isLoading && talks.length !== 0 && (
                         // Chamada limpa do novo componente de paginação
                         <Pagination 

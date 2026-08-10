@@ -24,7 +24,7 @@ const Students = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
-    const [query, setQuery] = useState('')
+    const [query, setQuery] = useState(11)
 
     const getStudents = async() => {
         setIsLoading(true)
