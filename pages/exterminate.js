@@ -41,11 +41,16 @@ const Exterminate = () => {
             });
 
         } catch (err) {
+            // Prepara a mensagem de erro
+            const errorMessage = err.response?.data?.talk 
+                ? "Palestra não encontrada" 
+                : (err.response.data.detail);
+            
             // Mostra o alerta de erro e espera o usuário fechá-lo (await)
             await Swal.fire({
                 icon: 'error',
                 title: 'Falha na remoção!',
-                text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
+                text: errorMessage,
                 showConfirmButton: true,
                 confirmButtonText: "Ok",
                 confirmButtonColor: "#151023"
