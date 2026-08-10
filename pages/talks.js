@@ -78,7 +78,7 @@ const Talks = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Palestras"/>
+            <Meta title = "COSSI 2026 | Palestras"/>
             <NavBar name = "Palestras"/>
 
             <TalksContainer>

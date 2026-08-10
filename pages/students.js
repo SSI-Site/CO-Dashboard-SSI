@@ -70,7 +70,7 @@ const Students = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Inscritos"/>
+            <Meta title = "COSSI 2026 | Inscritos"/>
             <NavBar name = {"Inscritos"}/> 
 
             <StudentsContainer>

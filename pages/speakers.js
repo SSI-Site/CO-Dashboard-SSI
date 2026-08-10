@@ -88,7 +88,7 @@ const Speakers = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Palestrantes"/>
+            <Meta title = "COSSI 2026 | Palestrantes"/>
             <NavBar name = {"Palestrantes"}/>
 
             <PalestrantesContainer>

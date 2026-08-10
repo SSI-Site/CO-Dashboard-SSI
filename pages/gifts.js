@@ -46,7 +46,7 @@ const Gifts = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Controle de brindes"/>
+            <Meta title = "COSSI 2026 | Controle de brindes"/>
             <NavBar name = {"Controle de brindes"}/>
 
             <GiftsContainer>

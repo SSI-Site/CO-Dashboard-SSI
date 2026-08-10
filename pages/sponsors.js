@@ -72,7 +72,7 @@ const Sponsors = () => {
 
     return (
         <>
-            <Meta title = "COSSI 2025 | Empresas"/>
+            <Meta title = "COSSI 2026 | Empresas"/>
             <NavBar name = {"Empresas"}/>
 
             <SponsorsContainer>

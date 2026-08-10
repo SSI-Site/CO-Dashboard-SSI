@@ -84,7 +84,7 @@ const Winners = () => {
     return (
         <>
             <NavBar name={"Realizar Sorteio > Lista de ganhadores"} />
-            <Meta title="COSSI 2025 | Ganhadores dos sorteios" />
+            <Meta title="COSSI 2026 | Ganhadores dos sorteios" />
 
             <WinnersContainer>
                 <WinnersTitle>

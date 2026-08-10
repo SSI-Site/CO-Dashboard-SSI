@@ -192,7 +192,7 @@ const TalkForm = () => {
     return(
         <>
             <NavBar name = {`Palestrantes > ${id ? 'Editar Palestra' : 'Adicionar Palestra'}`}/>
-            <Meta title = {`${id ? 'Editar Palestra' : 'Adicionar Palestra'} | COSSI 2025 Dashboard`}/>
+            <Meta title = {`${id ? 'Editar Palestra' : 'Adicionar Palestra'} | COSSI 2026 Dashboard`}/>
 
             <FormContainer onClick={(e) => e.stopPropagation()}>
                 <FormHeader>
