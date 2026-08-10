@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 // Components
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import ProgressBar from "../src/components/ProgressBar";
-import Swal from "sweetalert2";
+import SecondaryButton from "../src/components/SecondaryButton";
 
 // Saphira
 import saphira from "../services/saphira";
@@ -81,6 +82,10 @@ const StudentView = () => {
         }
     }
 
+    const handleBack = () => {
+        router.push('/students');
+    }
+
     useEffect(() => {
         fetchData()
     }, [])
@@ -109,7 +114,7 @@ const StudentView = () => {
             <StudentGiftsWrapper>
                 {!isLoading && 
                 gifts.sort((a, b) => a.min_presence - b.min_presence).map((gift, index) => 
-                    <GiftRow $isEven = {index % 2}>
+                    <GiftRow key={index} $isEven = {index % 2}>
                         <p>{gift.name}</p>
                         <ProgressBar 
                         totalPresence = {userData.total_presences_count}
@@ -128,6 +133,10 @@ const StudentView = () => {
                 )}
 
             </StudentGiftsWrapper>
+        
+            <SecondaryButton onClick={handleBack}>
+                Voltar
+            </SecondaryButton>
         </StudentContainer>
 
         </>
