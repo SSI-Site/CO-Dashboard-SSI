@@ -20,7 +20,7 @@ const Students = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [students, setStudents] = useState([])
     const [filteredStudents, setFilteredStudents] = useState([])
-    const [maxRows, setMaxRows] = useState(11)
+    const [maxRows, setMaxRows] = useState('')
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
@@ -63,9 +63,40 @@ const Students = () => {
         setCurrentPage(1)
     }
 
+    // Logica de dimensionamento dinâmico
     useEffect(() => {
-        getStudents()
+        const calculateMaxRows = () => {
+            // Se estiver rodando no servidor (Next.js SSR), ignora.
+            if (typeof window === "undefined") return;
 
+            // Estimativa de altura fixa (NavBar + Título + Search + Headers + Footer + Margens)
+            const offsetHeight = 350;
+            
+            // Altura estimada de cada StudentRow (4rem = 64px)
+            const rowHeight = 64; 
+            
+            // Calcula o espaço restante na tela
+            const availableHeight = window.innerHeight - offsetHeight;
+            
+            // Descobre quantas linhas cabem (arredondando para baixo)
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            // Atualiza o estado garantindo que sempre mostre pelo menos 3 linhas, 
+            // mesmo em monitores muito pequenos.
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        // Faz o cálculo assim que o componente é montado
+        calculateMaxRows();
+
+        // Adiciona um listener para recalcular sempre que a janela mudar de tamanho
+        window.addEventListener('resize', calculateMaxRows);
+
+        // Busca os estudantes na API
+        getStudents();
+
+        // Função de limpeza: remove um listener quando o componente for desmontado
+        return () => window.removeEventListener('resize', calculateMaxRows);
     }, [])
 
     return (
