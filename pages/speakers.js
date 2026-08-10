@@ -98,8 +98,18 @@ const Speakers = () => {
                     <PalestrantesInteractions>
                         <PalestrantesFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)}
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredSpeakers(speakers);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
                             <Button onClick = {() => handleSearch(query)}>Consultar</Button>

@@ -14,37 +14,46 @@ import LoadingSVG from '../public/loading.svg'
 
 const Winners = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const [winners, setWinners] = useState([])
-    const [students, setStudents] = useState([])
-    const [talks, setTalks] = useState([])
+    
+    const [fullData, setFullData] = useState([])
+    const [filteredData, setFilteredData] = useState([])
+    const [query, setQuery] = useState('')
 
-    const getWinners = async() => { 
+    const getWinners = async () => { 
         setIsLoading(true);
 
-        try{
+        try {
             const { data } = await saphira.getWinners()
+            
             if (data) {
-                setWinners(data)
-
+                // Busca os alunos
                 const studentsRes = await Promise.all(
                     data.map(async (item) => {
                         const res = await saphira.getStudentInfo(item.student);
-                        if (res) return res.data
+                        return res ? res.data : {};
                     })
                 )
-                if (studentsRes) setStudents(studentsRes);
 
+                // Busca as palestras
                 const talksRes = await Promise.all(
                     data.map(async item => {
                         const res = await saphira.getTalk(item.talk)
-                        if (res) return res.data
+                        return res ? res.data : {};
                     })
                 )
 
-                setTalks(talksRes)
-                
-            }
+                // Unifica tudo em um único array de objetos para facilitar o filtro e a renderização
+                const combinedData = data.map((item, index) => ({
+                    id: item.id || index, // Usa o id do winner ou o index como fallback para a key
+                    code: studentsRes[index]?.code || 'N/A',
+                    name: studentsRes[index]?.name || 'N/A',
+                    email: studentsRes[index]?.email || 'N/A',
+                    talkTitle: talksRes[index]?.title || 'N/A'
+                }));
 
+                setFullData(combinedData);
+                setFilteredData(combinedData); // Inicialmente, os dados filtrados são iguais aos dados totais
+            }
         }
         catch(err){
             console.log("Houve um erro na hora de pegar os ganhadores!", err)
@@ -54,14 +63,28 @@ const Winners = () => {
         }
     }
 
+    // Função responsável por executar o filtro
+    const handleSearch = (searchValue) => {
+        const q = searchValue.toLowerCase();
+        
+        const filtered = fullData.filter(item => 
+            item.name.toLowerCase().includes(q) ||
+            item.code.toLowerCase().includes(q) ||
+            item.email.toLowerCase().includes(q) ||
+            item.talkTitle.toLowerCase().includes(q)
+        );
+
+        setFilteredData(filtered);
+    }
+
     useEffect(() => {
         getWinners()
     }, [])
 
     return (
         <>
-            <NavBar name = {"Realizar Sorteio > Lista de ganhadores"}/>
-            <Meta title = "COSSI 2025 | Ganhadores dos sorteios"/>
+            <NavBar name={"Realizar Sorteio > Lista de ganhadores"} />
+            <Meta title="COSSI 2025 | Ganhadores dos sorteios" />
 
             <WinnersContainer>
                 <WinnersTitle>
@@ -69,10 +92,23 @@ const Winners = () => {
 
                     <WinnersInteractions> 
                         <WinnersFilter>
-                            <input 
-                                placeholder = "Buscar por nome, id, código...">
-                            </input>
-                            <Button>Consultar</Button>
+                            <input
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredData(fullData);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }} 
+                                placeholder="Buscar por nome, e-mail, código ou palestra..."
+                            />
+                            {/* Adicionado o onClick no botão */}
+                            <Button onClick={() => handleSearch(query)}>Consultar</Button>
                         </WinnersFilter>
                     </WinnersInteractions>
                 </WinnersTitle>
@@ -83,34 +119,37 @@ const Winners = () => {
                     <label>Email</label>
                     <label>Palestra</label>
                 </WinnersGrid>
+                
                 <WinnersWrapper>
                     {
                         !isLoading &&
-                        students.map((student, index) => {
-
+                        filteredData.map((item, index) => {
                             return (
-                                <Winner key={index}  $isEven = {index % 2}>
-                                    <p>{student.code}</p>
-                                    <p>{student.name}</p>
-                                    <p>{student.email}</p>
-                                    <p>{talks[index].title}</p>
+                                // Usamos o array unificado para renderizar
+                                <Winner key={item.id}  $isEven={index % 2}>
+                                    <p>{item.code}</p>
+                                    <p>{item.name}</p>
+                                    <p>{item.email}</p>
+                                    <p>{item.talkTitle}</p>
                                 </Winner>
                             )
                         })
                     }
                     {
-                        !isLoading && winners.length === 0 &&
-                        <p className="allRow">Sem vencedores, ainda!</p>
+                        // Se não houver dados, exibe a mensagem apropriada
+                        !isLoading && filteredData.length === 0 && (
+                            <p className="allRow">
+                                {fullData.length === 0 ? "Sem vencedores, ainda!" : "Nenhum vencedor encontrado para esta busca."}
+                            </p>
+                        )
                     }
-                    
                 </WinnersWrapper>   
             </WinnersContainer>
         </>
-
     )
 }
 
-export default Winners
+export default Winners;
 
 const WinnersContainer = styled.div`
     padding: 1.5rem;
@@ -174,7 +213,6 @@ const WinnersInteractions = styled.div`
     height: 100%;
 
 `
-
 
 const WinnersGrid = styled.div`
     width: 100%;
