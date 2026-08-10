@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
-
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
 import Meta from '../src/infra/Meta';
@@ -18,38 +17,52 @@ const Presential = () => {
     const { isAuthenticated } = useAuth();
     const { register, getValues, setError, formState: { errors }, handleSubmit, reset } = useForm();
 
+    const { register, getValues, setError, setValue, setFocus, formState: { errors }, handleSubmit } = useForm();
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [talks, setTalks] = useState([])
 
-    const onSubmit = data => {
-        setIsLoading(true);
+    const onSubmit = async (data) => {
+        setIsLoading(true); // Bloqueia o formulário e mostra o loading
 
-        saphira.addPresenceToUser(data.lectureId, data.document)
-            .then((res) => {
-                setIsLoading(false);
-                Swal.fire({
-                    icon: 'info',
-                    title: `Presença adicionada para ${data.document}`,
-                    showConfirmButton: true,
-                    confirmButtonText: "Ok!",
-                    confirmButtonColor: "#151023"
-                })
+        try {
+            await saphira.addPresenceToUser(data.lectureId, data.document);
 
-            }, (err) => {
-                console.log(err.response.data)
-                setIsLoading(false);
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Falha na adição!',
-                    text: err.response.data.talk ? `Palestra não encontrada` : err.response.data,
-                    showConfirmButton: true,
-                    confirmButtonText: "Ok",
-                    confirmButtonColor: "#151023"
-                })
-
+            setValue('document', '');  // Limpa o campo de código
+            
+            // Mostra o alerta de sucesso e espera o usuário fechá-lo (await)
+            await Swal.fire({
+                icon: 'success',
+                title: `Presença adicionada para ${data.document}`,
+                showConfirmButton: true,
+                confirmButtonText: "Ok!",
+                confirmButtonColor: "#151023"
             });
 
+        } catch (err) {
+            // Prepara a mensagem de erro
+            const errorMessage = err.response?.data?.talk 
+                ? "Palestra não encontrada" 
+                : (err.response);
+
+            // Mostra o alerta de erro e espera o usuário fechá-lo (await)
+            await Swal.fire({
+                icon: 'error',
+                title: 'Falha na adição!',
+                text: errorMessage,
+                showConfirmButton: true,
+                confirmButtonText: "Ok",
+                confirmButtonColor: "#151023"
+            });
+
+        } finally {      
+            setIsLoading(false);  // Remove o loading
+            
+            // Timeout para dar tempo do react carregar o input ante de setar o foco nele
+            setTimeout(() => {
+                setFocus('document');// Devolve o foco para o campo de documento
+            }, 50);
+        }
     };
 
     const checkAuthentication = () => {
