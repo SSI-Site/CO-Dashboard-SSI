@@ -82,6 +82,34 @@ const StudentView = () => {
         }
     }
 
+    const handleCheckboxClick = (e, giftId) => {
+        // Previne que o checkbox marque sozinho instantaneamente
+        e.preventDefault();
+
+        // Encontra o brinde do usuário correspondente
+        const userGiftObj = userGifts.find(userGift => userGift.gift.id == giftId);
+        
+        if (!userGiftObj) return;
+
+        // Se o brinde já foi retirado, não faz nada (pois não tem volta)
+        if (userGiftObj.received) return; 
+
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja marcar este brinde como retirado? Esta alteração não tem volta!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#151023',
+            confirmButtonText: 'Sim, confirmar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                redeemGift(userGiftObj.id);
+            }
+        });
+    } 
+
     const handleBack = () => {
         router.push('/students');
     }
@@ -124,10 +152,11 @@ const StudentView = () => {
                         />
                         <div className = "checkboxWrapper">
                             <input 
-                            onChange={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
-                            disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
-                            checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
-                            type="checkbox"/>
+                                onClick={(e) => handleCheckboxClick(e, gift.id)}
+                                disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
+                                checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
+                                type="checkbox"
+                            />
                         </div>
                     </GiftRow>
                 )}
