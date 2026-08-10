@@ -1,37 +1,106 @@
 import styled, { css } from "styled-components";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import Swal from 'sweetalert2'; 
 
 // saphira
 import saphira from "../../services/saphira";
 
 // componenets
 import Button from "./Button";
+import SecondaryButton from "./SecondaryButton";
 
 const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, description, isEven, update}) => {
+    const {register, handleSubmit, formState: {errors}} = useForm()
     const [isModalOpen, setisModalOpen] = useState(false)
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
 
     const updateSpeaker = async (updatedSpeaker) => {
-        await saphira.updateSpeaker(
-            id,
-            updatedSpeaker.name,
-            updatedSpeaker.description,
-            updatedSpeaker.linkedin_link,
-            updatedSpeaker.instagram_link,
-            updatedSpeaker.pronouns,
-            updatedSpeaker.role
-        )
+        try {
+            Swal.fire({
+                title: 'Atualizando...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
 
-        await update()
-        setisModalOpen(false)
+            await saphira.updateSpeaker(
+                id,
+                updatedSpeaker.name,
+                updatedSpeaker.description,
+                updatedSpeaker.linkedin_link,
+                updatedSpeaker.instagram_link,
+                updatedSpeaker.pronouns,
+                updatedSpeaker.role
+            );
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Palestrante atualizado.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            await update(); // Chama a função do pai para recarregar a tabela
+            setisModalOpen(false);
+            
+        } catch(err) {
+            console.error("Erro ao atualizar", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: 'Houve um problema ao atualizar o palestrante.',
+            });
+        }
     }
 
     const deleteSpeaker = async (id) => {
-        await saphira.deleteSpeaker(id);
-        await update()
-        setisModalOpen(false);
-        /// NAO DEIXAR REMOVER SE ESTIVER EM UMA PALESTRA!!!!!
+        // Alerta de Confirmação com SweetAlert2
+        const result = await Swal.fire({
+            title: 'Apagar Palestrante?',
+            text: "Você não poderá desfazer essa ação!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, remover!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                Swal.fire({ title: 'Deletando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                await saphira.deleteSpeaker(id);
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deletado!',
+                    text: 'O palestrante foi removido.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                await update();
+                setisModalOpen(false);
+
+            } catch (err) {
+                console.error("Erro ao deletar palestrante", err);
+                
+                if(err?.response?.status === 400 || err?.response?.status === 409) {
+                     Swal.fire({
+                        icon: 'error',
+                        title: 'Não é possível apagar',
+                        text: 'Este palestrante está associado a uma ou mais palestras. Remova-o das palestras primeiro.',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro!',
+                        text: 'Houve um erro no servidor ao tentar excluir.',
+                    });
+                }
+            }
+        }
     }
 
     return (
@@ -41,7 +110,7 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                 <ModalContainer onClick={(e) => e.stopPropagation()}>
                     <ModalHeader>
                         <h5>Editar Palestrante</h5>
-                        <div className = 'close' onClick={() => setisModalOpen(false)}>
+                        <div className='close' onClick={() => setisModalOpen(false)}>
                             <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
                             </svg>
@@ -53,58 +122,70 @@ const PalestranteRow = ({id, name, pronouns, role, instagram, linkedin, descript
                             <FormRow $columns="1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="nome">Nome</StyledLabel>
-                                    <StyledInput id="nome" type="text" defaultValue = {name ? name : ''}
-                                    {...register('name')}
+                                    <StyledInput id="nome" type="text" defaultValue={name || ''}
+                                    $hasError={!!errors.name}
+                                    {...register('name', { required: true, maxLength: 64 })}
                                     placeholder="Insira o nome do Palestrante"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="cargo">Cargo</StyledLabel>
-                                    <StyledInput id="cargo" type="text" defaultValue = {role ? role : ''}
-                                    {...register('role')}
+                                    <StyledInput id="cargo" type="text" defaultValue={role || ''}
+                                    $hasError={!!errors.role}
+                                    {...register('role', { required: true, maxLength: 64 })}
                                     placeholder="Insira o cargo do Palestrante"/>
                                 </FormGroup>
                             </FormRow>
                             <FormRow $columns="auto 1fr 1fr">
                                 <FormGroup>
                                     <StyledLabel htmlFor="pronomes">Pronomes</StyledLabel>
-                                    <StyledInput id="pronomes" type="text" defaultValue = {pronouns ? pronouns : ''}
-                                    {...register('pronouns')}
+                                    <StyledInput id="pronomes" type="text" defaultValue={pronouns || ''}
+                                    $hasError={!!errors.pronouns}
+                                    {...register('pronouns', { maxLength: 16 })}
                                     placeholder="Elu/Delu"/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="instagram">Instagram</StyledLabel>
-                                    <StyledInput id="instagram" type="text" defaultValue = {instagram ? instagram : ''}
-                                    {...register('instagram_link')}
-                                    placeholder="Insira o link do Instagram"/>
+                                    <StyledInput id="instagram" type="url" defaultValue={instagram || ''}
+                                    $hasError={!!errors.instagram_link}
+                                    {...register('instagram_link', { maxLength: 64 })}
+                                    placeholder="https://instagram.com/..."/>
                                 </FormGroup>
                                 <FormGroup>
                                     <StyledLabel htmlFor="linkedin">Linkedin</StyledLabel>
-                                    <StyledInput id="linkedin" type="text" defaultValue = {linkedin ? linkedin : ''}
-                                    {...register('linkedin_link')}
-                                    placeholder="Insira o link do Linkedin"/>
+                                    <StyledInput id="linkedin" type="url" defaultValue={linkedin || ''}
+                                    $hasError={!!errors.linkedin_link}
+                                    {...register('linkedin_link', { maxLength: 64 })}
+                                    placeholder="https://linkedin.com/..."/>
                                 </FormGroup>
                             </FormRow>
                         </FormContainer>
                     
                         <FormGroup>
-                            <StyledLabel>Sobre</StyledLabel>
-                            <TextArea id="sobre" defaultValue = {description ? description : ''}
+                            <StyledLabel htmlFor="sobre">Sobre</StyledLabel>
+                            <TextArea id="sobre" defaultValue={description || ''}
                             maxLength={512}
-                            {...register('description')}
+                            $hasError={!!errors.description}
+                            {...register('description', { maxLength: 512 })}
                             placeholder="Escreva sobre quem é o palestrante (no máximo 512 caracteres)"/>
                         </FormGroup>
                     
                     </MainPopUp>
                     <PopUpFooter>
-                        <Button onClick={() => deleteSpeaker(id)} type="button">Remover</Button>
-                        <Button type="submit">Salvar Alterações</Button>
+                        <DeleteWrapper>
+                             <Button onClick={() => deleteSpeaker(id)} type="button">Remover</Button>
+                        </DeleteWrapper>
+                        
+                        <ButtonsWrapper>
+                             <Button type="button" onClick={() => setisModalOpen(false)} style={{ backgroundColor: 'transparent', border: '1px solid var(--content-neutrals-primary)' }}>Cancelar</Button>
+                             <Button type="submit">Salvar Alterações</Button>
+                        </ButtonsWrapper>
                     </PopUpFooter>
                 </form>
                 </ModalContainer>
             </ModalOverlay>
         }
 
-        <PalestranteWrapper onClick = {() => setisModalOpen(true)} $isEven = {isEven}>
+        <PalestranteWrapper onClick={() => setisModalOpen(true)} $isEven={isEven}>
             <p>{id.slice(0,3).toUpperCase()}</p>
             <p>{name}</p>
             <p>{pronouns}</p>
@@ -124,13 +205,10 @@ const ModalOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-
     background-color: rgba(0, 0, 0, 0.7);
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     z-index: 1000;
 `
 
@@ -141,7 +219,6 @@ const ModalContainer = styled.div`
     padding: 2rem;
     border: 0.063rem;
     box-shadow: 0 0.313rem 1rem rgba(0,0,0,0.3);
-
     color: var(--content-neutrals-primary);
 `
 
@@ -213,13 +290,20 @@ const StyledLabel = styled.label`
     color: var(--content-neutrals-primary, #FFF);
 `;
 
+// Lógica condicional para a cor da borda de erro adicionada aqui!
 const InputStyle = css`
     background-color: var(--background-neutrals-secondary);
-    border: 0.125rem solid var(--background-neutrals-inverse) !important; //no figma a cor ta como var(--outline-neutrals-inverse), porém não tem essa cor no style
+    border: 0.125rem solid ${({ $hasError }) => $hasError ? '#F82122' : 'var(--background-neutrals-inverse)'} !important;
     padding: 0.75rem 1rem;
     color: var(--content-neutrals-primary);
     font-size: 1rem;
     width: 100%;
+    transition: border 0.2s ease-in-out;
+
+    &:focus {
+        outline: none;
+        border-color: ${({ $hasError }) => $hasError ? '#F82122' : 'var(--brand-primary)'} !important;
+    }
 `;
 
 const StyledInput = styled.input`
@@ -240,17 +324,26 @@ const TextArea = styled.textarea`
 const PopUpFooter = styled.footer`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between; // Mudado para separar o deletar dos demais botoes
     gap: 1.5rem;
     width: 100%;
     margin-top: 1rem;
-    
-    button{
-        max-width: none;
+`;
 
-        &:first-of-type{
-            background-color: #F82122;
-        }
+// Adicionado wrappers para organizar o rodapé
+const DeleteWrapper = styled.div`
+    button {
+        max-width: none;
+        background-color: #F82122;
+        color: white;
+    }
+`;
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    gap: 1.5rem;
+    button {
+         max-width: none;
     }
 `;
 
