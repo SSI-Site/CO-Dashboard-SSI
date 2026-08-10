@@ -12,12 +12,16 @@ import LoadingSVG from '../public/loading.svg'
 import SecondaryButton from "../src/components/SecondaryButton";
 import GiftsPopUp from "../src/components/GiftPopUp";
 import GiftRow from "../src/components/GiftRow";
+import Pagination from "../src/components/Pagination";
 
 const Gifts = () => {
 
     const [gifts, setGifts] = useState([])
     const [isLoading, setisLoading] = useState(false);
     const [isOpen, setisOpen] = useState(false)
+
+    const [currentPage, setCurrentPage] = useState(1)
+    const [maxRows, setMaxRows] = useState(6)
 
     const getGifts = async() => {  
         setisLoading(true)
@@ -28,7 +32,7 @@ const Gifts = () => {
             }
         }
         catch(err){
-            console.log(err)
+            console.error(err)
         }
         finally{
             setisLoading(false)
@@ -40,9 +44,35 @@ const Gifts = () => {
         if (render) await getGifts()
     }
 
+    // Dimensionamento automatico 
+    useEffect(() => {
+        const calculateMaxRows = () => {
+            if (typeof window === "undefined") return;
+
+            const offsetHeight = 350; 
+            const rowHeight = 64; 
+            const availableHeight = window.innerHeight - offsetHeight;
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        calculateMaxRows();
+        window.addEventListener('resize', calculateMaxRows);
+
+        return () => window.removeEventListener('resize', calculateMaxRows);
+    }, [])
+
     useEffect(() => {
         getGifts()
     }, [])
+
+    // Lógica de fatiamento para a página atual
+    const totalPages = Math.ceil(gifts.length / maxRows);
+    const currentGifts = gifts.slice(
+        (currentPage - 1) * maxRows,
+        currentPage * maxRows
+    );
 
     return (
         <>
@@ -69,7 +99,7 @@ const Gifts = () => {
                 </GiftsGrid>
                 <GiftsWrapper>
                     {!isLoading && 
-                        gifts.map((gift, index) => {
+                        currentGifts.map((gift, index) => { // Renderiza apenas os da página (currentGifts)
                             return(
                                 <GiftRow
                                     isEven = {index % 2}
@@ -86,9 +116,8 @@ const Gifts = () => {
                         })
                     }
 
-
                     {!isLoading &&
-                        gifts.length == 0 &&
+                        gifts.length === 0 &&
                             <p className = 'allRow noSpeakers'>Sem brindes cadastrados :(</p>
                            
                     }
@@ -107,6 +136,13 @@ const Gifts = () => {
                 </GiftsWrapper> 
                 <GiftsFooter>
                     <p>{gifts.length} brindes encontrados</p>
+                    {!isLoading && gifts.length !== 0 && (
+                        <Pagination 
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            totalPages={totalPages}
+                        />
+                    )}
                 </GiftsFooter>  
             </GiftsContainer>
         </>
@@ -156,7 +192,6 @@ const GiftsInteraction = styled.div`
     }
 `
 
-
 const GiftsGrid = styled.div`
     width: 100%;
     border-block: 1px solid var(--outline-neutrals-secondary);
@@ -197,7 +232,8 @@ const GiftsWrapper = styled.div`
 const GiftsFooter = styled.div`
     width: 100%;
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
