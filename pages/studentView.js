@@ -156,6 +156,7 @@ const StudentView = () => {
                                 disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
                                 checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
                                 type="checkbox"
+                                readOnly
                             />
                         </div>
                     </GiftRow>
