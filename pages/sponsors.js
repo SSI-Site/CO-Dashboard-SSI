@@ -10,6 +10,7 @@ import saphira from "../services/saphira";
 // Components
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
+import Pagination from "../src/components/Pagination";
 import LoadingSVG from '../public/loading.svg'
 import SponsorRow from "../src/components/sponsorRow";
 import SponsorPopUp from "../src/components/SponsorPopUp";
@@ -24,7 +25,7 @@ const Sponsors = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [query, setQuery] = useState('')
     const [filteredSponsors, setFilteredSponsors] = useState([])
-    const maxRows = 11;
+    const [maxRows, setMaxRows] = useState(11)
 
     const getSponsors = async() => {
         if (!isLoading) setisLoading(true)
@@ -66,8 +67,40 @@ const Sponsors = () => {
         setCurrentPage(1)
     }
 
+        // Logica de dimensionamento dinâmico
     useEffect(() => {
-        getSponsors()
+        const calculateMaxRows = () => {
+            // Se estiver rodando no servidor (Next.js SSR), ignora.
+            if (typeof window === "undefined") return;
+
+            // Estimativa de altura fixa (NavBar + Título + Search + Headers + Footer + Margens)
+            const offsetHeight = 350;
+            
+            // Altura estimada de cada StudentRow (4rem = 64px)
+            const rowHeight = 64; 
+            
+            // Calcula o espaço restante na tela
+            const availableHeight = window.innerHeight - offsetHeight;
+            
+            // Descobre quantas linhas cabem (arredondando para baixo)
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            // Atualiza o estado garantindo que sempre mostre pelo menos 3 linhas, 
+            // mesmo em monitores muito pequenos.
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        // Faz o cálculo assim que o componente é montado
+        calculateMaxRows();
+
+        // Adiciona um listener para recalcular sempre que a janela mudar de tamanho
+        window.addEventListener('resize', calculateMaxRows);
+
+        // Chamdada da API
+        getSponsors();
+
+        // Função de limpeza: remove um listener quando o componente for desmontado
+        return () => window.removeEventListener('resize', calculateMaxRows);
     }, [])
 
     return (
@@ -143,24 +176,14 @@ const Sponsors = () => {
                     }
                 </SponsorsWrapper>   
                 <SponsorsFooter>
-                    <p>{currentSponsors.length} Parceiro/Apoiador encontrado</p>
-                    {!isLoading &&
-                        !sponsors.length == 0 &&
-                        <Pagination>
-                            <Button 
-                            className = {currentPage == 1 ? 'noInteraction' : ''}
-                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
-                            {Array.from({length: totalPages}, (_, i) => 
-                                <Button 
-                                className = {currentPage == i + 1 ? '': 'disabled'}
-                                key = {i + 1} 
-                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
-                            )}
-                            <Button 
-                            className = {currentPage == totalPages? 'noInteraction' : ''}
-                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                        </Pagination>
-                    }
+                    <p>{filteredSponsors.length} Parceiro/Apoiador encontrado</p>
+                    {!isLoading && sponsors.length !== 0 && (
+                        <Pagination 
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            totalPages={totalPages}
+                        />
+                    )}
                 </SponsorsFooter>
             </SponsorsContainer>
         </>
@@ -285,27 +308,6 @@ const SponsorsFooter = styled.footer`
 
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const Pagination = styled.div`
-    display: flex;
-    gap: 0.75rem;
-
-    button{
-        width: 2rem;
-        height: 2rem;
-        padding: 1.5rem;
-    }
-    .noInteraction{
-        color: var(--content-neutrals-primary);
-        background-color: var(--background-neutrals-tertiary);
-        pointer-events: none;
-    }
-
-    .disabled{
-        background-color: transparent;
-        border: 1px solid var(--content-neutrals-primary);
     }
 `
 
