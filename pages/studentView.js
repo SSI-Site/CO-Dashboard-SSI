@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 // Components
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import ProgressBar from "../src/components/ProgressBar";
-import Swal from "sweetalert2";
+import SecondaryButton from "../src/components/SecondaryButton";
 
 // Saphira
 import saphira from "../services/saphira";
@@ -81,6 +82,38 @@ const StudentView = () => {
         }
     }
 
+    const handleCheckboxClick = (e, giftId) => {
+        // Previne que o checkbox marque sozinho instantaneamente
+        e.preventDefault();
+
+        // Encontra o brinde do usuário correspondente
+        const userGiftObj = userGifts.find(userGift => userGift.gift.id == giftId);
+        
+        if (!userGiftObj) return;
+
+        // Se o brinde já foi retirado, não faz nada (pois não tem volta)
+        if (userGiftObj.received) return; 
+
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja marcar este brinde como retirado? Esta alteração não tem volta!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#151023',
+            confirmButtonText: 'Sim, confirmar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                redeemGift(userGiftObj.id);
+            }
+        });
+    } 
+
+    const handleBack = () => {
+        router.push('/students');
+    }
+
     useEffect(() => {
         fetchData()
     }, [])
@@ -88,7 +121,7 @@ const StudentView = () => {
     return(
         <>
         <NavBar name = {`Lista de Inscritos > ${userData.name}`}/>
-        <Meta title = {`${userData.name} | COSSI 2025 Dashboard`}/>
+        <Meta title = {`${userData.name} | COSSI 2026 Dashboard`}/>
         <StudentContainer>
             <StudentHeader>
                 <StudentData>
@@ -109,7 +142,7 @@ const StudentView = () => {
             <StudentGiftsWrapper>
                 {!isLoading && 
                 gifts.sort((a, b) => a.min_presence - b.min_presence).map((gift, index) => 
-                    <GiftRow $isEven = {index % 2}>
+                    <GiftRow key={index} $isEven = {index % 2}>
                         <p>{gift.name}</p>
                         <ProgressBar 
                         totalPresence = {userData.total_presences_count}
@@ -119,15 +152,21 @@ const StudentView = () => {
                         />
                         <div className = "checkboxWrapper">
                             <input 
-                            onChange={() => redeemGift(userGifts.filter(userGift => userGift.gift.id == gift.id)[0].id)}
-                            disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
-                            checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
-                            type="checkbox"/>
+                                onClick={(e) => handleCheckboxClick(e, gift.id)}
+                                disabled = {!userGifts.some(userGift => userGift.gift.id == gift.id)}
+                                checked = {userGifts.some(userGift => userGift.gift.id == gift.id && userGift.received)}
+                                type="checkbox"
+                                readOnly
+                            />
                         </div>
                     </GiftRow>
                 )}
 
             </StudentGiftsWrapper>
+        
+            <SecondaryButton onClick={handleBack}>
+                Voltar
+            </SecondaryButton>
         </StudentContainer>
 
         </>

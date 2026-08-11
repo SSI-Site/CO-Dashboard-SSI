@@ -14,6 +14,7 @@ const SecondaryButton = styled.button`
     gap: 0.5rem;
     border-radius: 0;
     border: 2px solid var(--background-neutrals-inverse);
+    border-radius: 0.75rem;
     background-color: transparent;
     transition: var(--transition-duration);
     white-space: nowrap;

@@ -3,19 +3,23 @@ import Meta from "../src/infra/Meta";
 import styled, {css} from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import useAuth from '../hooks/useAuth';
 
 // saphira
 import saphira from "../services/saphira";
 import LoadingSVG from '../public/loading.svg'
  
-// Componenets
+// Components
 import SecondaryButton from "../src/components/SecondaryButton";
 import Button from '../src/components/Button';
-import PalestrantePopUp from '../src/components/PalestrantePopUp'
-import PalestranteRow from '../src/components/PalestranteRow'
+import PalestrantePopUp from '../src/components/PalestrantePopUp';
+import PalestranteRow from '../src/components/PalestranteRow';
+import Pagination from "../src/components/Pagination"; // <-- Importando o novo componente!
 
 const Speakers = () => {
-
+    const { isAuthenticated } = useAuth();
+    const router = useRouter();
     const [speakers, setSpeakers] = useState([])
     const [filteredSpeakers, setFilteredSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
@@ -24,7 +28,7 @@ const Speakers = () => {
     // Funcionalidades
     const [currentPage, setCurrentPage] = useState(1)
     const [query, setQuery] = useState('')
-    const maxRows = 11;
+    const [maxRows, setMaxRows] = useState(11)
 
     const getPalestrantes = async() => {
         if (!isLoading) setisLoading(true);
@@ -36,11 +40,9 @@ const Speakers = () => {
                 setFilteredSpeakers(data)
             }
         }
-
         catch(error){
-            console.log(error)
+            console.error(error)
         }
-
         finally{
             setisLoading(false)
         }
@@ -51,9 +53,52 @@ const Speakers = () => {
         if (event) await getPalestrantes()
     }
 
+    // Logica de dimensionamento dinâmico
     useEffect(() => {
-        getPalestrantes()
+        const calculateMaxRows = () => {
+            // Se estiver rodando no servidor (Next.js SSR), ignora.
+            if (typeof window === "undefined") return;
+
+            // Estimativa de altura fixa (NavBar + Título + Search + Headers + Footer + Margens)
+            const offsetHeight = 350;
+            
+            // Altura estimada de cada StudentRow (4rem = 64px)
+            const rowHeight = 80; 
+            
+            // Calcula o espaço restante na tela
+            const availableHeight = window.innerHeight - offsetHeight;
+            
+            // Descobre quantas linhas cabem (arredondando para baixo)
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            // Atualiza o estado garantindo que sempre mostre pelo menos 3 linhas, 
+            // mesmo em monitores muito pequenos.
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        // Faz o cálculo assim que o componente é montado
+        calculateMaxRows();
+
+        // Adiciona um listener para recalcular sempre que a janela mudar de tamanho
+        window.addEventListener('resize', calculateMaxRows);
+
+        // Função de limpeza: remove um listener quando o componente for desmontado
+        return () => window.removeEventListener('resize', calculateMaxRows);
     }, [])
+
+    useEffect(() => {
+        if (isAuthenticated === true) {
+            getPalestrantes();
+        }
+
+        if (isAuthenticated === false) {
+            router.push('/');
+        }
+    }, [isAuthenticated, router])
+
+    if (isAuthenticated === null) {
+        return null;
+    }
 
     const totalPages = Math.ceil(filteredSpeakers.length / maxRows)
     const currentSpeakers = filteredSpeakers.slice(
@@ -62,7 +107,6 @@ const Speakers = () => {
     )
 
     const handleSearch = (e) => {
-        
         const query = e.toLowerCase()
         const filtered = speakers.filter(speaker => 
             speaker.name.toLowerCase().includes(query)
@@ -72,20 +116,9 @@ const Speakers = () => {
         setCurrentPage(1)
     }
 
-
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
-
-            <Meta title = "COSSI 2025 | Palestrantes"/>
+            <Meta title = "COSSI 2026 | Palestrantes"/>
             <NavBar name = {"Palestrantes"}/>
 
             <PalestrantesContainer>
@@ -95,8 +128,18 @@ const Speakers = () => {
                     <PalestrantesInteractions>
                         <PalestrantesFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)}
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredSpeakers(speakers);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
                             <Button onClick = {() => handleSearch(query)}>Consultar</Button>
@@ -146,41 +189,33 @@ const Speakers = () => {
                     }
 
                     {!isLoading &&
-                        speakers.length == 0 &&
+                        speakers.length === 0 &&
                             <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>     
                     }
 
                     {isLoading &&
-                        <Image
-                            src = {LoadingSVG}
-                            width={120}
-                            height={50}
-                            alt = "Loading"
-                            className = "allRow"
-                        />
+                        <div className="allRow">
+                            <Image
+                                src = {LoadingSVG}
+                                width={120}
+                                height={50}
+                                alt = "Loading"
+                            />
+                        </div>
                     }
 
                 </PalestrantesWrapper>
 
                 <PalestrantesFooter>
-                    <p>{currentSpeakers.length} palestrantes encontrados</p>
-                    {!isLoading &&
-                        !speakers.length == 0 &&
-                        <Pagination>
-                            <Button 
-                            className = {currentPage == 1 ? 'noInteraction' : ''}
-                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
-                            {Array.from({length: totalPages}, (_, i) => 
-                                <Button 
-                                className = {currentPage == i + 1 ? '': 'disabled'}
-                                key = {i + 1} 
-                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
-                            )}
-                            <Button 
-                            className = {currentPage == totalPages? 'noInteraction' : ''}
-                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                        </Pagination>
-                    }
+                    <p>{filteredSpeakers.length} palestrantes encontrados</p>
+                    {!isLoading && speakers.length !== 0 && (
+                        // Chamada limpa do novo componente de paginação
+                        <Pagination 
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            totalPages={totalPages}
+                        />
+                    )}
                 </PalestrantesFooter>
             </PalestrantesContainer>
         </>
@@ -260,7 +295,6 @@ const PalestrantesInteractions = styled.div`
     }
 `
 
-
 const PalestrantesGrid = styled.div`
     width: 100%;
     border-block: 1px solid var(--outline-neutrals-secondary);
@@ -305,26 +339,5 @@ const PalestrantesFooter = styled.footer`
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const Pagination = styled.div`
-    display: flex;
-    gap: 0.75rem;
-
-    button{
-        width: 2rem;
-        height: 2rem;
-        padding: 1.5rem;
-    }
-    .noInteraction{
-        color: var(--content-neutrals-primary);
-        background-color: var(--background-neutrals-tertiary);
-        pointer-events: none;
-    }
-
-    .disabled{
-        background-color: transparent;
-        border: 1px solid var(--content-neutrals-primary);
     }
 `

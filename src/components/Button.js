@@ -12,7 +12,7 @@ const Button = styled.button`
     height: 3rem;
     padding: var(--padding);
     gap: 0.5rem;
-    border-radius: 0;
+    border-radius: 0.75rem;
     border: var(--brand-primary);
     background-color: var(--background);
     transition: var(--transition-duration);

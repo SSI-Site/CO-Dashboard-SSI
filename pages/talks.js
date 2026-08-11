@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import {useRouter} from "next/router";
+import useAuth from '../hooks/useAuth';
 
 // saphira
 import saphira from "../services/saphira";
@@ -11,11 +12,13 @@ import saphira from "../services/saphira";
 // components
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
+import Pagination from "../src/components/Pagination";
 import LoadingSVG from '../public/loading.svg'
 import TalkRow from "../src/components/TalkRow";
 
 const Talks = () => {
     const router = useRouter()
+    const { isAuthenticated } = useAuth();
     const [isLoading, setisLoading] = useState(true)
     const [talks, setTalks] = useState([])
 
@@ -23,7 +26,7 @@ const Talks = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [query, setQuery] = useState('')
     const [filteredTalks, setFilteredTalks] = useState([])
-    const maxRows = 11;
+    const [maxRows, setMaxRows] = useState(11)
 
     const getTalks =  async()=> {
         setisLoading(true)
@@ -43,10 +46,52 @@ const Talks = () => {
         }
     }
 
+    // Logica de dimensionamento dinâmico
+    useEffect(() => {
+        const calculateMaxRows = () => {
+            // Se estiver rodando no servidor (Next.js SSR), ignora.
+            if (typeof window === "undefined") return;
+
+            // Estimativa de altura fixa (NavBar + Título + Search + Headers + Footer + Margens)
+            const offsetHeight = 350;
+            
+            // Altura estimada de cada StudentRow (4rem = 64px)
+            const rowHeight = 72; 
+            
+            // Calcula o espaço restante na tela
+            const availableHeight = window.innerHeight - offsetHeight;
+            
+            // Descobre quantas linhas cabem (arredondando para baixo)
+            const calculatedRows = Math.floor(availableHeight / rowHeight);
+            
+            // Atualiza o estado garantindo que sempre mostre pelo menos 3 linhas, 
+            // mesmo em monitores muito pequenos.
+            setMaxRows(Math.max(3, calculatedRows));
+        };
+
+        // Faz o cálculo assim que o componente é montado
+        calculateMaxRows();
+
+        // Adiciona um listener para recalcular sempre que a janela mudar de tamanho
+        window.addEventListener('resize', calculateMaxRows);
+
+        // Função de limpeza: remove um listener quando o componente for desmontado
+        return () => window.removeEventListener('resize', calculateMaxRows);
+    }, [])
 
     useEffect(() => {
-        getTalks()
-    }, [])
+        if (isAuthenticated === true) {
+            getTalks();
+        }
+
+        if (isAuthenticated === false) {
+            router.push('/');
+        }
+    }, [isAuthenticated, router])
+
+    if (isAuthenticated === null) {
+        return null;
+    }
 
     const totalPages = Math.ceil(filteredTalks.length / maxRows)
     const currentTalks = filteredTalks.slice(
@@ -63,20 +108,9 @@ const Talks = () => {
         setCurrentPage(1)
     }
 
-
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
-
-            <Meta title = "COSSI 2025 | Palestras"/>
+            <Meta title = "COSSI 2026 | Palestras"/>
             <NavBar name = "Palestras"/>
 
             <TalksContainer>
@@ -86,8 +120,18 @@ const Talks = () => {
                     <TalksInteractions>
                         <TalksFilter>
                             <input 
-                                type = "text"
-                                onChange={(e) => setQuery(e.target.value)} 
+                                type="text"
+                                onChange={(e) => {
+                                    setQuery(e.target.value);
+                                    if (e.target.value === '') {
+                                        setFilteredTalks(talks);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch(query);
+                                    }
+                                }}
                                 placeholder = "Buscar por nome, id, palestrante...">
                             </input>
                             <Button onClick = {() => handleSearch(query)}>Consultar</Button>
@@ -151,24 +195,15 @@ const Talks = () => {
                 </TalksWrapper>
 
                 <TalksFooter>
-                    <p>{talks.length} palestras encontradas</p>
-                    {!isLoading &&
-                        !talks.length == 0 &&
-                        <Pagination>
-                            <Button 
-                            className = {currentPage == 1 ? 'noInteraction' : ''}
-                            onClick={() => setCurrentPage(currentPage == 1 ? 1 : currentPage - 1)}>{"<"}</Button>
-                            {Array.from({length: totalPages}, (_, i) => 
-                                <Button 
-                                className = {currentPage == i + 1 ? '': 'disabled'}
-                                key = {i + 1} 
-                                onClick={() => setCurrentPage(i + 1)}>{i + 1}</Button>
-                            )}
-                            <Button 
-                            className = {currentPage == totalPages? 'noInteraction' : ''}
-                            onClick = {() => setCurrentPage(currentPage == totalPages ? currentPage : currentPage + 1)}>{">"}</Button>
-                        </Pagination>
-                    }
+                    <p>{filteredTalks.length} palestras encontradas</p>
+                    {!isLoading && talks.length !== 0 && (
+                        // Chamada limpa do novo componente de paginação
+                        <Pagination 
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            totalPages={totalPages}
+                        />
+                    )}
                 </TalksFooter>
             </TalksContainer>
         </>    
@@ -293,26 +328,5 @@ const TalksFooter = styled.footer`
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const Pagination = styled.div`
-    display: flex;
-    gap: 0.75rem;
-
-    button{
-        width: 2rem;
-        height: 2rem;
-        padding: 1.5rem;
-    }
-    .noInteraction{
-        color: var(--content-neutrals-primary);
-        background-color: var(--background-neutrals-tertiary);
-        pointer-events: none;
-    }
-
-    .disabled{
-        background-color: transparent;
-        border: 1px solid var(--content-neutrals-primary);
     }
 `

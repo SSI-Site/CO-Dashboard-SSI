@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 // saphira
 import saphira from "../../services/saphira";
@@ -9,79 +10,107 @@ import Button from "./Button";
 import SecondaryButton from "./SecondaryButton";
 
 const GiftsPopUp = ({isOpen, onClose}) => {
-    if (!isOpen){ // ESVAZIA OS CAMPOS
+    const {register, handleSubmit, reset, formState: {errors}} = useForm();
+    
+    if (!isOpen){ 
         return null;
     }
-
-    const {register, handleSubmit, watch, formState: {erros}} = useForm()
     
     const postGift = async(gift) => {
         try{
+            Swal.fire({
+                title: 'Processando...',
+                text: 'Adicionando o brinde...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
             await saphira.postGift(
                 gift.name,
                 gift.description,
                 gift.min_presence,
                 gift.total_amount
             )
-        }
-        catch(err){
-            console.log(err)
-        }
-        finally{
-            onClose(true)
-        }
 
+            await Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Brinde adicionado com sucesso.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            reset();
+            onClose(true); // Retorna true para o pai atualizar a lista
+
+        } catch(err){
+            console.error("Erro ao adicionar brinde:", err)
+            Swal.fire({
+                icon: 'error',
+                title: 'Falha ao adicionar',
+                text: 'Houve um problema de comunicação com o servidor. Verifique os dados e tente novamente.',
+            });
+        }
     }
 
+    const handleClose = () => {
+        reset();
+        onClose();
+    }
 
     return(
-        <PopUpOverlay onClick = {() => onClose()}>
+        <PopUpOverlay>
             <PopUpContainer onClick={(e) => e.stopPropagation()}>
                 <PopUpHeader>
                     <h5>Adicionar Brinde</h5>
-                    <div className = 'close' onClick={() => onClose()}>
+                    <div className='close' onClick={handleClose}>
                         <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
                         </svg>
                     </div>
                 </PopUpHeader>
-                <form action = "" onSubmit = {handleSubmit(postGift)}>
+                <form action="" onSubmit={handleSubmit(postGift)}>
                     <MainPopUp>
                         <FormGroup>
                             <label htmlFor="name">Nome</label>
-                            <input id="name" type="text"
-                            {...register('name')}
+                            <StyledInput id="name" type="text"
+                            $hasError={!!errors.name}
+                            {...register('name', { required: true, maxLength: 64 })}
                             placeholder="Digite o nome do brinde..."/>
                         </FormGroup>
 
                         <FormGroup>
                             <label htmlFor="description">Descrição</label>
-                            <input id="description" type="text"
-                            {...register('description')}
+                            <StyledInput id="description" type="text"
+                            $hasError={!!errors.description}
+                            {...register('description', { maxLength: 256 })}
                             placeholder="Digite a descrição do brinde..."/>
                         </FormGroup>
 
                         <FormGroup>
-                            <label htmlFor="total_amount">Quantidade total disponível</label>
-                            <input id="total_amount" type="number"
-                            {...register('total_amount')}
-                            placeholder="Digite a quantidade disponível"/>
+                            <label htmlFor="total_amount">Quantidade total</label>
+                            <StyledInput id="total_amount" type="number"
+                            $hasError={!!errors.total_amount}
+                            {...register('total_amount', { required: true, min: 0})}
+                            placeholder="Digite a quantidade total"/>
                         </FormGroup>
 
                         <FormGroup>
-                            <label htmlFor="min_presence">Quantidade mínima de presença</label>
-                            <input id="min_presence" type="number"
-                            {...register('min_presence')}
+                            <label htmlFor="min_presence">Mínimo de presenças</label>
+                            <StyledInput id="min_presence" type="number"
+                            $hasError={!!errors.min_presence}
+                            {...register('min_presence', { required: true, min: 1})}
                             placeholder="Digite a quantidade mínima de presenças..."/>
                         </FormGroup>
                     </MainPopUp>
 
                     <PopUpFooter>
-                        <SecondaryButton onClick={() => onClose()} type = "button">Cancelar</SecondaryButton>
-                        <Button type = "submit">Confirmar</Button>
+                        <SecondaryButton onClick={handleClose} type="button">Cancelar</SecondaryButton>
+                        <Button type="submit">Confirmar</Button>
                     </PopUpFooter>
                 </form>
-
             </PopUpContainer>
         </PopUpOverlay>
     )
@@ -95,13 +124,10 @@ const PopUpOverlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-
     background-color: rgba(0, 0, 0, 0.7);
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     z-index: 1000;
 `;
 
@@ -166,23 +192,24 @@ const FormGroup = styled.div`
     label {
         font: 700 1rem/1.5rem 'At Aero Bold';
     }
+`;
 
-    input {
-        font: 400 1rem/1.5rem 'At Aero';
-        width: 100%;
-        //max-width: 30rem;
-        padding: 0.75rem 1rem;
-        background-color: transparent;
-        transition: all 200ms ease-in-out;
-        border: 1px solid var(--content-neutrals-primary);
+const StyledInput = styled.input`
+    font: 400 1rem/1.5rem 'At Aero';
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    transition: all 200ms ease-in-out;
+    border: 0.125rem solid ${({ $hasError }) => $hasError ? '#F82122' : 'var(--content-neutrals-primary)'} !important;
+    color: var(--content-neutrals-primary);
 
-        &:hover, &:focus-visible{
-            background-color: var(--background-neutrals-secondary);
-        }
+    &:hover, &:focus-visible{
+        background-color: var(--background-neutrals-secondary);
+    }
 
-        &:focus-visible{
-            border: 1px solid var(--brand-primary);
-        }
+    &:focus-visible{
+        outline: none;
+        border-color: ${({ $hasError }) => $hasError ? '#F82122' : 'var(--brand-primary)'} !important;
     }
 `;
 
@@ -190,6 +217,7 @@ const PopUpFooter = styled.div`
     margin-top: 1rem;
     gap: 1.5rem;
     display: flex;
+    justify-content: flex-end;
 
     button{
         max-width: none;

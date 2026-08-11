@@ -2,9 +2,9 @@ import Head from 'next/head';
 import img_src from '../../public/images/logos/preview_logo.jpg';
 
 const Meta = ({  
-  title = 'CO Dashboard 2025',
+  title = 'CO Dashboard 2026',
   keywords = 'Semana, semana, Sistemas, sistemas, Informação, informação, informacao, USP, usp, EACH, each, SI, si, Evento, evento, palestras, tecnologia, universidade, universitário, universitario',
-  description = 'Destinado à Comissão Organizadora da SSI de 2025',
+  description = 'Destinado à Comissão Organizadora da SSI de 2026',
 }) => {
   return (
     <Head>

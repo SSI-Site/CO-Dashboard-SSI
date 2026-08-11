@@ -1,11 +1,18 @@
 import axios from 'axios';
-const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
 import cookie from 'js-cookie';
+const BASE_URL = process.env.NEXT_PUBLIC_SAPHIRA_URL;
+const ENV = process.env.NEXT_PUBLIC_ENVIRONMENT;
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-axios.defaults.baseURL = BASE_URL
+
+if (ENV == 'PROD')
+    // Producao nao precisa de proxy reverso
+    axios.defaults.baseURL = BASE_URL;
+else
+    // Dev (local) precisa de proxy reverso
+    axios.defaults.baseURL = "http://localhost:3000/api";
 
 axios.interceptors.request.use((config) => {
     const csrfToken = cookie.get('csrftoken');
@@ -18,7 +25,6 @@ axios.interceptors.request.use((config) => {
 });
 
 const saphira = {
-
     adminLogIn : async (username, password) => {
         const requestUrl = "/admin/login";
         const params = new URLSearchParams();
@@ -90,22 +96,6 @@ const saphira = {
     getStudentInfo: async (document) => {
         const requestUrl = `/admin/student/${document}/profile`
         return await axios.get(requestUrl);
-    },
-
-    generateOnlineToken: async (lectureId, currentTime) => {
-        const requestUrl = `/admin/tokens`
-        const params = new URLSearchParams();
-        params.append('talk', lectureId);
-        params.append('duration', '5');
-        params.append('begin', currentTime);
-        return await axios.post(
-            requestUrl,
-            params,
-            {
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
     },
 
     searchStudentByName: async (name) => {
@@ -216,21 +206,19 @@ const saphira = {
 
     updateGift: async(id, name, total_amount, min_presence, description) => {
         const requestUrl = `/admin/gifts/${id}`
-        const params = new URLSearchParams()
-        params.append("name", name)
-        params.append("description", description)
-        params.append("min_presence", min_presence)
-        params.append("total_amount", total_amount)
-        console.log('teste')
-        return await axios.put(
-            requestUrl,
-            params.toString(),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+        const payload = {
+            name: name,
+            description: description,
+            total_amount: Number(total_amount),
+            min_presence: Number(min_presence)
+        };
+
+        
+        return await axios.put(requestUrl, payload, {
+            headers: {
+                'Content-Type': 'application/json',
             }
-        )
+        });
     },
 
     postSponsor: async(name, url) => {
@@ -279,7 +267,7 @@ const saphira = {
     },
 
     getTalks: async() => {
-        const requestUrl = '/admin/talks'
+        const requestUrl = '/admin/talks/'
         return await axios.get(requestUrl)
     },
 

@@ -67,21 +67,12 @@ const Query = () => {
 
     useEffect(() => {
         checkAuthentication();
-    }, []);
+    }, [isAuthenticated, router]);
 
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    if (!document.cookie || !document.cookie.includes('co-auth')) {
-                        window.location.href = "/"
-                    }
-                `
-                }} 
-            />
 
-            <Meta title='CO SSI 2025 | Consultar presença' />
+            <Meta title='CO SSI 2026 | Consultar presença' />
 
             <NavBar />
             <QueryWrapper>
@@ -126,7 +117,7 @@ const Query = () => {
 
                                 {isLoading &&
                                     <Loading>
-                                        <img src='./loading.svg' alt='SSI 2025 - Loading' />
+                                        <img src='./loading.svg' alt='SSI 2026 - Loading' />
                                     </Loading>
                                 }
                             </form>
