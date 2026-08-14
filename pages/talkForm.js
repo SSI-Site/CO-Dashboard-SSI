@@ -226,9 +226,9 @@ const TalkForm = () => {
                             <label>Descrição</label>
                             <textarea
                             id = "description"
-                            maxLength={512}
+                            maxLength={1024}
                             defaultValue = {talkInfo.description ? talkInfo.description : ''}
-                            placeholder="Descrição da palestra... (no máximo 512 caracteres)"
+                            placeholder="Descrição da palestra... (no máximo 1024 caracteres)"
                             {...register('description')}
                             />   
                         </FormGroup>
