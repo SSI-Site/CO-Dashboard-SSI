@@ -30,6 +30,29 @@ const Presential = () => {
 
     const [showScanner, setShowScanner] = useState(false); // state para a câmera
 
+    const handleToggleScanner = () => {
+        if (!showScanner) { // Se estiver tentando abrir a câmera
+            const currentLectureId = getValues('lectureId');
+            
+            if (!currentLectureId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atenção',
+                    text: 'Selecione uma palestra primeiro para ler o QR Code!',
+                    background: 'var(--background-neutrals-secondary)',
+                    color: 'var(--content-neutrals-primary)',
+                    confirmButtonColor: "var(--brand-primary)",
+                    borderRadius: '2rem',
+                    backdrop: `rgba(0,0,0,0.8)`
+                });
+                return; // Impede que o scanner abra
+            }
+            setShowScanner(true);
+        } else {
+            setShowScanner(false); // Fecha a câmera
+        }
+    };
+
     const onSubmit = async (data) => {
         setIsLoading(true); // Bloqueia o formulário e mostra o loading
 
@@ -151,22 +174,38 @@ const Presential = () => {
 
         scanner.render(
             async (decodedText) => {
-                // Quando ler com sucesso:
+                const code = decodedText.trim(); 
+
+                // VALIDAÇÃO DE TAMANHO
+                if (code.length !== 3) {
+                    scanner.clear(); // Desliga a câmera para não bugar com vários alertas
+                    setShowScanner(false);
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'QR Code Inválido',
+                        text: `O código lido ("${code}") é invalido.`,
+                        background: 'var(--background-neutrals-secondary)',
+                        color: 'var(--content-neutrals-primary)',
+                        confirmButtonColor: "var(--brand-primary)",
+                        borderRadius: '2rem',
+                        backdrop: `rgba(0,0,0,0.8)`
+                    });
+                    
+                    return; // Interrompe a execução aqui para não enviar o onSubmit
+                }
+
+                // FLUXO DE SUCESSO
                 scanner.clear(); // Desliga a câmera
                 setShowScanner(false); // Esconde o leitor
                 
-                // Preenche o input do React Hook Form
-                setValue('document', decodedText);
+                // Preenche o input do React Hook Form com o código validado
+                setValue('document', code);
 
                 const currentLectureId = getValues('lectureId');
+                
                 if (currentLectureId) {
-                    await onSubmit({ lectureId: currentLectureId, document: decodedText });
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Atenção',
-                        text: 'Selecione uma palestra primeiro!'
-                    });
+                    await onSubmit({ lectureId: currentLectureId, document: code });
                 }
             },
             (errorMessage) => {
@@ -204,58 +243,54 @@ const Presential = () => {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading &&
                                     <>
-                                        <label>ID da palestra:</label>
-                                        <div className="form-input select-input">
-                                            <Controller
-                                                name="lectureId"
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        options={talkOptions}
-                                                        styles={customSelectStyles}
-                                                        placeholder="Selecione uma palestra..."
-                                                        noOptionsMessage={() => "Nenhuma palestra disponível no momento"}
-                                                        
-                                                        // Mapeia os dados entre o react-select e o react-hook-form
-                                                        value={talkOptions.find(option => option.value === field.value) || null}
-                                                        onChange={(selectedOption) => {
-                                                            // Manda apenas o ID para o seu onSubmit(data)
-                                                            field.onChange(selectedOption.value);
-                                                        }}
-                                                    />
-                                                )}
-                                            />
-                                        </div>
-
-
-                                        <InputBox>
-                                            <label htmlFor='document'>Código do inscrito:</label>
-                                            <div className='form-input'>
-                                                <input id='document' type='text' placeholder='Insira o documento' className={`${errors.document && 'error-border'}`}
-                                                    {...register("document", { required: true, minLength: 3 })} />
+                                        <HideableSection $hidden={showScanner}>
+                                            <label>ID da palestra:</label>
+                                            <div className="form-input select-input">
+                                                <Controller
+                                                    name="lectureId"
+                                                    control={control}
+                                                    rules={{ required: true }}
+                                                    render={({ field }) => (
+                                                        <Select
+                                                            {...field}
+                                                            options={talkOptions}
+                                                            styles={customSelectStyles}
+                                                            placeholder="Selecione uma palestra..."
+                                                            noOptionsMessage={() => "Nenhuma palestra disponível no momento"}
+                                                            value={talkOptions.find(option => option.value === field.value) || null}
+                                                            onChange={(selectedOption) => {
+                                                                field.onChange(selectedOption.value);
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
                                             </div>
-                                            {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
-                                        </InputBox>
 
-                                        <div className='form-buttons'>
+                                            <InputBox>
+                                                <label htmlFor='document'>Código do inscrito:</label>
+                                                <div className='form-input'>
+                                                    <input id='document' type='text' placeholder='Insira o documento' className={`${errors.document && 'error-border'}`}
+                                                        {...register("document", { required: true, minLength: 3 })} />
+                                                </div>
+                                                {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
+                                            </InputBox>
+
                                             <Button> Registrar </Button>
+                                        </HideableSection>
 
-                                            <ScannerWrapper>
-                                                <Button 
-                                                    type="button" 
-                                                    onClick={() => setShowScanner(!showScanner)}
-                                                >
-                                                    {showScanner ? 'Fechar Câmera' : 'Ler QR Code'}
-                                                    {!showScanner && <QRcodeIcon />}
-                                                </Button>
-                                                
-                                                {showScanner && (
-                                                    <div id="reader"></div>
-                                                )}
-                                            </ScannerWrapper>
-                                        </div>
+                                        <ScannerWrapper $isScanning={showScanner}>
+                                            <Button 
+                                                type="button" 
+                                                onClick={handleToggleScanner}
+                                            >
+                                                {showScanner ? 'Cancelar Leitura' : 'Ler QR Code'}
+                                                {!showScanner && <QRcodeIcon />}
+                                            </Button>
+                                            
+                                            {showScanner && (
+                                                <div id="reader"></div>
+                                            )}
+                                        </ScannerWrapper>
                                     </>
                                 }
 
@@ -502,14 +537,6 @@ const FormWrapper = styled.div`
         font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
-
-    .form-buttons {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        padding-top: 1rem;
-    }
 `
 
 const InputBox = styled.div`
@@ -527,16 +554,29 @@ const InputBox = styled.div`
     }
 `
 
+const HideableSection = styled.div`
+    width: 100%;
+    display: ${props => props.$hidden ? 'none' : 'flex'};
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+`
+
 const ScannerWrapper = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
 
     button {
         background: none;
         border-radius: 0.75rem;
         border: 2px solid var(--content-neutrals-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
 
     button:hover {
@@ -544,13 +584,15 @@ const ScannerWrapper = styled.div`
         color: var(--content-neutrals-inverse);
     }
 
-
     #reader {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
         background-color: white;
         border-radius: 1rem;
         overflow: hidden;
         border: 2px solid var(--brand-primary);
-        color: black; /* O html5-qrcode injeta botões padrão que precisam de contraste */
+        color: black; 
     }
     
     #reader button {
