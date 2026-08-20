@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
@@ -13,6 +14,12 @@ import NavBar from '../src/patterns/base/Nav';
 // components
 import Button from '../src/components/Button';
 
+const QRcodeIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M3.09048 11.25C2.61254 11.25 2.2251 10.8625 2.2251 10.3846V3.06534C2.2251 2.5874 2.61254 2.19995 3.09048 2.19995H10.3847C10.8627 2.19995 11.2501 2.5874 11.2501 3.06534V10.3846C11.2501 10.8625 10.8627 11.25 10.3847 11.25H3.09048ZM4.5001 8.94995H8.9751V4.49995H4.5001V8.94995ZM3.09048 21.775C2.61254 21.775 2.2251 21.3875 2.2251 20.9096V13.6153C2.2251 13.1374 2.61254 12.75 3.09048 12.75H10.3847C10.8627 12.75 11.2501 13.1374 11.2501 13.6153V20.9096C11.2501 21.3875 10.8627 21.775 10.3847 21.775H3.09048ZM4.5001 19.5H8.9751V15.025H4.5001V19.5ZM13.6155 11.25C13.1375 11.25 12.7501 10.8625 12.7501 10.3846V3.06534C12.7501 2.5874 13.1375 2.19995 13.6155 2.19995H20.9347C21.4127 2.19995 21.8001 2.5874 21.8001 3.06534V10.3846C21.8001 10.8625 21.4127 11.25 20.9347 11.25H13.6155ZM15.0501 8.94995H19.5001V4.49995H15.0501V8.94995ZM19.5501 21.775V19.525H21.8001V21.775H19.5501ZM12.7501 15V12.75H15.0251V15H12.7501ZM15.0251 17.25V15H17.2501V17.25H15.0251ZM12.7501 19.525V17.25H15.0251V19.525H12.7501ZM15.0251 21.775V19.525H17.2501V21.775H15.0251ZM17.2501 19.525V17.25H19.5501V19.525H17.2501ZM17.2501 15V12.75H19.5501V15H17.2501ZM19.5501 17.25V15H21.8001V17.25H19.5501Z" fill="currentColor"/>
+    </svg>
+);
+
 const Presential = () => {
     const router = useRouter();
     const { isAuthenticated } = useAuth();
@@ -20,6 +27,8 @@ const Presential = () => {
     const [accessAllowed, setAccessAllowed] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [talks, setTalks] = useState([])
+
+    const [showScanner, setShowScanner] = useState(false); // state para a câmera
 
     const onSubmit = async (data) => {
         setIsLoading(true); // Bloqueia o formulário e mostra o loading
@@ -131,6 +140,47 @@ const Presential = () => {
     }, [availableTalks]);
 
     useEffect(() => {
+        if (!showScanner) return;
+
+        // Configuração do leitor
+        const scanner = new Html5QrcodeScanner(
+            "reader", 
+            { fps: 10, qrbox: { width: 250, height: 250 } }, 
+            false
+        );
+
+        scanner.render(
+            async (decodedText) => {
+                // Quando ler com sucesso:
+                scanner.clear(); // Desliga a câmera
+                setShowScanner(false); // Esconde o leitor
+                
+                // Preenche o input do React Hook Form
+                setValue('document', decodedText);
+
+                const currentLectureId = getValues('lectureId');
+                if (currentLectureId) {
+                    await onSubmit({ lectureId: currentLectureId, document: decodedText });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: 'Selecione uma palestra primeiro!'
+                    });
+                }
+            },
+            (errorMessage) => {
+                // Erros de leitura contínua (ignorar, pois ocorrem enquanto o QR não foca)
+            }
+        );
+
+        // Limpeza ao desmontar
+        return () => {
+            scanner.clear().catch(error => console.error("Falha ao limpar o scanner", error));
+        };
+    }, [showScanner, setValue, getValues]);
+
+    useEffect(() => {
         checkAuthentication();
     }, [isAuthenticated, router]);
 
@@ -189,7 +239,23 @@ const Presential = () => {
                                             {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
                                         </InputBox>
 
-                                        <Button> Registrar </Button>
+                                        <div className='form-buttons'>
+                                            <Button> Registrar </Button>
+
+                                            <ScannerWrapper>
+                                                <Button 
+                                                    type="button" 
+                                                    onClick={() => setShowScanner(!showScanner)}
+                                                >
+                                                    {showScanner ? 'Fechar Câmera' : 'Ler QR Code'}
+                                                    {!showScanner && <QRcodeIcon />}
+                                                </Button>
+                                                
+                                                {showScanner && (
+                                                    <div id="reader"></div>
+                                                )}
+                                            </ScannerWrapper>
+                                        </div>
                                     </>
                                 }
 
@@ -364,10 +430,6 @@ const FormWrapper = styled.div`
             text-align: left;
             width: 100%;
         }
-
-        button {
-            margin-top: .5rem;
-        }
     }
 
     .form-input {
@@ -440,6 +502,14 @@ const FormWrapper = styled.div`
         font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);
     }
+
+    .form-buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-top: 1rem;
+    }
 `
 
 const InputBox = styled.div`
@@ -454,5 +524,37 @@ const InputBox = styled.div`
         font: 700 1.125rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
+    }
+`
+
+const ScannerWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+        background: none;
+        border-radius: 0.75rem;
+        border: 2px solid var(--content-neutrals-primary);
+    }
+
+    button:hover {
+        background-color: var(--content-neutrals-primary);
+        color: var(--content-neutrals-inverse);
+    }
+
+
+    #reader {
+        background-color: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        border: 2px solid var(--brand-primary);
+        color: black; /* O html5-qrcode injeta botões padrão que precisam de contraste */
+    }
+    
+    #reader button {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
     }
 `
