@@ -332,6 +332,17 @@ const FormWrapper = styled.div`
             background-color: transparent;
             color: white;
             font: 400 1rem/1.5rem 'AT Aero';
+
+            // Garante que o texto continue branco mesmo quando o navegador aplica o estilo de preenchimento automático
+            &:-webkit-autofill,
+            &:-webkit-autofill:hover, 
+            &:-webkit-autofill:focus, 
+            &:-webkit-autofill:active {
+                /* Garante que o texto continue branco */
+                -webkit-text-fill-color: white !important;
+                /* Atrasa a aplicação do fundo claro do navegador quase infinitamente */
+                transition: background-color 9999s ease-in-out 0s;
+            }
         }
 
         select {
