@@ -4,11 +4,11 @@ import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
-import { Html5QrcodeScanner } from 'html5-qrcode';
 
 // Custom Hooks e Serviços
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
+import useQrCodeScanner from '../hooks/useQrCodeScanner';
 
 // Componentes da Infraestrutura e UI
 import Meta from '../src/infra/Meta';
@@ -45,7 +45,6 @@ const Presential = () => {
     
     const [isLoading, setIsLoading] = useState(true);
     const [talks, setTalks] = useState([]);
-    const [showScanner, setShowScanner] = useState(false);
 
     // LÓGICA DE AUTENTICAÇÃO E INICIALIZAÇÃO    
     
@@ -100,74 +99,13 @@ const Presential = () => {
     }, [availableTalks]);
 
 
-    // FLUXO DO QR CODE SCANNER
-    const handleToggleScanner = () => {
-        if (!showScanner) {
-            const currentLectureId = getValues('lectureId');
-            
-            // Exige que uma palestra seja selecionada ANTES de abrir a câmera
-            if (!currentLectureId) {
-                showFeedbackAlert('warning', 'Atenção', 'Selecione uma palestra primeiro para ler o QR Code!');
-                return; 
-            }
-            setShowScanner(true);
-        } else {
-            setShowScanner(false);
-        }
-    };
-
-    // Controla o ciclo de vida do componente da câmera
-    useEffect(() => {
-        if (!showScanner) return;
-
-        const scanner = new Html5QrcodeScanner(
-            "reader", 
-            { fps: 10, qrbox: { width: 250, height: 250 } }, 
-            false
-        );
-
-        scanner.render(
-            async (decodedText) => {
-                const code = decodedText.trim(); 
-
-                // Validação de segurança e formato
-                if (code.length !== 3) {
-                    scanner.clear(); // Desliga a câmera para evitar repetição do alerta
-                    setShowScanner(false);
-                    showFeedbackAlert('error', 'QR Code Inválido', `O código lido ("${code}") é invalido.`);
-                    return; 
-                }
-
-                // Fluxo de sucesso: desliga câmera e preenche o formulário
-                scanner.clear(); 
-                setShowScanner(false); 
-                setValue('document', code); // Usa a ref do react-hook-form para preencher o input sem forçar re-render total
-
-                const currentLectureId = getValues('lectureId');
-                if (currentLectureId) {
-                    await onSubmit({ lectureId: currentLectureId, document: code });
-                }
-            },
-            (errorMessage) => {
-                // Erros de leitura contínua caem aqui. É ignorado propositalmente 
-                // pois ocorrem centenas de vezes por segundo enquanto a câmera tenta focar.
-            }
-        );
-
-        // Cleanup: Garante que a câmera e os workers sejam encerrados ao fechar/desmontar
-        return () => {
-            scanner.clear().catch(error => console.error("Falha ao limpar o scanner", error));
-        };
-    }, [showScanner, setValue, getValues]); // O onSubmit precisa ser capturado via closure atualizado ou usar form refs
-
-
-    // SUBMISSÃO DO FORMULÁRIO (VIA CÓDIGO OU SCAN)
+    // SUBMISSÃO DO FORMULÁRIO
     const onSubmit = async (data) => {
         setIsLoading(true); 
 
         try {
             await saphira.addPresenceToUser(data.lectureId, data.document);
-            setValue('document', ''); // Limpa o input após sucesso
+            setValue('document', ''); 
             
             await showFeedbackAlert('success', `Presença adicionada para ${data.document}`);
         } catch (err) {
@@ -178,12 +116,48 @@ const Presential = () => {
             await showFeedbackAlert('error', 'Falha na adição!', errorMessage);
         } finally {      
             setIsLoading(false); 
-            
-            // Timeout de 50ms garante que o input renderize novamente antes do focus agir
             setTimeout(() => {
                 setFocus('document');
             }, 50);
         }
+    };
+
+    // FLUXO DO QR CODE SCANNER (Inicializa o hook passando uma arrow function)
+    const { 
+        isScanning, 
+        toggleScanning, 
+        stopScanning 
+    } = useQrCodeScanner("reader", (text) => handleScanSuccess(text));
+
+    // Callback de sucesso do leitor
+    const handleScanSuccess = async (decodedText) => {
+        const code = decodedText.trim(); 
+
+        if (code.length !== 3) {
+            stopScanning();
+            showFeedbackAlert('error', 'QR Code Inválido', `O código lido ("${code}") é invalido.`);
+            return; 
+        }
+
+        stopScanning(); 
+        setValue('document', code); 
+
+        const currentLectureId = getValues('lectureId');
+        if (currentLectureId) {
+            await onSubmit({ lectureId: currentLectureId, document: code });
+        }
+    };
+
+    // Validação antes de abrir a câmera
+    const handleToggleScanner = () => {
+        if (!isScanning) {
+            const currentLectureId = getValues('lectureId');
+            if (!currentLectureId) {
+                showFeedbackAlert('warning', 'Atenção', 'Selecione uma palestra primeiro!');
+                return; 
+            }
+        }
+        toggleScanning();
     };
 
     // Bloqueia a renderização enquanto a autenticação está sendo verificada
@@ -204,7 +178,7 @@ const Presential = () => {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {!isLoading ? (
                                     <>
-                                        <HideableSection $hidden={showScanner}>
+                                        <HideableSection $hidden={isScanning}>
                                             <label>ID da palestra:</label>
                                             <div className="form-input select-input">
                                                 <Controller
@@ -242,16 +216,16 @@ const Presential = () => {
                                             <Button> Registrar </Button>
                                         </HideableSection>
 
-                                        <ScannerWrapper $isScanning={showScanner}>
+                                        <ScannerWrapper $isScanning={isScanning}>
                                             <Button 
                                                 type="button" 
                                                 onClick={handleToggleScanner}
                                             >
-                                                {showScanner ? 'Cancelar Leitura' : 'Ler QR Code'}
-                                                {!showScanner && <QRcodeIcon />}
+                                                {isScanning ? 'Cancelar Leitura' : 'Ler QR Code'}
+                                                {!isScanning && <QRcodeIcon />}
                                             </Button>
                                             
-                                            {showScanner && <div id="reader"></div>}
+                                            {isScanning && <div id="reader"></div>}
                                         </ScannerWrapper>
                                     </>
                                 ) : (
