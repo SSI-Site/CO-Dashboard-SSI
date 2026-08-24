@@ -24,6 +24,8 @@ const Speakers = () => {
     const [speakers, setSpeakers] = useState([])
     const [filteredSpeakers, setFilteredSpeakers] = useState([])
     const [isOpen, setisOpen] = useState(false)
+    const [selectedSpeaker, setSelectedSpeaker] = useState(null)
+    const [popupMode, setPopupMode] = useState('add')
     const [isLoading, setisLoading] = useState(true)
 
     // Funcionalidades
@@ -51,6 +53,8 @@ const Speakers = () => {
 
     const OnClosePopUp = async(event) => {
         setisOpen(false)
+        setSelectedSpeaker(null)
+        setPopupMode('add')
         if (event) await getPalestrantes()
     }
 
@@ -154,17 +158,29 @@ const Speakers = () => {
         key: "instagram_link",
         label: "Instagram",
         width: "16rem",
-        render: (value) => <a href={value} target="_blank" rel="noopener noreferrer">{getSocialUsername(value, "instagram")}</a>,
+        render: (value) => getSocialUsername(value, "instagram"),
         title: (value) => value || "",
       },
       {
         key: "linkedin_link",
         label: "Linkedin",
         width: "16rem",
-        render: (value) => <a href={value} target="_blank" rel="noopener noreferrer">{getSocialUsername(value, "linkedin")}</a>,
+        render: (value) => getSocialUsername(value, "linkedin"),
         title: (value) => value || "",
       },
     ];
+
+    const openCreatePopup = () => {
+        setSelectedSpeaker(null);
+        setPopupMode('add');
+        setisOpen(true);
+    };
+
+    const openEditPopup = (speaker) => {
+        setSelectedSpeaker(speaker);
+        setPopupMode('edit');
+        setisOpen(true);
+    };
 
     return (
         <>
@@ -195,11 +211,16 @@ const Speakers = () => {
                             <Button onClick = {() => handleSearch(query)}>Consultar</Button>
                         </PalestrantesFilter>
                         <span/>
-                        <SecondaryButton onClick = {() => setisOpen(true)}>
+                        <SecondaryButton onClick = {openCreatePopup}>
                             + Adicionar
                         </SecondaryButton> 
 
-                        <PalestrantePopUp isOpen={isOpen} onClose={OnClosePopUp}/>
+                        <PalestrantePopUp
+                          isOpen={isOpen}
+                          onClose={OnClosePopUp}
+                          speaker={selectedSpeaker}
+                          mode={popupMode}
+                        />
                     </PalestrantesInteractions>
 
                 </PalestrantesTitle>
@@ -210,6 +231,7 @@ const Speakers = () => {
                   loading={isLoading}
                   emptyState="Sem palestrantes cadastrados :("
                   rowKey="id"
+                  onRowClick={openEditPopup}
                 />
 
                 <PalestrantesFooter>

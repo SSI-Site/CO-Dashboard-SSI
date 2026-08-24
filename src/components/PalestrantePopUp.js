@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2'; 
@@ -10,38 +10,73 @@ import SecondaryButton from './SecondaryButton';
 // saphira
 import saphira from '../../services/saphira';
 
-export default function PalestrantePopUp ({isOpen, onClose}) {
-    const {register, handleSubmit, reset, formState: {errors}} = useForm();
+export default function PalestrantePopUp ({isOpen, onClose, speaker = null, mode = 'add'}) {
+    const {register, handleSubmit, reset, formState: {errors}} = useForm({
+        defaultValues: {
+            name: speaker?.name || '',
+            role: speaker?.role || '',
+            pronouns: speaker?.pronouns || '',
+            instagram_link: speaker?.instagram_link || '',
+            linkedin_link: speaker?.linkedin_link || '',
+            description: speaker?.description || '',
+        }
+    });
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        reset({
+            name: speaker?.name || '',
+            role: speaker?.role || '',
+            pronouns: speaker?.pronouns || '',
+            instagram_link: speaker?.instagram_link || '',
+            linkedin_link: speaker?.linkedin_link || '',
+            description: speaker?.description || '',
+        });
+    }, [isOpen, speaker, reset]);
 
     if (!isOpen) {
         return null;
     }
 
-    const postSpeaker = async (speaker) => {
+    const isEditMode = mode === 'edit' && Boolean(speaker?.id);
+
+    const postSpeaker = async (formData) => {
         try {
             Swal.fire({
                 title: 'Processando...',
-                text: 'Adicionando palestrante...',
+                text: isEditMode ? 'Atualizando palestrante...' : 'Adicionando palestrante...',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
                 }
             });
 
-            // Envia para a API[cite: 1]
-            await saphira.postSpeaker(
-                speaker.name,
-                speaker.description,
-                speaker.linkedin_link,
-                speaker.instagram_link,
-                speaker.pronouns,
-                speaker.role,
-            );
+            if (isEditMode) {
+                await saphira.updateSpeaker(
+                    speaker.id,
+                    formData.name,
+                    formData.description,
+                    formData.linkedin_link,
+                    formData.instagram_link,
+                    formData.pronouns,
+                    formData.role
+                );
+            } else {
+                await saphira.postSpeaker(
+                    formData.name,
+                    formData.description,
+                    formData.linkedin_link,
+                    formData.instagram_link,
+                    formData.pronouns,
+                    formData.role,
+                );
+            }
 
             await Swal.fire({
                 icon: 'success',
                 title: 'Sucesso!',
-                text: 'Palestrante adicionado com sucesso.',
+                text: isEditMode ? 'Palestrante atualizado com sucesso.' : 'Palestrante adicionado com sucesso.',
                 timer: 1000,
                 showConfirmButton: false
             });
@@ -60,6 +95,60 @@ export default function PalestrantePopUp ({isOpen, onClose}) {
         }
     }
 
+    const deleteSpeaker = async () => {
+        if (!isEditMode) return;
+
+        const result = await Swal.fire({
+            title: 'Apagar Palestrante?',
+            text: 'Você não poderá desfazer essa ação!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#F82122',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sim, remover!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            Swal.fire({
+                title: 'Deletando...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            await saphira.deleteSpeaker(speaker.id);
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Deletado!',
+                text: 'O palestrante foi removido.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            reset();
+            onClose(true);
+        } catch (err) {
+            console.error("Erro ao deletar palestrante", err);
+
+            if (err?.response?.status === 400 || err?.response?.status === 409) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Não é possível apagar',
+                    text: 'Este palestrante está associado a uma ou mais palestras. Remova-o das palestras primeiro.',
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Houve um erro no servidor ao tentar excluir.',
+                });
+            }
+        }
+    };
+
     const handleClose = () => {
         reset();
         onClose();
@@ -69,7 +158,7 @@ export default function PalestrantePopUp ({isOpen, onClose}) {
         <PopUpOverlay onClick={handleClose}>
             <PopUpContainer onClick={(e) => e.stopPropagation()}>
                 <PopUpHeader>
-                    <h5>Adicionar Palestrante</h5>
+                    <h5>{isEditMode ? 'Editar Palestrante' : 'Adicionar Palestrante'}</h5>
                     <div className='close' onClick={handleClose}>
                         <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z"/>
@@ -133,8 +222,11 @@ export default function PalestrantePopUp ({isOpen, onClose}) {
                     
                     </MainPopUp>
                     <PopUpFooter>
+                        {isEditMode && (
+                            <Button onClick={deleteSpeaker} type="button">Remover</Button>
+                        )}
                         <SecondaryButton onClick={handleClose} type="button">Cancelar</SecondaryButton>
-                        <Button type="submit">Adicionar</Button>
+                        <Button type="submit">{isEditMode ? 'Salvar Alterações' : 'Adicionar'}</Button>
                     </PopUpFooter>
                 </form>
 
