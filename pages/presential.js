@@ -31,7 +31,6 @@ const showFeedbackAlert = (icon, title, text = "") => {
         background: 'var(--background-neutrals-secondary)',
         color: 'var(--content-neutrals-primary)',
         confirmButtonColor: "var(--brand-primary)",
-        borderRadius: '2rem',
         backdrop: `rgba(0,0,0,0.8)`
     });
 };
@@ -77,24 +76,21 @@ const Presential = () => {
         return talks
             .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
             .filter(talk => {
-                // TODO: Para produção, descomentar as validações de data e hora para filtrar palestras antigas
-                // const today = new Date().toDateString();
-                // const talkDate = new Date(talk.start_time).toDateString();
-                // return today === talkDate; 
-                return true;
+                const today = new Date().toDateString();
+                const talkDate = new Date(talk.start_time).toDateString();
+                return today === talkDate; 
             })
             .filter(talk => {
-                // const current_time = new Date();
-                // const start_timeOffset = new Date(new Date(talk.start_time).getTime() + 20 * 60000);
-                // return start_timeOffset > current_time;
-                return true;
+                const current_time = new Date();
+                const start_timeOffset = new Date(new Date(talk.start_time).getTime() + 20 * 60000);
+                return start_timeOffset > current_time;
             });
     }, [talks]);
 
     const talkOptions = useMemo(() => {
         return availableTalks.map(talk => ({
             value: talk.id,
-            label: `${talk.id} - ${talk.title} - ${new Date(talk.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+            label: `${talk.title} — ${new Date(talk.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
         }));
     }, [availableTalks]);
 
