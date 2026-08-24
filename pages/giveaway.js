@@ -243,6 +243,7 @@ const GiveawayWrapper = styled.section`
     .section-container {
         width: fit-content;
         height: fit-content;
+        max-width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -385,4 +386,7 @@ const ButtonsOptions = styled.div`
     justify-content: space-between;
     align-items: center;
 
+    @media (max-width: 800px) {
+        flex-wrap: wrap;
+    }
 `
