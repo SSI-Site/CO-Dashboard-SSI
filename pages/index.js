@@ -42,6 +42,14 @@ const Login = () => {
 
     };
 
+    // Centraliza o input na tela quando o teclado virtual é aberto em dispositivos móveis
+    const handleInputFocus = (e) => {
+        // Aguarda a animação do teclado abrir (aprox 300ms) e centraliza o input na tela
+        setTimeout(() => {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+    };
+
     useEffect(() => {
         if (isAuthenticated) {
             router.push("/presential");
@@ -74,8 +82,11 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='user'> Usuário </label>
                                         <div className='form-input'>
-                                            <input id='user' type='text' placeholder='Insira o usuário' autoComplete="username" className={`${errors.user && 'error-border'}`}
-                                                {...register("user", { required: true, minLength: 1 })} />
+                                            <input id='user' type='text' placeholder='Insira o usuário' autoComplete="username" 
+                                                className={`${errors.user && 'error-border'}`}
+                                                onFocus={handleInputFocus}
+                                                {...register("user", { required: true, minLength: 1 })} 
+                                            />
                                         </div>
                                         {errors.user && <ErrorMessage> Usuário inválido </ErrorMessage>}
                                     </InputBox>
@@ -83,8 +94,11 @@ const Login = () => {
                                     <InputBox>
                                         <label htmlFor='password'> Senha </label>
                                         <div className='form-input'>
-                                            <input id='password' type='password' placeholder='Insira a senha' autoComplete="current-password" className={`${errors.password && 'error-border'}`}
-                                                {...register("password", { required: true, minLength: 1 })} />
+                                            <input id='password' type='password' placeholder='Insira a senha' autoComplete="current-password" 
+                                                className={`${errors.password && 'error-border'}`}
+                                                onFocus={handleInputFocus}
+                                                {...register("password", { required: true, minLength: 1 })} 
+                                            />
                                         </div>
                                         {errors.password && <ErrorMessage> Senha inválida </ErrorMessage>}
                                     </InputBox>
@@ -148,7 +162,8 @@ const PageWrapper = styled.section`
     justify-content: center;
     align-self: center;
     width: 100%;
-    height: 100dvh; // ONLY WAY I FOUND TO ACHIEVE FULL HEIGHT
+    min-height: 100dvh;
+    overflow: auto;
 
     * {
         color: var(--content-neutrals-primary);
@@ -317,6 +332,17 @@ const FormWrapper = styled.div`
             background-color: transparent;
             color: white;
             font: 400 1rem/1.5rem 'AT Aero';
+
+            // Garante que o texto continue branco mesmo quando o navegador aplica o estilo de preenchimento automático
+            &:-webkit-autofill,
+            &:-webkit-autofill:hover, 
+            &:-webkit-autofill:focus, 
+            &:-webkit-autofill:active {
+                /* Garante que o texto continue branco */
+                -webkit-text-fill-color: white !important;
+                /* Atrasa a aplicação do fundo claro do navegador quase infinitamente */
+                transition: background-color 9999s ease-in-out 0s;
+            }
         }
 
         select {
