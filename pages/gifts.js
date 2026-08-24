@@ -13,6 +13,7 @@ import SecondaryButton from "../src/components/SecondaryButton";
 import GiftsPopUp from "../src/components/GiftPopUp";
 import GiftRow from "../src/components/GiftRow";
 import Pagination from "../src/components/Pagination";
+import MainTable from "../src/components/MainTable";
 
 const Gifts = () => {
 
@@ -74,6 +75,31 @@ const Gifts = () => {
         currentPage * maxRows
     );
 
+    const columns = [
+        {
+            key: "name",
+            label: "Brinde",
+            width: "18rem",
+        },
+        {
+            key: "total_amount",
+            label: "Total",
+            width: "15rem",
+        },
+        {
+            key: "balance",
+            label: "Disponível para retirada",
+            width: "15rem",
+        },
+        {
+            key: "total_amount",
+            label: "Retirados",
+            width: "15rem",
+            render: (value, row) => row.total_amount - row.balance,
+        }
+
+    ];
+
     return (
         <>
             <Meta title = "COSSI 2026 | Controle de brindes"/>
@@ -91,7 +117,14 @@ const Gifts = () => {
                     </GiftsInteraction>
                 </GiftsTitle>
 
-                <GiftsGrid>
+                <MainTable
+                    data={currentGifts}
+                    columns={columns}
+                    loading={isLoading}
+                    emptyState="Sem brindes cadastrados :("
+                    rowKey="id"
+                />
+                {/* <GiftsGrid>
                     <label>Brinde</label>
                     <label>Total</label>
                     <label>Disponível para retirada</label>
@@ -133,7 +166,7 @@ const Gifts = () => {
                         </div>
                     }
                     
-                </GiftsWrapper> 
+                </GiftsWrapper> */}
                 <GiftsFooter>
                     <p>{gifts.length} brindes encontrados</p>
                     {!isLoading && gifts.length !== 0 && (
