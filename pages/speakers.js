@@ -1,6 +1,6 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -8,14 +8,15 @@ import useAuth from '../hooks/useAuth';
 
 // saphira
 import saphira from "../services/saphira";
-import LoadingSVG from '../public/loading.svg'
- 
+
 // Components
 import SecondaryButton from "../src/components/SecondaryButton";
-import Button from '../src/components/Button';
-import PalestrantePopUp from '../src/components/PalestrantePopUp';
-import PalestranteRow from '../src/components/PalestranteRow';
-import Pagination from "../src/components/Pagination"; // <-- Importando o novo componente!
+import Button from "../src/components/Button"
+import PalestrantePopUp from "../src/components/PalestrantePopUp"
+import Pagination from "../src/components/Pagination"
+import MainTable from "../src/components/MainTable";
+import { truncateText } from "../utils/strings";
+import getSocialUsername from "../utils/getSocialUsername";
 
 const Speakers = () => {
     const { isAuthenticated } = useAuth();
@@ -87,6 +88,14 @@ const Speakers = () => {
     }, [])
 
     useEffect(() => {
+        const totalPages = Math.max(1, Math.ceil(filteredSpeakers.length / maxRows));
+
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, filteredSpeakers.length, maxRows]);
+
+    useEffect(() => {
         if (isAuthenticated === true) {
             getPalestrantes();
         }
@@ -100,21 +109,62 @@ const Speakers = () => {
         return null;
     }
 
-    const totalPages = Math.ceil(filteredSpeakers.length / maxRows)
+    const totalPages = Math.max(1, Math.ceil(filteredSpeakers.length / maxRows))
     const currentSpeakers = filteredSpeakers.slice(
         (currentPage - 1) * maxRows,
         currentPage * maxRows
     )
 
-    const handleSearch = (e) => {
-        const query = e.toLowerCase()
-        const filtered = speakers.filter(speaker => 
-            speaker.name.toLowerCase().includes(query)
-            || speaker.id.toLowerCase().includes(query)
-        )
-        setFilteredSpeakers(filtered)
-        setCurrentPage(1)
-    }
+    const handleSearch = (value) => {
+        const query = value.toLowerCase();
+        const filtered = speakers.filter(
+            (speaker) =>
+                speaker.name.toLowerCase().includes(query) ||
+                speaker.id.toLowerCase().includes(query)
+        );
+        setFilteredSpeakers(filtered);
+        setCurrentPage(1);
+    };
+
+    const columns = [
+      {
+        key: "id",
+        label: "Código SSI",
+        width: "10rem",
+        render: (value) => (value ? value.slice(0, 3).toUpperCase() : ""),
+      },
+      {
+        key: "name",
+        label: "Nome",
+        width: "18rem",
+      },
+      {
+        key: "pronouns",
+        label: "Pronomes",
+        width: "10rem",
+      },
+      {
+        key: "role",
+        label: "Cargo",
+        width: "16rem",
+        render: (value) => truncateText(value, 20),
+        title: (value) => value || "",
+      },
+      {
+        key: "instagram_link",
+        label: "Instagram",
+        width: "16rem",
+        render: (value) => <a href={value} target="_blank" rel="noopener noreferrer">{getSocialUsername(value, "instagram")}</a>,
+        title: (value) => value || "",
+      },
+      {
+        key: "linkedin_link",
+        label: "Linkedin",
+        width: "16rem",
+        render: (value) => <a href={value} target="_blank" rel="noopener noreferrer">{getSocialUsername(value, "linkedin")}</a>,
+        title: (value) => value || "",
+      },
+    ];
 
     return (
         <>
@@ -154,57 +204,13 @@ const Speakers = () => {
 
                 </PalestrantesTitle>
 
-                <PalestrantesGrid>
-                    <label>Código SSI</label>
-                    <label>Nome</label>
-                    <label>Pronomes</label>
-                    <label>Cargo</label>
-                    <label>Instagram</label>
-                    <label>Linkedin</label>
-                </PalestrantesGrid>
-
-                <PalestrantesWrapper>
-                    {!isLoading &&
-                        currentSpeakers.map((speaker, index) => {
-                            try{
-                                return (
-                                    <PalestranteRow
-                                        update = {getPalestrantes}
-                                        isEven = {index % 2}
-                                        key = {speaker.id}
-                                        id = {speaker.id}
-                                        name = {speaker.name}
-                                        pronouns = {speaker.pronouns}
-                                        role = {speaker.role}
-                                        instagram = {speaker.instagram_link != null ? speaker.instagram_link : ''}
-                                        linkedin = {speaker.linkedin_link != null ? speaker.linkedin_link : ''}
-                                        description = {speaker.description}
-                                    /> 
-                                )
-                            }
-                            catch(err){
-                                alert(`Ocorreu um erro no cliente ao renderizar: ${speaker.name}. Erro: ${err}`)
-                            }
-                        })
-                    }
-
-                    {!isLoading &&
-                        speakers.length === 0 &&
-                            <p className = 'allRow noSpeakers'>Sem palestrantes cadastrados :(</p>     
-                    }
-
-                    {isLoading &&
-                        <div className="allRow">
-                            <Image
-                                src = {LoadingSVG}
-                                width={120}
-                                height={50}
-                                alt = "Loading"
-                            />
-                        </div>
-                    }
-
-                </PalestrantesWrapper>
+                <MainTable
+                  data={currentSpeakers}
+                  columns={columns}
+                  loading={isLoading}
+                  emptyState="Sem palestrantes cadastrados :("
+                  rowKey="id"
+                />
 
                 <PalestrantesFooter>
                     <p>{filteredSpeakers.length} palestrantes encontrados</p>
@@ -295,48 +301,12 @@ const PalestrantesInteractions = styled.div`
     }
 `
 
-const PalestrantesGrid = styled.div`
-    width: 100%;
-    border-block: 1px solid var(--outline-neutrals-secondary);
-    padding: 1.5rem 0.5rem;
-    display: grid;
-    grid-template-columns: 1fr 3fr repeat(4, 1fr); 
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    margin-bottom: 0.75rem;
-
-    label {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const PalestrantesWrapper = styled.div`
-    width: 100%;
-    display: grid;
-    grid-column-gap: 3rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--outline-neutrals-secondary);
-
-    .noSpeakers{
-        text-align: center;
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-
-    .allRow{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 5rem;
-    }
-`
-
 const PalestrantesFooter = styled.footer`
     width: 100%;
     display: flex;
     justify-content: space-between;
-    
+    margin-top: 2rem;
+
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
     }

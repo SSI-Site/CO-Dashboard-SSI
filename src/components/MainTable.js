@@ -63,7 +63,14 @@ const MainTable = ({
                   }
                 >
                   {columns.map((column) => (
-                    <td key={column.key}>
+                    <td
+                      key={column.key}
+                      title={
+                        typeof column.title === "function"
+                          ? column.title(row[column.key], row)
+                          : column.title
+                      }
+                    >
                       {column.render
                         ? column.render(row[column.key], row)
                         : row[column.key]}
@@ -84,8 +91,8 @@ export default MainTable;
 const TableContainer = styled.div`
   width: 100%;
   max-width: 100%;
-  border: 1px solid var(--outline-neutrals-secondary);
-  border-radius: 0.5rem;
+  border: 1px solid var(--outline-neutrals-primary);
+  border-radius: 1.75rem;
   overflow: hidden;
 `;
 
@@ -123,13 +130,16 @@ const Table = styled.table`
   table-layout: auto;
   border: 0;
 
-  th,
-  td {
+  th, td {
     padding: 1.25rem 0.5rem;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font: 700 1.125rem/1.5rem "At Aero Bold";
+  }
+
+  th a, td a {
     font: 700 1.125rem/1.5rem "At Aero Bold";
   }
 
@@ -146,6 +156,11 @@ const Table = styled.table`
   th {
     padding: 1.25rem 0.5rem;
     font: 700 1.25rem/1.5rem "At Aero Bold";
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 2rem;
   }
 
   @media (max-width: 768px) {
