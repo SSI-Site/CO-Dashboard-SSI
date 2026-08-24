@@ -1,211 +1,241 @@
+import { React, useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { React, useEffect, useState, useMemo } from 'react';
 import { useForm, Controller } from "react-hook-form";
 import Select from 'react-select';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
 
+// Custom Hooks e Serviços
 import useAuth from '../hooks/useAuth';
 import saphira from '../services/saphira';
+import useQrCodeScanner from '../hooks/useQrCodeScanner';
+
+// Componentes da Infraestrutura e UI
 import Meta from '../src/infra/Meta';
 import NavBar from '../src/patterns/base/Nav';
-
-// components
 import Button from '../src/components/Button';
+
+// Ícone do QR Code
+const QRcodeIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M3.09048 11.25C2.61254 11.25 2.2251 10.8625 2.2251 10.3846V3.06534C2.2251 2.5874 2.61254 2.19995 3.09048 2.19995H10.3847C10.8627 2.19995 11.2501 2.5874 11.2501 3.06534V10.3846C11.2501 10.8625 10.8627 11.25 10.3847 11.25H3.09048ZM4.5001 8.94995H8.9751V4.49995H4.5001V8.94995ZM3.09048 21.775C2.61254 21.775 2.2251 21.3875 2.2251 20.9096V13.6153C2.2251 13.1374 2.61254 12.75 3.09048 12.75H10.3847C10.8627 12.75 11.2501 13.1374 11.2501 13.6153V20.9096C11.2501 21.3875 10.8627 21.775 10.3847 21.775H3.09048ZM4.5001 19.5H8.9751V15.025H4.5001V19.5ZM13.6155 11.25C13.1375 11.25 12.7501 10.8625 12.7501 10.3846V3.06534C12.7501 2.5874 13.1375 2.19995 13.6155 2.19995H20.9347C21.4127 2.19995 21.8001 2.5874 21.8001 3.06534V10.3846C21.8001 10.8625 21.4127 11.25 20.9347 11.25H13.6155ZM15.0501 8.94995H19.5001V4.49995H15.0501V8.94995ZM19.5501 21.775V19.525H21.8001V21.775H19.5501ZM12.7501 15V12.75H15.0251V15H12.7501ZM15.0251 17.25V15H17.2501V17.25H15.0251ZM12.7501 19.525V17.25H15.0251V19.525H12.7501ZM15.0251 21.775V19.525H17.2501V21.775H15.0251ZM17.2501 19.525V17.25H19.5501V19.525H17.2501ZM17.2501 15V12.75H19.5501V15H17.2501ZM19.5501 17.25V15H21.8001V17.25H19.5501Z" fill="currentColor"/>
+    </svg>
+);
+
+// Helper centralizado para disparar os alertas
+const showFeedbackAlert = (icon, title, text = "") => {
+    return Swal.fire({
+        icon,
+        title,
+        text,
+        background: 'var(--background-neutrals-secondary)',
+        color: 'var(--content-neutrals-primary)',
+        confirmButtonColor: "var(--brand-primary)",
+        backdrop: `rgba(0,0,0,0.8)`
+    });
+};
 
 const Presential = () => {
     const router = useRouter();
     const { isAuthenticated } = useAuth();
-    const { register, control, getValues, setError, setValue, setFocus, formState: { errors }, handleSubmit } = useForm();
-    const [accessAllowed, setAccessAllowed] = useState(false);
+    
+    // Configuração do form e seus controles
+    const { register, control, getValues, setValue, setFocus, formState: { errors }, handleSubmit } = useForm();
+    
     const [isLoading, setIsLoading] = useState(true);
-    const [talks, setTalks] = useState([])
+    const [talks, setTalks] = useState([]);
 
-    const onSubmit = async (data) => {
-        setIsLoading(true); // Bloqueia o formulário e mostra o loading
-
-        try {
-            await saphira.addPresenceToUser(data.lectureId, data.document);
-
-            setValue('document', '');  // Limpa o campo de código
-            
-            // Mostra o alerta de sucesso e espera o usuário fechá-lo (await)
-            await Swal.fire({
-                icon: 'success',
-                title: `Presença adicionada para ${data.document}`,
-
-                background: 'var(--background-neutrals-secondary)',
-                color: 'var(--content-neutrals-primary)',
-                
-                showConfirmButton: true,
-                confirmButtonText: "Ok!",
-                confirmButtonColor: "var(--brand-primary)",
-                
-                borderRadius: '2rem',
-                backdrop: `rgba(0,0,0,0.8)`
-            });
-
-        } catch (err) {
-            // Prepara a mensagem de erro
-            const errorMessage = err.response?.data?.talk 
-                ? "Palestra não encontrada" 
-                : (err.response.data);
-
-            // Mostra o alerta de erro e espera o usuário fechá-lo (await)
-            await Swal.fire({
-                icon: 'error',
-                title: 'Falha na adição!',
-                text: errorMessage,
-
-                background: 'var(--background-neutrals-secondary)',
-                color: 'var(--content-neutrals-primary)',
-                
-                showConfirmButton: true,
-                confirmButtonText: "Ok!",
-                confirmButtonColor: "var(--brand-primary)",
-                
-                borderRadius: '2rem',
-                backdrop: `rgba(0,0,0,0.8)`
-            });
-
-        } finally {      
-            setIsLoading(false);  // Remove o loading
-            
-            // Timeout para dar tempo do react carregar o input ante de setar o foco nele
-            setTimeout(() => {
-                setFocus('document');// Devolve o foco para o campo de documento
-            }, 50);
-        }
-    };
-
-    const checkAuthentication = () => {
-        if (isAuthenticated === null) {
-            return;
-        }
-
-        if (isAuthenticated) {
-            setAccessAllowed(true);
-        } else {
-            setAccessAllowed(false);
+    // LÓGICA DE AUTENTICAÇÃO E INICIALIZAÇÃO    
+    
+    // Redireciona usuários não autenticados para a home
+    useEffect(() => {
+        if (isAuthenticated === false) {
             router.push("/");
         }
-    }
+    }, [isAuthenticated, router]);
 
-    const getTalks = async () => {
-        setIsLoading(true)
-        try {
-            const { data } = await saphira.getLectures()
-            if (data) setTalks(data)
-        }
-        catch (err) {
-            console.log("Houve um erro:", err)
-        }
-        finally {
-            setIsLoading(false)
-        }
-    }
+    // Busca as palestras disponíveis assim que o componente monta
+    useEffect(() => {
+        const fetchTalks = async () => {
+            setIsLoading(true);
+            try {
+                const { data } = await saphira.getLectures();
+                if (data) setTalks(data);
+            } catch (err) {
+                console.error("Erro ao buscar palestras:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
+        fetchTalks();
+    }, []);
+
+    // TRATAMENTO DOS DADOS DAS PALESTRAS (TALKS)
     const availableTalks = useMemo(() => {
         return talks
             .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
             .filter(talk => {
                 const today = new Date().toDateString();
                 const talkDate = new Date(talk.start_time).toDateString();
-                // return today === talkDate; // Retorna true ou false
-                return true
+                return today === talkDate; 
             })
             .filter(talk => {
                 const current_time = new Date();
                 const start_timeOffset = new Date(new Date(talk.start_time).getTime() + 20 * 60000);
-                // return start_timeOffset > current_time;
-                return true;
+                return start_timeOffset > current_time;
             });
     }, [talks]);
 
-    // Transforma as palestras filtradas no formato que o react-select entende
     const talkOptions = useMemo(() => {
         return availableTalks.map(talk => ({
             value: talk.id,
-            label: `${talk.id} - ${talk.title} - ${new Date(talk.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+            label: `${talk.title} — ${new Date(talk.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
         }));
     }, [availableTalks]);
 
-    useEffect(() => {
-        checkAuthentication();
-    }, [isAuthenticated, router]);
 
-    useEffect(() => {
-        getTalks();
-    }, []);
+    // SUBMISSÃO DO FORMULÁRIO
+    const onSubmit = async (data) => {
+        setIsLoading(true); 
+
+        try {
+            await saphira.addPresenceToUser(data.lectureId, data.document);
+            setValue('document', ''); 
+            
+            await showFeedbackAlert('success', `Presença adicionada para ${data.document}`);
+        } catch (err) {
+            const errorMessage = err.response?.data?.talk 
+                ? "Palestra não encontrada" 
+                : (err.response?.data || "Ocorreu um erro desconhecido");
+
+            await showFeedbackAlert('error', 'Falha na adição!', errorMessage);
+        } finally {      
+            setIsLoading(false); 
+            setTimeout(() => {
+                setFocus('document');
+            }, 50);
+        }
+    };
+
+    // FLUXO DO QR CODE SCANNER (Inicializa o hook passando uma arrow function)
+    const { 
+        isScanning, 
+        toggleScanning, 
+        stopScanning 
+    } = useQrCodeScanner("reader", (text) => handleScanSuccess(text));
+
+    // Callback de sucesso do leitor
+    const handleScanSuccess = async (decodedText) => {
+        const code = decodedText.trim(); 
+
+        if (code.length !== 3) {
+            stopScanning();
+            showFeedbackAlert('error', 'QR Code Inválido', `O código lido ("${code}") é invalido.`);
+            return; 
+        }
+
+        stopScanning(); 
+        setValue('document', code); 
+
+        const currentLectureId = getValues('lectureId');
+        if (currentLectureId) {
+            await onSubmit({ lectureId: currentLectureId, document: code });
+        }
+    };
+
+    // Validação antes de abrir a câmera
+    const handleToggleScanner = () => {
+        if (!isScanning) {
+            const currentLectureId = getValues('lectureId');
+            if (!currentLectureId) {
+                showFeedbackAlert('warning', 'Atenção', 'Selecione uma palestra primeiro!');
+                return; 
+            }
+        }
+        toggleScanning();
+    };
+
+    // Bloqueia a renderização enquanto a autenticação está sendo verificada
+    if (isAuthenticated === null) return null;
 
     return (
         <>
             <Meta title='COSSI 2026 | Registrar presença' />
-
             <NavBar name={"Registrar Presença"} />
 
             <PresenceWrapper>
                 <div className='section-container'>
-
                     <h5>Registrar presença</h5>
 
-                    {accessAllowed &&
+                    {/* Formulário principal */}
+                    {isAuthenticated && (
                         <FormWrapper>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                {!isLoading &&
+                                {!isLoading ? (
                                     <>
-                                        <label>ID da palestra:</label>
-                                        <div className="form-input select-input">
-                                            <Controller
-                                                name="lectureId"
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        options={talkOptions}
-                                                        styles={customSelectStyles}
-                                                        placeholder="Selecione uma palestra..."
-                                                        noOptionsMessage={() => "Nenhuma palestra disponível no momento"}
-                                                        
-                                                        // Mapeia os dados entre o react-select e o react-hook-form
-                                                        value={talkOptions.find(option => option.value === field.value) || null}
-                                                        onChange={(selectedOption) => {
-                                                            // Manda apenas o ID para o seu onSubmit(data)
-                                                            field.onChange(selectedOption.value);
-                                                        }}
-                                                    />
-                                                )}
-                                            />
-                                        </div>
-
-
-                                        <InputBox>
-                                            <label htmlFor='document'>Código do inscrito:</label>
-                                            <div className='form-input'>
-                                                <input id='document' type='text' placeholder='Insira o documento' className={`${errors.document && 'error-border'}`}
-                                                    {...register("document", { required: true, minLength: 3 })} />
+                                        <HideableSection $hidden={isScanning}>
+                                            <label>ID da palestra:</label>
+                                            <div className="form-input select-input">
+                                                <Controller
+                                                    name="lectureId"
+                                                    control={control}
+                                                    rules={{ required: true }}
+                                                    render={({ field }) => (
+                                                        <Select
+                                                            {...field}
+                                                            options={talkOptions}
+                                                            styles={customSelectStyles}
+                                                            placeholder="Selecione uma palestra..."
+                                                            noOptionsMessage={() => "Nenhuma palestra disponível no momento"}
+                                                            value={talkOptions.find(option => option.value === field.value) || null}
+                                                            onChange={(selectedOption) => field.onChange(selectedOption.value)}
+                                                        />
+                                                    )}
+                                                />
                                             </div>
-                                            {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
-                                        </InputBox>
 
-                                        <Button> Registrar </Button>
+                                            <InputBox>
+                                                <label htmlFor='document'>Código do inscrito:</label>
+                                                <div className='form-input'>
+                                                    <input 
+                                                        id='document' 
+                                                        type='text' 
+                                                        placeholder='Insira o documento' 
+                                                        className={`${errors.document && 'error-border'}`}
+                                                        {...register("document", { required: true, minLength: 3 })} 
+                                                    />
+                                                </div>
+                                                {errors.document && <ErrorMessage>Documento inválido</ErrorMessage>}
+                                            </InputBox>
+
+                                            <Button> Registrar </Button>
+                                        </HideableSection>
+
+                                        <ScannerWrapper $isScanning={isScanning}>
+                                            <Button 
+                                                type="button" 
+                                                onClick={handleToggleScanner}
+                                            >
+                                                {isScanning ? 'Cancelar Leitura' : 'Ler QR Code'}
+                                                {!isScanning && <QRcodeIcon />}
+                                            </Button>
+                                            
+                                            {isScanning && <div id="reader"></div>}
+                                        </ScannerWrapper>
                                     </>
-                                }
-
-                                {isLoading &&
+                                ) : (
                                     <Loading>
                                         <img src='./loading.svg' alt='SSI 2026 - Loading' />
                                     </Loading>
-                                }
+                                )}
                             </form>
                         </FormWrapper>
-                    }
-
+                    )}
                 </div>
             </PresenceWrapper>
         </>
-    )
+    );
 }
 
 export default Presential;
@@ -364,10 +394,6 @@ const FormWrapper = styled.div`
             text-align: left;
             width: 100%;
         }
-
-        button {
-            margin-top: .5rem;
-        }
     }
 
     .form-input {
@@ -454,5 +480,56 @@ const InputBox = styled.div`
         font: 700 1.125rem/1.5rem 'AT Aero Bold';
         width: 100%;
         margin-bottom: .5rem;
+    }
+`
+
+const HideableSection = styled.div`
+    width: 100%;
+    display: ${props => props.$hidden ? 'none' : 'flex'};
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    button {
+        margin-top: 1rem;
+    }
+`
+
+const ScannerWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    button {
+        background: none;
+        border-radius: 0.75rem;
+        border: 2px solid var(--content-neutrals-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    button:hover {
+        background-color: var(--content-neutrals-primary);
+        color: var(--content-neutrals-inverse);
+    }
+
+    #reader {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        border: 2px solid var(--brand-primary);
+        color: black; 
+    }
+    
+    #reader button {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
     }
 `
