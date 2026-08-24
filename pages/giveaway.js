@@ -348,11 +348,6 @@ const FormWrapper = styled.div`
         }
     }
 
-    /* Firefox */
-    input[type=number] {
-        -moz-appearance: textfield;
-    }
-
     span {
         font: 400 0.875rem/1rem 'AT Aero Bold';
         color: var(--color-invalid);

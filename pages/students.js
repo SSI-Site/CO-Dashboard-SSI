@@ -2,12 +2,13 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 // Components
 import Button from "../src/components/Button";
 import Image from "next/image";
-import StudentRow from "../src/components/StudentRow";
 import Pagination from "../src/components/Pagination";
+import MainTable from "../src/components/MainTable";
 
 // Assets
 import LoadingSVG from '../public/loading.svg'
@@ -16,6 +17,7 @@ import LoadingSVG from '../public/loading.svg'
 import saphira from "../services/saphira";
 
 const Students = () => {
+    const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false)
     const [students, setStudents] = useState([])
@@ -99,6 +101,28 @@ const Students = () => {
         return () => window.removeEventListener('resize', calculateMaxRows);
     }, [])
 
+    const columns = [
+      {
+        key: "code",
+        label: "Código SSI",
+        width: "12.5rem",
+      },
+      {
+        key: "name",
+        label: "Nome",
+        width: "30rem",
+      },
+      {
+        key: "email",
+        label: "Email",
+        width: "30rem"
+      }
+    ]
+
+    const handleRowClick = (student) => {
+        router.push({ pathname: "/studentView", query: { id: student.code } })
+    }
+
     return (
         <>
             <Meta title = "COSSI 2026 | Inscritos"/>
@@ -130,42 +154,18 @@ const Students = () => {
                     </StudentsInteractions>
                 </StudentsTitle>
 
-                <StudentsGrid>
-                    <label>Código SSI</label>
-                    <label>Nome</label>
-                    <label>Email</label>
-                </StudentsGrid>
-                <StudentsWrapper $maxRows = {maxRows}>
-                    {!isLoading && 
-                        currentStudents.map((student, index) => {
-                     
-                            return(
-                                <StudentRow
-                                    isEven={index % 2}
-                                    key = {student.id}
-                                    id = {student.code}
-                                    name = {student.name}
-                                    email = {student.email}
-                                />
-                            )
-                        })
-                    }
-                    
-                    {isLoading &&
-                        <div className = "allRow">
-                            <Image
-                                src = {LoadingSVG}
-                                width={120}
-                                height={50}
-                                alt = "Loading..."
-                            />
-                        </div>
-                    }
-                </StudentsWrapper> 
+                <MainTable
+                    data={currentStudents}
+                    columns={columns}
+                    loading={isLoading}
+                    onRowClick={handleRowClick}
+                    emptyState="Nenhum inscrito encontrado."
+                />
+
                 <StudentsFooter>
-                    <p>{students.length} usuários encontrados</p>
+                    <p>{filteredStudents.length} usuários encontrados</p>
                         {!isLoading &&
-                            !students.length == 0 &&
+                            students.length !== 0 &&
                             <Pagination
                                 currentPage={currentPage}
                                 setCurrentPage={setCurrentPage}
@@ -243,43 +243,11 @@ const StudentsInteractions = styled.div`
 
 `
 
-
-const StudentsGrid = styled.div`
-    width: 100%;
-    border-block: 1px solid var(--outline-neutrals-secondary);
-    padding: 1.5rem 0.5rem;
-    display: grid;
-    grid-template-columns: 1fr 3fr 3fr; 
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    margin-bottom: 0.75rem;
-
-    label {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const StudentsWrapper = styled.div`
-    width: 100%;
-    display: grid;
-    grid-column-gap: 3rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--outline-neutrals-secondary);
-
-    .allRow{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 5rem;
-    }
-`
-
 const StudentsFooter = styled.footer`
     width: 100%;
     display: flex;
     justify-content: space-between;
+    margin-top: 2rem;
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
