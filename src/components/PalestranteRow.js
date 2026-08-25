@@ -351,9 +351,7 @@ const PalestranteWrapper = styled.div`
     width: 100%;
     cursor: pointer;
     display: grid;
-    flex-wrap: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    min-width: 60rem;
     grid-template-columns: 1fr 3fr repeat(4, 1fr); 
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
