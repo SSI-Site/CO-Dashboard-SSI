@@ -1,9 +1,39 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Button from "./Button";
 
 const Pagination = ({totalPages, currentPage, setCurrentPage}) => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 800px)");
+
+        const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+        updateIsMobile();
+        mediaQuery.addEventListener("change", updateIsMobile);
+
+        return () => mediaQuery.removeEventListener("change", updateIsMobile);
+    }, []);
+
     const getPageNumbers = () => {
+        if (isMobile) {
+            if (totalPages <= 1) {
+                return [1];
+            }
+
+            if (currentPage === 1) {
+                return totalPages > 2 ? [1, "...", totalPages] : [1, totalPages];
+            }
+
+            if (currentPage === totalPages) {
+                return totalPages > 2 ? [1, "...", totalPages] : [1, totalPages];
+            }
+
+            return [1, currentPage, totalPages];
+        }
+
         const pages = [];
         const delta = 1;
     
@@ -70,6 +100,7 @@ export default Pagination
 const PaginationWrapper = styled.div`
     display: flex;
     gap: 0.75rem;
+    flex-wrap: wrap;
     
     button{
         width: 2rem;

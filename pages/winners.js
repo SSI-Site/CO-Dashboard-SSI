@@ -223,6 +223,14 @@ const WinnersTitle = styled.div`
     align-items: center;
     width: 100%;
     margin-bottom: 1.5rem;
+    
+    h5 {
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 800px) {
+        flex-direction: column;
+    }
 `
 
 const WinnersFilter = styled.div`
@@ -262,6 +270,18 @@ const WinnersInteractions = styled.div`
     align-items: center;
     gap: 1rem;
     height: 100%;
+    
+    @media (max-width: 800px) {
+        flex-wrap: wrap;
+          
+        span {
+            display: none;
+        }
+
+        &>button {
+            max-width: 100%;
+        }
+    }
 
 `
 
@@ -274,6 +294,7 @@ const WinnersGrid = styled.div`
     grid-column-gap: 3rem;
     grid-row-gap: 0.75rem; 
     margin-bottom: 0.75rem;
+    overflow: auto;
 
     label {
         font: 700 1.125rem/1.5rem 'At Aero Bold';
@@ -287,6 +308,7 @@ const WinnersWrapper = styled.div`
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--outline-neutrals-secondary);
+    overflow: auto;
 
     .allRow{
         display: flex;
@@ -324,8 +346,10 @@ const WinnersFooter = styled.footer`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
+        margin-bottom: 1rem;
     }
 `
