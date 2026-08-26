@@ -1,8 +1,7 @@
 import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import {useRouter} from "next/router";
 import useAuth from '../hooks/useAuth';
 
@@ -13,8 +12,7 @@ import saphira from "../services/saphira";
 import Button from "../src/components/Button";
 import SecondaryButton from "../src/components/SecondaryButton";
 import Pagination from "../src/components/Pagination";
-import LoadingSVG from '../public/loading.svg'
-import TalkRow from "../src/components/TalkRow";
+import MainTable from "../src/components/MainTable";
 
 const Talks = () => {
     const router = useRouter()
@@ -28,14 +26,83 @@ const Talks = () => {
     const [filteredTalks, setFilteredTalks] = useState([])
     const [maxRows, setMaxRows] = useState(11)
 
+    const formatTime = (isoDate) => {
+        const date = new Date(isoDate)
+        return date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', hour12: false})
+    }
+
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate)
+        return date.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})
+    }
+
     const getTalks =  async()=> {
         setisLoading(true)
 
         try{
             const { data } = await saphira.getTalks()
+            
+            const clientTime = Date.now()
+            
             if (data) {
-                setTalks(data)
-                setFilteredTalks(data)
+                const talksBase = data.map((talk) => {
+                    const endTime = new Date(talk.end_time).getTime()
+                    return ({
+                      ...talk,
+                      speakersNames: 'Carregando',
+                      presences: 0,
+                      status: endTime < clientTime ? 'Realizado' : 'Não realizado'
+                  })
+                })
+
+                setTalks(talksBase)
+                setFilteredTalks(talksBase)
+                setisLoading(false)
+
+                const [presencesRes, talksWithSpeakers] = await Promise.all([
+                    saphira.getPresences(),
+                    Promise.all(
+                        data.map(async (talk) => {
+                            const speakerResponses = await Promise.all(
+                                (talk.speakers || []).map((speakerId) => saphira.getSpeaker(speakerId))
+                            )
+
+                            return {
+                                id: talk.id,
+                                speakersNames: speakerResponses
+                                    .map((response) => response?.data?.name)
+                                    .filter(Boolean)
+                                    .join(', '),
+                            }
+                        })
+                    ),
+                ])
+
+                const presencesByTalk = presencesRes.data.reduce((acc, presence) => {
+                    const talkId = String(presence.talk)
+                    acc[talkId] = (acc[talkId] || 0) + 1
+                    return acc
+                }, {})
+
+                const speakersByTalk = talksWithSpeakers.reduce((acc, item) => {
+                    acc[String(item.id)] = item.speakersNames
+                    return acc
+                }, {})
+
+                const talksWithDetails = talksBase.map((talk) => ({
+                    ...talk,
+                    presences: presencesByTalk[String(talk.id)] || 0,
+                    speakersNames: speakersByTalk[String(talk.id)] || '',
+                }))
+
+                setTalks(talksWithDetails)
+                setFilteredTalks((currentFiltered) =>
+                    currentFiltered.map((talk) => ({
+                        ...talk,
+                        presences: presencesByTalk[String(talk.id)] || 0,
+                        speakersNames: speakersByTalk[String(talk.id)] || '',
+                    }))
+                )
             }
         }
         catch(err){
@@ -99,6 +166,60 @@ const Talks = () => {
         currentPage * maxRows
     )
 
+    const columns = [
+        {
+            key: 'id',
+            label: 'ID',
+            width: '8rem',
+        },
+        {
+            key: 'title',
+            label: 'Palestra',
+            width: '25rem',
+        },
+        {
+            key: 'speakersNames',
+            label: 'Palestrantes',
+            width: '22rem',
+        },
+        {
+            key: 'presences',
+            label: 'Presentes',
+            width: '10rem',
+        },
+        {
+            key: 'start_time',
+            label: 'Início',
+            width: '9rem',
+            render: (value) => formatTime(value),
+        },
+        {
+            key: 'end_time',
+            label: 'Fim',
+            width: '9rem',
+            render: (value) => formatTime(value),
+        },
+        {
+            key: 'end_time',
+            label: 'Data',
+            width: '9rem',
+            render: (value) => formatDate(value),
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            width: '11rem',
+            render: (value) => value == 'Realizado' ? <span className="status done">{value}</span> : <span className="status undone">{value}</span>,
+        },
+    ]
+
+    const handleRowClick = (talk) => {
+        router.push({
+            pathname: '/talkForm',
+            query: { id: talk.id },
+        })
+    }
+
     const handleSearch = (e) => {
         const query = e.toLowerCase()
         const filtered = talks.filter(talk => 
@@ -144,55 +265,13 @@ const Talks = () => {
 
                 </TalksTitle>
 
-                <TalksGrid>
-                    <label>ID</label>
-                    <label>Palestra</label>
-                    <label>Palestrantes</label>
-                    <label>Presentes</label>
-                    <label>Início</label>
-                    <label>Fim</label>
-                    <label>Data</label>
-                    <label>Status</label>
-                </TalksGrid>
-
-                <TalksWrapper>
-                    {!isLoading &&
-                        currentTalks.map((talk, index) => {
-                            return (
-                                <TalkRow
-                                    isEven={index % 2}
-                                    key = {talk.id}
-                                    id = {talk.id}
-                                    title = {talk.title}
-                                    start_time={talk.start_time}
-                                    end_time={talk.end_time}
-                                    mode={talk.mode}
-                                    speakers={talk.speakers}
-                                    sponsor_id={talk.sponsor ? talk.sponsor.id : 'Nenhuma'}
-                                    activity_type={talk.activity_type}
-                                    description = {talk.description}
-                                /> 
-                            )
-                        })
-                    }
-
-                    {!isLoading &&
-                        talks.length == 0 &&
-                            <p className = 'allRow noSpeakers'>Sem palestras cadastradas :(</p>
-                    }
-
-                    {isLoading &&
-                        <div className = "allRow">
-                            <Image
-                                src = {LoadingSVG}
-                                width={120}
-                                height={50}
-                                alt = "Loading..."
-                            />
-                        </div>
-                    }
-
-                </TalksWrapper>
+                <MainTable
+                    data={currentTalks}
+                    columns={columns}
+                    loading={isLoading}
+                    onRowClick={handleRowClick}
+                    emptyState="Sem palestras cadastradas :("
+                />
 
                 <TalksFooter>
                     <p>{filteredTalks.length} palestras encontradas</p>
@@ -224,6 +303,22 @@ const TalksContainer = styled.div`
 
     * {
         color: var(--content-neutrals-primary);
+    }
+
+    .status{
+        padding: 0.125rem 0.25rem;
+        font: 400 0.875rem/1.5rem 'At Aero';
+        text-align: center;
+    }
+
+    .done{
+        color: var(--content-accent-green);
+        background-color: var(--background-accent-green);
+    }
+
+    .undone{
+        color: var(--content-accent-red);
+        background-color: var(--background-accent-red);
     }
 `
 
@@ -284,47 +379,11 @@ const TalksInteractions = styled.div`
 `
 
 
-const TalksGrid = styled.div`
-    width: 100%;
-    border-block: 1px solid var(--outline-neutrals-secondary);
-    padding: 1.5rem 0.5rem;
-    display: grid;
-    grid-template-columns: 1fr 3fr 3fr repeat(5, 1fr); 
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    margin-bottom: 0.75rem;
-
-    label {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const TalksWrapper = styled.div`
-    width: 100%;
-    display: grid;
-    grid-column-gap: 3rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--outline-neutrals-secondary);
-
-    .noSpeakers{
-        text-align: center;
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-
-    .allRow{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 5rem;
-    }
-`
-
 const TalksFooter = styled.footer`
     width: 100%;
     display: flex;
     justify-content: space-between;
+    margin-top: 2rem;
     
     p {
         font: 700 1rem/1.5rem 'At Aero Bold';
