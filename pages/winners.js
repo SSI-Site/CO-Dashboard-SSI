@@ -2,17 +2,14 @@ import NavBar from "../src/patterns/base/Nav";
 import Meta from "../src/infra/Meta";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 // Components
 import Button from "../src/components/Button";
 import Pagination from "../src/components/Pagination";
+import MainTable from "../src/components/MainTable";
 
-//saphira
+// saphira
 import saphira from "../services/saphira";
-
-// Assets
-import LoadingSVG from '../public/loading.svg'
 
 const Winners = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -113,6 +110,29 @@ const Winners = () => {
         currentPage * maxRows
     );
 
+    const columns = [
+        {
+            key: "code",
+            label: "Código SSI",
+            width: "12rem",
+        },
+        {
+            key: "name",
+            label: "Nome",
+            width: "18rem",
+        },
+        {
+            key: "email",
+            label: "Email",
+            width: "22rem",
+        },
+        {
+            key: "talkTitle",
+            label: "Palestra",
+            width: "22rem",
+        },
+    ];
+
     return (
         <>
             <NavBar name={"Realizar Sorteio > Lista de ganhadores"} />
@@ -144,47 +164,14 @@ const Winners = () => {
                     </WinnersInteractions>
                 </WinnersTitle>
 
-                <WinnersGrid>
-                    <label>Código SSI</label>
-                    <label>Nome</label>
-                    <label>Email</label>
-                    <label>Palestra</label>
-                </WinnersGrid>
-                
-                <WinnersWrapper>
-                    {
-                        !isLoading &&
-                        currentWinners.map((item, index) => {
-                            return (
-                                <Winner key={item.id}  $isEven={index % 2}>
-                                    <p>{item.code}</p>
-                                    <p>{item.name}</p>
-                                    <p>{item.email}</p>
-                                    <p>{item.talkTitle}</p>
-                                </Winner>
-                            )
-                        })
-                    }
-                    {
-                        !isLoading && filteredData.length === 0 && (
-                            <p className="allRow">
-                                {fullData.length === 0 ? "Sem vencedores, ainda!" : "Nenhum vencedor encontrado para esta busca."}
-                            </p>
-                        )
-                    }
-                    {
-                        isLoading &&
-                        <div className = "allRow">
-                            <Image
-                                src = {LoadingSVG}
-                                width={120}
-                                height={50}
-                                alt = "Loading..."
-                            />
-                        </div>
-                    }
-                </WinnersWrapper>   
-                
+                <MainTable
+                    data={currentWinners}
+                    columns={columns}
+                    loading={isLoading}
+                    emptyState={fullData.length === 0 ? "Sem vencedores, ainda!" : "Nenhum vencedor encontrado para esta busca."}
+                    rowKey="id"
+                />
+
                 <WinnersFooter>
                     <p>{filteredData.length} ganhadores encontrados</p>
                     {!isLoading && filteredData.length !== 0 && (
@@ -281,63 +268,6 @@ const WinnersInteractions = styled.div`
         &>button {
             max-width: 100%;
         }
-    }
-
-`
-
-const WinnersGrid = styled.div`
-    width: 100%;
-    border-block: 1px solid var(--outline-neutrals-secondary);
-    padding: 1.5rem 0.5rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr 2fr 2fr;
-    grid-column-gap: 3rem;
-    grid-row-gap: 0.75rem; 
-    margin-bottom: 0.75rem;
-    overflow: auto;
-
-    label {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
-    }
-`
-
-const WinnersWrapper = styled.div`
-    width: 100%;
-    display: grid;
-    grid-column-gap: 3rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--outline-neutrals-secondary);
-    overflow: auto;
-
-    .allRow{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 5rem;
-    }
-`
-
-const Winner = styled.div`
-    width: 100%;
-    align-items: center;
-    cursor: pointer;
-    display: grid;
-    grid-template-columns: 1fr 2fr 2fr 2fr; 
-    grid-column-gap: 3rem;
-    padding: 0.75rem 0.5rem; 
-    min-height: 4rem;
-    align-items: center;
-    background-color: ${({$isEven}) => $isEven ? 'var(--background-neutrals-secondary)' : 'transparent'};
-    transition: background-color 200ms ease-in-out;
-    
-    &:hover{
-        background-color: var(--state-layers-neutrals-primary-008);
-    }
-
-    p {
-        font: 700 1.125rem/1.5rem 'At Aero Bold';
     }
 `
 
