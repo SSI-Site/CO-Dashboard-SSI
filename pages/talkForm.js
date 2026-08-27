@@ -380,6 +380,12 @@ const FormColumn = styled.div`
     grid-template-columns: ${({$columns}) => $columns};
     width: 100%;
     grid-column-gap: 1rem;
+
+    @media (max-width: 800px) {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 1rem;
+    }
 `
 
 const FormFooter = styled.div`
@@ -387,13 +393,26 @@ const FormFooter = styled.div`
     gap: 1.5rem;
     display: flex;
     justify-content: ${({$update}) => $update ? 'space-between': 'flex-end'} ;
+
+    @media (max-width: 800px) {
+        flex-wrap: wrap;
+    }
 `
 
 const Cancel = styled.div`
     display: flex;
+
+    @media (max-width: 800px) {
+        width: 100%;
+    }
 `
 
 const FormButtons = styled.div`
     display: flex;
     gap: 1.5rem;
+
+    @media (max-width: 800px) {
+        width: 100%;
+        flex-wrap: wrap;
+    }
 `
